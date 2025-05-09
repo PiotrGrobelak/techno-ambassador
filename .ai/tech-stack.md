@@ -1,24 +1,24 @@
-Frontend - Astro z Vue dla komponentów interaktywnych:
+Frontend - Astro with Vue for interactive components:
 
-- Astro 5 pozwala na tworzenie szybkich, wydajnych stron i aplikacji z minimalną ilością JavaScript
-- Vue 3 zapewni interaktywność tam, gdzie jest potrzebna
-- TypeScript 5 dla statycznego typowania kodu i lepszego wsparcia IDE
-- Tailwind 4 pozwala na wygodne stylowanie aplikacji
-- PrimeVue zapewnia bibliotekę dostępnych komponentów Vue, na których oprzemy UI
+- Astro 5 allows creating fast, efficient pages and applications with minimal JavaScript
+- Vue 3 will provide interactivity where needed
+- TypeScript 5 for static code typing and better IDE support
+- Tailwind 4 allows for convenient application styling
+- PrimeVue provides a library of accessible Vue components on which we will base the UI
 
-Backend - Supabase jako kompleksowe rozwiązanie backendowe:
+Backend - Supabase as a comprehensive backend solution:
 
-- Zapewnia bazę danych PostgreSQL
-- Zapewnia SDK w wielu językach, które posłużą jako Backend-as-a-Service
-- Jest rozwiązaniem open source, które można hostować lokalnie lub na własnym serwerze
-- Posiada wbudowaną autentykację użytkowników
+- Provides PostgreSQL database
+- Provides SDK in multiple languages, which will serve as Backend-as-a-Service
+- Is an open source solution that can be hosted locally or on your own server
+- Has built-in user authentication
 
-AI - Komunikacja z modelami przez usługę Openrouter.ai:
+AI - Communication with models through Openrouter.ai service:
 
-- Dostęp do szerokiej gamy modeli (OpenAI, Anthropic, Google i wiele innych), które pozwolą nam znaleźć rozwiązanie zapewniające wysoką efektywność i niskie koszta
-- Pozwala na ustawianie limitów finansowych na klucze API
+- Access to a wide range of models (OpenAI, Anthropic, Google and many others), which will allow us to find a solution providing high efficiency and low costs
+- Allows setting financial limits on API keys
 
-CI/CD i Hosting:
+CI/CD and Hosting:
 
-- Github Actions do tworzenia pipeline’ów CI/CD
-- DigitalOcean do hostowania aplikacji za pośrednictwem obrazu docker
+- Github Actions for creating CI/CD pipelines
+- DigitalOcean for hosting the application via docker image

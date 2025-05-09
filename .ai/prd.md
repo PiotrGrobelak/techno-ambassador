@@ -1,115 +1,113 @@
-# Dokument wymagań produktu (PRD) - Techno Ambassador
+# Product Requirements Document (PRD) - Techno Ambassador
 
-## 1. Przegląd produktu
+## 1. Product Overview
 
-Techno Ambassador to platforma skupiająca wszystkie cykle imprez oraz eventy związane z muzyką techno. Głównym celem produktu jest umożliwienie użytkownikom sprawdzenia ocen eventów oraz oddawania ocen i komentarzy na zakończone eventy. System integruje dane o lokalizacji eventów pobrane z Facebooka przy użyciu technologii AI, a administratorzy mają możliwość zatwierdzania lub uzupełniania tych danych. Platforma umożliwia również monitorowanie działań użytkowników przez integrację z narzędziami analitycznymi (np. Google Analytics).
+Techno Ambassador is a platform bringing together all event cycles and events related to techno music. The main purpose of the product is to enable users to check event ratings and provide ratings and comments on completed events. The system integrates event location data retrieved from Facebook using AI technology, and administrators have the ability to approve or supplement this data. The platform also enables monitoring of user activities through integration with analytical tools.
 
-## 2. Problem użytkownika
+## 2. User Problem
 
-Użytkownicy muzycznych eventów techno nie mają centralnego miejsca, gdzie mogliby oceniać i komentować wydarzenia, a także zapoznawać się ze szczegółami takich imprez. Problem ten powoduje, że:
+Techno music event users do not have a central place where they could rate and comment on events, as well as learn about the details of such events. This problem causes:
 
-- Brakuje wiarygodnej oceny eventów, co utrudnia wybór wartościowych imprez.
-- Brakuje możliwości dzielenia się opiniami i doświadczeniami po zakończeniu eventu.
-- Użytkownicy nie mają wglądu w oceny innych uczestników, co utrudnia ocenę potencjalnych wydarzeń.
-- Organizatorzy imprez nie wiedzą w któym kierunku rowijać wydarzenia
+- Lack of reliable event ratings, making it difficult to choose valuable events.
+- Lack of opportunity to share opinions and experiences after the event ends.
+- Users do not have insight into the ratings of other participants, which makes it difficult to evaluate potential events.
+- Event organizers do not know in which direction to develop events.
 
-## 3. Wymagania funkcjonalne
+## 3. Functional Requirements
 
-1. Użytkownik musi być zalogowany, aby móc oddać głos i dodać komentarz.
-2. System umożliwia oddanie jednego głosu na zakończony event przez jednego użytkownika, jednak użytkownik może edytować swój głos bez ograniczeń czasowych.
-3. Administrator (root) ma prawo dodawać eventy poprzez wprowadzenie wymaganych danych: daty, opisu oraz lokalizacji.
-4. Integracja z AI do pobierania danych o lokalizacji eventów z Facebooka, z możliwością zatwierdzenia lub ręcznego uzupełnienia brakujących informacji przez administratora.
-5. Integracja z narzędziami analitycznymi (np. Google Analytics) w celu monitorowania istotnych wskaźników sukcesu.
-6. System umożliwia rejestrację nowych użytkowników poprzez formularz rejestracyjny, który nie wymaga dodatkowych kroków weryfikacyjnych, jednak dane wprowadzone podczas rejestracji są walidowane w celu zapewnienia bezpieczeństwa dostępu.
+1. User must be logged in to cast a vote and add a comment.
+2. The system allows casting one vote on a completed event per user, however, the user can edit their vote without time constraints.
+3. Administrator (root) has the right to add events by entering required data: date, description, and location.
+4. Integration with AI for retrieving event location data from Facebook, with the possibility of approval or manual supplementation of missing information by the administrator.
+5. Integration with analytical tools (e.g., Google Analytics) to monitor key success indicators.
+6. The system enables registration of new users through a registration form that does not require additional verification steps, however, data entered during registration is validated to ensure secure access.
 
-## 4. Granice produktu
+## 4. Product Boundaries
 
-1. System nie obejmuje zaawansowanych mechanizmów rejestracji i zarządzania kontami; ogranicza się do podstawowego uwierzytelniania.
-2. Funkcjonalność dodawania eventów jest dostępna wyłącznie dla administratora (root), a użytkownicy nie mogą zgłaszać własnych eventów.
-3. Integracja danych z AI dotyczy wyłącznie pobierania lokalizacji z Facebooka, a inne dane eventów wprowadzane są ręcznie.
-4. System nie przewiduje dodatkowych ról użytkowników poza rolą zwykłego użytkownika i administratorem.
+1. The system does not include advanced registration and account management mechanisms; it is limited to basic authentication.
+2. The functionality of adding events is available only to the administrator (root), and users cannot submit their own events.
+3. AI data integration concerns only retrieving locations from Facebook, and other event data is entered manually.
+4. The system does not provide for additional user roles beyond the role of a regular user and administrator.
 
-## 5. Historyjki użytkowników
+## 5. User Stories
 
 US-001
-Tytuł: Użytkownik loguje się do systemu
-Opis: Jako użytkownik, chcę móc się zalogować do systemu, aby uzyskać dostęp do możliwości oceniania eventów.
-Kryteria akceptacji:
+Title: Account Registration
+Description: As a new user, I want to be able to register my account to gain access to the full functionality of the platform, including voting and commenting on events.
+Acceptance Criteria:
 
-- Użytkownik musi wprowadzić poprawne dane logowania.
-- System umożliwia odzyskanie hasła.
-- Uwierzytelnianie odbywa się w sposób bezpieczny.
+- The registration form should include fields: email address, username, password, password confirmation.
+- Data entered in the form must be validated, including email format correctness and password consistency.
+- After successful registration, the user is automatically logged in or redirected to the login page.
+- In case of errors, the user receives clear error messages.
 
 US-002
-Tytuł: Użytkownik przegląda listę eventów
-Opis: Jako zalogowany użytkownik, chcę mieć możliwość przeglądania listy zakończonych eventów, aby móc zdecydować, na który event oddać głos i dodać komentarz.
-Kryteria akceptacji:
+Title: User logs into the system
+Description: As a user, I want to be able to log into the system to access the ability to rate events.
+Acceptance Criteria:
 
-- Lista eventów jest aktualna i zawiera wszystkie zakończone wydarzenia.
-- Użytkownik widzi podstawowe informacje, takie jak data, opis i lokalizacja wydarzenia.
-- Interfejs jest responsywny i intuicyjny.
+- The user must enter correct login credentials.
+- The system allows password recovery.
+- Authentication is done securely.
 
 US-003
-Tytuł: Użytkownik oddaje głos i dodaje komentarz do eventu
-Opis: Jako zalogowany użytkownik, chcę móc oddać jeden głos (w skali 1-5) na zakończony event oraz dodać do niego komentarz, aby wyrazić swoją opinię.
-Kryteria akceptacji:
+Title: User browses the list of events
+Description: As a user (both logged-in and not logged-in), I want to be able to browse the list of completed events to see their details and ratings. As a logged-in user, I can then decide which events to vote on and add comments to.
+Acceptance Criteria:
 
-- Użytkownik może oddać tylko jeden głos na dany event.
-- Głos jest w skali 1-5.
-- Komentarz można dodać jednocześnie z oddaniem głosu.
-- Po oddaniu głosu użytkownik może edytować swój głos i komentarz bez ograniczeń czasowych.
+- The list of events is up-to-date and contains all events.
+- The user sees basic information such as date, description, and event location.
+- The interface is responsive and intuitive.
 
 US-004
-Tytuł: Użytkownik edytuje oddany głos i komentarz
-Opis: Jako zalogowany użytkownik, chcę móc edytować mój głos i komentarz, który już oddałem, aby zaktualizować swoją opinię po refleksji lub zmianach.
-Kryteria akceptacji:
+Title: User casts a vote and adds a comment to the event
+Description: As a logged-in user, I want to be able to cast one vote (on a scale of 1-5) on a completed event and add a comment to it to express my opinion.
+Acceptance Criteria:
 
-- Edycja głosu nie jest ograniczona czasowo.
-- Użytkownik widzi możliwość edycji przy każdym zakończonym evencie, na który już oddał głos.
-- Zmiany są natychmiast zapisywane i widoczne.
-- Może oddać tylko raz głos
+- The user can cast only one vote per event.
+- The vote is on a scale of 1-5.
+- A comment can be added simultaneously with casting a vote.
+- After casting a vote, the user can edit their vote and comment without time constraints.
 
 US-005
-Tytuł: Administrator dodaje nowy event
-Opis: Jako administrator, chcę mieć możliwość dodania nowego eventu, wprowadzając wymagane dane takie jak data, opis i lokalizacja, aby móc publicznie udostępnić wydarzenie.
-Kryteria akceptacji:
+Title: User edits cast vote and comment
+Description: As a logged-in user, I want to be able to edit my vote and comment that I have already cast to update my opinion after reflection or changes.
+Acceptance Criteria:
 
-- Formularz dodawania eventu zawiera pola: data, opis, lokalizacja.
-- Wprowadzone dane są walidowane przed zapisaniem.
-- Administrator otrzymuje potwierdzenie dodania eventu.
+- Vote editing is not time limited.
+- The user sees the editing option for every completed event they have already voted on.
+- Changes are immediately saved and visible.
+- Can cast only one vote.
 
 US-006
-Tytuł: Administrator zatwierdza lub uzupełnia dane z integracji AI
-Opis: Jako administrator, chcę móc zatwierdzić dane dotyczące lokalizacji pobrane z integracji z AI (Facebook) lub uzupełnić brakujące informacje, aby zapewnić kompletność danych eventu.
-Kryteria akceptacji:
+Title: Administrator adds a new event
+Description: As an administrator, I want to be able to add a new event by entering required data such as date, description, and location to make the event publicly available.
+Acceptance Criteria:
 
-- System pobiera dane o lokalizacji eventu z Facebooka.
-- Jeśli dane są niekompletne, administrator ma możliwość ich uzupełnienia.
-- Po zatwierdzeniu, dane są widoczne w szczegółach eventu.
+- The event addition form includes fields: date, description, location.
+- Entered data is validated before saving.
+- The administrator receives confirmation of event addition.
 
 US-007
-Tytuł: Bezpieczne uwierzytelnianie użytkownika
-Opis: Jako użytkownik, chcę mieć pewność, że moje dane są chronione podczas logowania do systemu, co zapewnia bezpieczny dostęp do aplikacji.
-Kryteria akceptacji:
+Title: Administrator approves or supplements data from AI integration
+Description: As an administrator, I want to be able to approve location data retrieved from AI integration (Facebook) or supplement missing information to ensure the completeness of event data.
+Acceptance Criteria:
 
-- System stosuje zabezpieczenia przy przesyłaniu danych logowania.
-- Uwierzytelnianie odbywa się przy użyciu bezpiecznych protokołów (np. HTTPS).
-- W przypadku nieudanej próby logowania, użytkownik otrzymuje jasny komunikat błędu.
+- The system retrieves event location data from Facebook.
+- If the data is incomplete, the administrator has the option to supplement it.
+- After approval, the data is visible in event details.
 
 US-008
-Tytuł: Rejestracja konta
-Opis: Jako nowy użytkownik, chcę móc zarejestrować swoje konto, aby uzyskać dostęp do pełnej funkcjonalności platformy, w tym oddawania głosów i komentowania eventów.
-Kryteria akceptacji:
+Title: Secure user authentication
+Description: As a user, I want to be sure that my data is protected when logging into the system, ensuring secure access to the application.
+Acceptance Criteria:
 
-- Formularz rejestracji powinien zawierać pola: adres email, nazwa użytkownika, hasło, potwierdzenie hasła.
-- Dane wprowadzone w formularzu muszą być walidowane, w tym poprawność formatu email oraz zgodność haseł.
-- Po udanej rejestracji użytkownik zostaje automatycznie zalogowany lub przekierowany do strony logowania.
-- W przypadku błędów użytkownik otrzymuje jasne komunikaty o błędach.
+- The system applies security when transmitting login data.
+- Authentication is done using secure protocols (e.g., HTTPS).
+- In case of a failed login attempt, the user receives a clear error message.
 
-## 6. Metryki sukcesu
+## 6. Success Metrics
 
-1. Co najmniej 65% zalogowanych użytkowników oddaje jeden głos na zakończone eventy w każdym tygodniu.
-2. Co najmniej 33% użytkowników, którzy oddali głos, dodaje również komentarz.
-3. Wskaźniki te są monitorowane poprzez integrację z narzędziami analitycznymi (np. Google Analytics).
-4. System skutecznie wykrywa i loguje duplikaty głosów oraz komentarzy.
-5. Wskaźniki logowania akcji użytkowników potwierdzają, że uwierzytelnianie odbywa się w sposób bezpieczny.
+1. At least 65% of logged-in users cast one vote on completed events each week.
+2. At least 33% of users who cast a vote also add a comment.
+3. These indicators are monitored through integration with analytical tools (e.g., Google Analytics).
