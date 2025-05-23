@@ -1,129 +1,322 @@
-# PostgreSQL Database Schema for Techno Ambassador
+# Database Schema - Techno Ambassador
 
 ## 1. Tables
 
-### `users`
+### 1.1 users
 
-This table is managed by Supabase Auth
+This table is managed by Supabase Auth.
+Main table storing user profile information.
 
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | uuid | PRIMARY KEY, DEFAULT gen_random_uuid() |
-| email | varchar(255) | NOT NULL, UNIQUE |
-| username | varchar(100) | NOT NULL, UNIQUE |
-| password_hash | varchar(255) | NOT NULL |
-| role | user_role | NOT NULL, DEFAULT 'user' |
-| created_at | timestamptz | NOT NULL, DEFAULT now() |
-| last_login_at | timestamptz | NULL |
+```sql
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    artist_name VARCHAR(255) UNIQUE NOT NULL,
+    biography TEXT NOT NULL CHECK (length(biography) <= 10000),
+    instagram_url VARCHAR(500),
+    facebook_url VARCHAR(500),
+    user_type VARCHAR(50) NOT NULL DEFAULT 'artist' CHECK (user_type IN ('artist')),
+    search_vector tsvector GENERATED ALWAYS AS (
+        to_tsvector('english', artist_name || ' ' || biography)
+    ) STORED,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
 
-### `events`
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | uuid | PRIMARY KEY, DEFAULT gen_random_uuid() |
-| title | varchar(255) | NOT NULL |
-| description | text | NOT NULL |
-| date | timestamptz | NOT NULL |
-| status | event_status | NOT NULL, DEFAULT 'planned' |
-| location_city | varchar(100) | NOT NULL |
-| location_street | varchar(255) | NOT NULL |
-| location_postal_code | varchar(20) | NOT NULL |
-| avg_rating | numeric(3,2) | NULL |
-| vote_count | integer | NOT NULL, DEFAULT 0 |
-| created_at | timestamptz | NOT NULL, DEFAULT now() |
-| updated_at | timestamptz | NOT NULL, DEFAULT now() |
-| created_by | uuid | NOT NULL, REFERENCES users(id) |
+### 1.2 music_styles
 
-### `votes`
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | uuid | PRIMARY KEY, DEFAULT gen_random_uuid() |
-| event_id | uuid | NOT NULL, REFERENCES events(id) |
-| user_id | uuid | NOT NULL, REFERENCES users(id) |
-| rating | integer | NOT NULL, CHECK (rating BETWEEN 1 AND 5) |
-| comment | varchar(500) | NULL |
-| created_at | timestamptz | NOT NULL, DEFAULT now() |
-| updated_at | timestamptz | NOT NULL, DEFAULT now() |
+Lookup table for music styles with full-text search capabilities.
 
+```sql
+CREATE TABLE music_styles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    style_name VARCHAR(100) UNIQUE NOT NULL,
+    search_vector tsvector GENERATED ALWAYS AS (
+        to_tsvector('english', style_name)
+    ) STORED,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
+
+### 1.3 user_music_styles
+
+Junction table for many-to-many relationship between users and music styles.
+
+```sql
+CREATE TABLE user_music_styles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    music_style_id UUID NOT NULL REFERENCES music_styles(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE(user_id, music_style_id)
+);
+```
+
+### 1.4 events
+
+Table storing DJ events with location information and full-text search.
+
+```sql
+CREATE TABLE events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    event_name VARCHAR(500) NOT NULL CHECK (length(event_name) <= 10000),
+    country VARCHAR(100) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    venue_name VARCHAR(200) NOT NULL,
+    event_date DATE NOT NULL CHECK (event_date >= CURRENT_DATE),
+    event_time TIME,
+    location_search_vector tsvector GENERATED ALWAYS AS (
+        to_tsvector('english', country || ' ' || city || ' ' || venue_name)
+    ) STORED,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
+
+### 1.5 error_logs
+
+Table for comprehensive error logging and monitoring.
+
+```sql
+CREATE TABLE error_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    error_type VARCHAR(100) NOT NULL,
+    error_message TEXT NOT NULL,
+    stack_trace TEXT,
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    request_url VARCHAR(1000),
+    user_agent TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
 
 ## 2. Relationships
 
-1. **Users to Events (1:N)**
-   - One administrator can create multiple events
-   - Foreign key: `events.created_by` references `users.id`
+### 2.1 One-to-Many Relationships
 
-2. **Users to Votes (1:N)**
-   - One user can cast multiple votes (one per event)
-   - Foreign key: `votes.user_id` references `users.id`
+- **users → events**: One DJ can have many events
+- **users → error_logs**: One DJ can generate many error logs (optional relationship)
 
-3. **Events to Votes (1:N)**
-   - One event can receive multiple votes
-   - Foreign key: `votes.event_id` references `events.id`
+### 2.2 Many-to-Many Relationships
+
+- **users ↔ music_styles**: Through `user_music_styles` junction table
+  - One DJ can have multiple music styles
+  - One music style can be associated with multiple DJs
 
 ## 3. Indexes
 
-1. **Users Table Indexes**
-   - Index on `email` field for efficient user lookup during authentication
-   - Index on `username` field for username searches and uniqueness checks
-   - Index on `role` field for filtering users by role (admins vs. regular users)
+### 3.1 Full-Text Search Indexes (GIN)
 
-2. **Events Table Indexes**
-   - Index on `status` field for filtering events by status (planned vs. completed)
-   - Index on `date` field for chronological sorting and date-based filtering
-   - Index on `location_city` field for geographical filtering
-   - Index on `created_by` field for finding events created by a specific administrator
-   - Indexes on `avg_rating` and `vote_count` fields for sorting by popularity
+```sql
+-- For DJ profile search
+CREATE INDEX idx_users_search ON users USING GIN(search_vector);
 
-3. **Votes Table Indexes**
-   - Index on `event_id` field for retrieving all votes for a specific event
-   - Index on `user_id` field for retrieving all votes cast by a specific user
-   - Index on `rating` field for filtering votes by rating value
+-- For music style search
+CREATE INDEX idx_music_styles_search ON music_styles USING GIN(search_vector);
 
-These indexes improve query performance for the most common access patterns while balancing the overhead of index maintenance during data modifications.
+-- For location search in events
+CREATE INDEX idx_events_location_search ON events USING GIN(location_search_vector);
+```
 
-## 4. PostgreSQL Rules and Triggers
+### 3.2 B-Tree Indexes
 
-1. **Event Statistics Update Trigger**
-   - Automatically updates the `avg_rating` and `vote_count` fields in the `events` table whenever votes are added, updated, or deleted
-   - Calculates the average rating and count of votes for the affected event
-   - Executes after INSERT, UPDATE, or DELETE operations on the `votes` table
+```sql
+-- For event date filtering and sorting
+CREATE INDEX idx_events_date ON events(event_date);
 
-2. **Update Timestamp Triggers**
-   - Automatically updates the `updated_at` timestamp field in the `events` table whenever an event record is modified
-   - Automatically updates the `updated_at` timestamp field in the `votes` table whenever a vote record is modified
-   - Ensures that the last modification time is always tracked accurately
+-- For DJ's events lookup
+CREATE INDEX idx_events_user_id ON events(user_id);
 
-These triggers maintain data integrity and consistency by automatically updating derived fields and timestamps without requiring application code to handle these operations.
+-- For recent DJ profiles (default sorting)
+CREATE INDEX idx_users_created_at ON users(created_at DESC);
 
-## 5. Row Level Security Policies
+-- For error log analysis
+CREATE INDEX idx_error_logs_created_at ON error_logs(created_at DESC);
+CREATE INDEX idx_error_logs_type ON error_logs(error_type);
+CREATE INDEX idx_error_logs_user_id ON error_logs(user_id) WHERE user_id IS NOT NULL;
+```
 
-1. **Users Table Policies**
-   - Select: All user can view all records
-   - Update: Users can only update their own profile data
-   - No direct insert/delete policies (handled by authentication system)
+### 3.3 Composite Indexes
 
-2. **Events Table Policies**
-   - Select: All users (including non-authenticated) can view all events
-   - Insert/Update/Delete: Only administrators have permission to add, modify, or remove events
+```sql
+-- For DJ calendar queries (upcoming events)
+CREATE INDEX idx_events_user_date ON events(user_id, event_date);
 
-3. **Votes Table Policies**
-   - Select: All users can view all votes and associated comments
-   - Insert: Authenticated users can add votes only for their own user ID
-   - Update/Delete: Users can only modify or remove their own votes
+-- For availability filtering
+CREATE INDEX idx_events_date_user ON events(event_date, user_id);
 
-These policies enforce security at the database level, ensuring that users can only access and modify data according to their role and ownership, regardless of the application logic.
+-- For error log filtering by type and date
+CREATE INDEX idx_error_logs_type_date ON error_logs(error_type, created_at DESC);
+```
 
-## 6. Additional Notes
+## 4. Constraints and Business Rules
 
-1. The schema leverages Supabase's authentication system, which is reflected in the RLS policies using the `auth.uid()` function.
+### 4.1 Check Constraints
 
-2. The `avg_rating` and `vote_count` fields in the `events` table are denormalized for performance reasons. They are automatically maintained by triggers when votes are added, updated, or deleted.
+```sql
+-- Prevent adding past events
+ALTER TABLE events ADD CONSTRAINT chk_no_past_events
+CHECK (event_date >= CURRENT_DATE);
 
-3. The database is designed to handle approximately 600 events per year as specified in the requirements. The schema should be efficient for this scale without requiring partitioning in the initial phase.
+-- Limit text field lengths
+ALTER TABLE users ADD CONSTRAINT chk_biography_length
+CHECK (length(biography) <= 10000);
 
-4. For improved security, consider implementing additional validation at the application level beyond what's defined in database constraints.
+ALTER TABLE events ADD CONSTRAINT chk_event_name_length
+CHECK (length(event_name) <= 10000);
+```
 
-5. This schema follows the 3NF (Third Normal Form) to minimize data redundancy while maintaining reasonable query performance.
+### 4.2 Required Business Rules (Application Level)
 
-6. Events are not organized into cycles or categories as specified in the requirements, but additional tables could be added later if needed.
+- Each DJ must have at least one music style
+- Artist names must be globally unique (case-sensitive)
+- Past events cannot be edited or deleted
+- All location fields (country, city, venue_name) are required
 
-7. The schema supports the sorting requirements mentioned in the session notes (by date, popularity, status, and city) through appropriate indexes. 
+## 5. Row Level Security (RLS) Policies
+
+### 5.1 Enable RLS
+
+```sql
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_music_styles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE error_logs ENABLE ROW LEVEL SECURITY;
+```
+
+### 5.2 Public Read Access
+
+```sql
+-- Public read access for all profile data
+CREATE POLICY "Public profiles read" ON users FOR SELECT USING (true);
+
+-- Public read access for all events
+CREATE POLICY "Public events read" ON events FOR SELECT USING (true);
+
+-- Public read access for user music styles
+CREATE POLICY "Public user music styles read" ON user_music_styles FOR SELECT USING (true);
+
+-- Public read access for music styles
+CREATE POLICY "Public music styles read" ON music_styles FOR SELECT USING (true);
+```
+
+### 5.3 DJ Write Access
+
+```sql
+-- DJs can insert/update/delete their own profiles
+CREATE POLICY "User profile management" ON users
+FOR ALL USING (auth.uid() = id);
+
+-- DJs can manage their own events
+CREATE POLICY "User events management" ON events
+FOR ALL USING (auth.uid() = user_id);
+
+-- DJs can manage their own music styles
+CREATE POLICY "User music styles management" ON user_music_styles
+FOR ALL USING (auth.uid() = user_id);
+```
+
+### 5.4 Error Logs Security
+
+```sql
+-- Only authenticated users can create error logs
+CREATE POLICY "Error logs insert" ON error_logs
+FOR INSERT WITH CHECK (true);
+
+-- Users can only read their own error logs
+CREATE POLICY "Error logs read" ON error_logs
+FOR SELECT USING (auth.uid() = user_id OR user_id IS NULL);
+```
+
+## 6. Triggers and Functions
+
+### 6.1 Updated At Trigger Function
+
+```sql
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+```
+
+### 6.2 Apply Triggers
+
+```sql
+-- Auto-update updated_at for users
+CREATE TRIGGER update_users_updated_at
+    BEFORE UPDATE ON users
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Auto-update updated_at for events
+CREATE TRIGGER update_events_updated_at
+    BEFORE UPDATE ON events
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+```
+
+## 7. Initial Data Requirements
+
+### 7.1 Music Styles Seed Data
+
+Common music styles should be pre-populated:
+
+- Techno
+- House
+- Trance
+- Progressive House
+- Deep House
+- Tech House
+- Minimal Techno
+- Acid Techno
+- Industrial Techno
+- Ambient Techno
+
+## 8. Performance Considerations
+
+### 8.1 Query Optimization
+
+- Full-text search using PostgreSQL's built-in capabilities with GIN indexes
+- Composite indexes for common query patterns
+- Partitioning consideration for error_logs table if volume becomes high
+
+### 8.2 Pagination Strategy
+
+- Default pagination limit: 100 records per page
+- Use OFFSET/LIMIT with proper indexes on sorting columns
+- Consider cursor-based pagination for large datasets
+
+## 9. Data Integrity Notes
+
+### 9.1 Referential Integrity
+
+- Cascade deletions for user-related data when user profile is deleted
+- Set NULL for optional foreign keys (user_id in error_logs)
+
+### 9.2 Data Validation
+
+- URL validation handled at application level
+- Date/time validation with check constraints
+- Text length limits enforced at database level
+
+### 9.3 Error Handling
+
+- Comprehensive error logging without retention policy
+- Full error context preservation for debugging
+- No data anonymization in MVP for complete error analysis
+
+## 10. Security Considerations
+
+### 10.1 Data Access
+
+- Public read access to all DJ and event data
+- Authenticated write access only to own data
+- Error logs with appropriate privacy controls
+
+### 10.2 Authentication Integration
+
+- Designed for Supabase Auth integration
+- UUID-based user identification
+- Row Level Security policies aligned with auth system
