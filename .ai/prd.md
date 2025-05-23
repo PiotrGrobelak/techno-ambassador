@@ -2,112 +2,353 @@
 
 ## 1. Product Overview
 
-Techno Ambassador is a platform bringing together all event cycles and events related to techno music. The main purpose of the product is to enable users to check event ratings and provide ratings and comments on completed events. The system integrates event location data retrieved from Facebook using AI technology, and administrators have the ability to approve or supplement this data. The platform also enables monitoring of user activities through integration with analytical tools.
+DJCalendar is a global calendar platform dedicated to DJs that enables artists to showcase their availability and upcoming events while allowing fans and event organizers to discover and contact DJs for booking performances.
+
+The platform connects three main user groups:
+
+- DJs (artists) managing their calendars
+- Fans seeking information about their favorite artists' performances
+- Event organizers looking for DJs for their events
+
+The system provides a simple way to manage performance calendars and search for artists by location, music style, and availability.
 
 ## 2. User Problem
 
-Techno music event users do not have a central place where they could rate and comment on events, as well as learn about the details of such events. This problem causes:
+Currently, DJs lack a centralized tool to showcase their availability and upcoming performances. Fans and event organizers have difficulties with:
 
-- Lack of reliable event ratings, making it difficult to choose valuable events.
-- Lack of opportunity to share opinions and experiences after the event ends.
-- Users do not have insight into the ratings of other participants, which makes it difficult to evaluate potential events.
-- Event organizers do not know in which direction to develop events.
+- Finding information about DJ availability for specific dates
+- Discovering new artists in their area
+- Checking performance schedules of favorite DJs
+- Contacting artists for potential bookings
+
+DJs, on the other hand, struggle with:
+
+- Lack of platform to showcase their schedule
+- Difficulties in reaching potential clients
+- Need to manage multiple communication channels
+- Lack of tools for professional presentation of their availability
 
 ## 3. Functional Requirements
 
-1. User must be logged in to cast a vote and add a comment.
-2. The system allows casting one vote on a completed event per user, however, the user can edit their vote without time constraints.
-3. Administrator (root) has the right to add events by entering required data: date, description, and location.
-4. Integration with AI for retrieving event location data from Facebook, with the possibility of approval or manual supplementation of missing information by the administrator.
-5. Integration with analytical tools (e.g., Google Analytics) to monitor key success indicators.
-6. The system enables registration of new users through a registration form that does not require additional verification steps, however, data entered during registration is validated to ensure secure access.
+### 3.1 DJ Profile Management
+
+- Creating and editing DJ profiles with mandatory fields: biography and music styles
+- Adding social media links (Instagram/Facebook) as contact method
+- Optional profile photo upload
+- Presentation of music style and biographical information
+
+### 3.2 Calendar System
+
+- Displaying calendar as a simple list of events
+- Planning horizon: one year ahead
+- Preserving event history for portfolio purposes
+- Adding events with fields: name, location, date and time
+- Editing and deleting future events
+- Public access to all calendar information
+
+### 3.3 Search and Filtering
+
+- Page with list of all DJs
+- Filtering by: location, music style, availability on specific dates, DJ name
+- Text search by artist name
+- Browsing DJ profiles with calendars
+
+### 3.4 Platform and Accessibility
+
+- Support for web and mobile applications
+- Global availability without geographic restrictions
+- SEO-friendly URL structure (e.g., /dj/dj-name)
 
 ## 4. Product Boundaries
 
-1. The system does not include advanced registration and account management mechanisms; it is limited to basic authentication.
-2. The functionality of adding events is available only to the administrator (root), and users cannot submit their own events.
-3. AI data integration concerns only retrieving locations from Facebook, and other event data is entered manually.
-4. The system does not provide for additional user roles beyond the role of a regular user and administrator.
+### 4.1 Features NOT included in MVP:
+
+- Social features (comments, likes, sharing)
+- Event organizer accounts
+- Automatic event addition from external sources
+- Interactive planning calendar (only simple date selection)
+- User verification process
+- Conflict resolution for overlapping events
+- Marking unavailable days
+- Editing or deleting past events
+- Internal messaging system
+- Payment or booking system
+- Integration with external calendars (in MVP)
+
+### 4.2 Technical Limitations:
+
+- No real-time conflict resolution
+- DJs responsible for managing overlapping events
+- Simple, form-based event creation method
+- Contact exclusively through social media
 
 ## 5. User Stories
 
-US-001
-Title: Account Registration
-Description: As a new user, I want to be able to register my account to gain access to the full functionality of the platform, including voting and commenting on events.
+### Group: DJ Registration and Profile Management
+
+#### US-001: Creating DJ Profile
+
+Title: Registration of new DJ in the system
+Description: As a DJ I want to create my profile in the system so I can showcase my skills and performance calendar.
 Acceptance Criteria:
 
-- The registration form should include fields: email address, username, password, password confirmation.
-- Data entered in the form must be validated, including email format correctness and password consistency.
-- After successful registration, the user is automatically logged in or redirected to the login page.
-- In case of errors, the user receives clear error messages.
+- System enables profile creation with mandatory fields: artist name, biography, at least one music style
+- Ability to add optional profile photo
+- Ability to add Instagram and/or Facebook links
+- After profile creation, DJ is redirected to calendar management page
+- Profile is immediately visible on the list of all DJs
 
-US-002
-Title: User logs into the system
-Description: As a user, I want to be able to log into the system to access the ability to rate events.
+#### US-002: Editing DJ Profile
+
+Title: Updating profile information
+Description: As a DJ I want to be able to edit information in my profile to keep it current and attractive.
 Acceptance Criteria:
 
-- The user must enter correct login credentials.
-- The system allows password recovery.
-- Authentication is done securely.
+- Ability to edit biography, music styles, and social media links
+- Ability to change or add profile photo
+- Validation of required fields during saving
+- Changes are immediately visible in public profile
+- System notifies about successful save
 
-US-003
-Title: User browses the list of events
-Description: As a user (both logged-in and not logged-in), I want to be able to browse the list of completed events to see their details and ratings. As a logged-in user, I can then decide which events to vote on and add comments to.
+#### US-003: Viewing Own Profile
+
+Title: Profile preview from user perspective
+Description: As a DJ I want to see how my profile looks from visitors' perspective to evaluate its attractiveness.
 Acceptance Criteria:
 
-- The list of events is up-to-date and contains all events.
-- The user sees basic information such as date, description, and event location.
-- The interface is responsive and intuitive.
+- Ability to switch to public view of own profile
+- View identical to what other users see
+- Easy return to management panel
+- Display of all information: biography, styles, calendar, social links
 
-US-004
-Title: User casts a vote and adds a comment to the event
-Description: As a logged-in user, I want to be able to cast one vote (on a scale of 1-5) on a completed event and add a comment to it to express my opinion.
+### Group: DJ Calendar Management
+
+#### US-004: Adding New Event
+
+Title: Adding performance to calendar
+Description: As a DJ I want to add a new event to my calendar to inform about upcoming performance.
 Acceptance Criteria:
 
-- The user can cast only one vote per event.
-- The vote is on a scale of 1-5.
-- A comment can be added simultaneously with casting a vote.
-- After casting a vote, the user can edit their vote and comment without time constraints.
+- Form with fields: event name, location, date, time
+- Validation of all required fields
+- Ability to select date maximum one year ahead
+- Inability to add past events
+- After adding, event is visible in public calendar
+- Confirmation of successful event addition
 
-US-005
-Title: User edits cast vote and comment
-Description: As a logged-in user, I want to be able to edit my vote and comment that I have already cast to update my opinion after reflection or changes.
+#### US-005: Editing Future Event
+
+Title: Modifying upcoming performance details
+Description: As a DJ I want to be able to edit details of my future events to keep information current.
 Acceptance Criteria:
 
-- Vote editing is not time limited.
-- The user sees the editing option for every completed event they have already voted on.
-- Changes are immediately saved and visible.
-- Can cast only one vote.
+- Ability to edit only future events
+- Editing all fields: name, location, date, time
+- Validation of entered data
+- Past events are marked as non-editable
+- Changes are immediately visible in public calendar
 
-US-006
-Title: Administrator adds a new event
-Description: As an administrator, I want to be able to add a new event by entering required data such as date, description, and location to make the event publicly available.
+#### US-006: Deleting Future Event
+
+Title: Removing cancelled performance
+Description: As a DJ I want to be able to delete future events from calendar when performance is cancelled.
 Acceptance Criteria:
 
-- The event addition form includes fields: date, description, location.
-- Entered data is validated before saving.
-- The administrator receives confirmation of event addition.
+- Ability to delete only future events
+- Confirmation of deletion operation
+- Past events cannot be deleted
+- After deletion, event disappears from public calendar
+- No ability to undo deletion operation
 
-US-007
-Title: Administrator approves or supplements data from AI integration
-Description: As an administrator, I want to be able to approve location data retrieved from AI integration (Facebook) or supplement missing information to ensure the completeness of event data.
+#### US-007: Viewing Own Calendar
+
+Title: Managing performance calendar
+Description: As a DJ I want to browse my calendar with management options to control my performances.
 Acceptance Criteria:
 
-- The system retrieves event location data from Facebook.
-- If the data is incomplete, the administrator has the option to supplement it.
-- After approval, the data is visible in event details.
+- List of all events (past and future) in chronological order
+- Marking of past and future events
+- Edit and delete buttons for future events
+- No edit options for past events
+- Add new event button
 
-US-008
-Title: Secure user authentication
-Description: As a user, I want to be sure that my data is protected when logging into the system, ensuring secure access to the application.
+### Group: Search and Browsing (Fans/Organizers)
+
+#### US-008: Browsing List of All DJs
+
+Title: Discovering available DJs
+Description: As a fan/event organizer I want to browse the list of all DJs to find interesting artists.
 Acceptance Criteria:
 
-- The system applies security when transmitting login data.
-- Authentication is done using secure protocols (e.g., HTTPS).
-- In case of a failed login attempt, the user receives a clear error message.
+- List of all registered DJs
+- Basic information: artist name, music styles, photo (if available)
+- Link to full profile of each DJ
+- Pagination for large number of DJs
+- Responsive design for mobile devices
+
+#### US-009: Filtering DJs by Location
+
+Title: Searching for local DJs
+Description: As an event organizer I want to filter DJs by location to find artists in my area.
+Acceptance Criteria:
+
+- Text search field for location
+- Filtering based on event locations in DJ calendars
+- List of DJs having events in specified location
+- Ability to clear filter
+- Information about number of found results
+
+#### US-010: Filtering DJs by Music Style
+
+Title: Searching for DJs of specific genre
+Description: As a fan/organizer I want to filter DJs by music style to find artists playing preferred music.
+Acceptance Criteria:
+
+- List of available music styles to choose from
+- Ability to select multiple styles simultaneously
+- Filtering DJs having selected styles in profile
+- Result counter for each style
+- Ability to clear filters
+
+#### US-011: Filtering DJs by Availability
+
+Title: Finding available DJs on specific dates
+Description: As an event organizer I want to check which DJs are available at a specific time.
+Acceptance Criteria:
+
+- Date range selection to check availability
+- List of DJs without events in selected period
+- Information about potential availability (no guarantee)
+- Ability to extend date range
+- Link to DJ profile for further details
+
+#### US-012: Searching DJ by Name
+
+Title: Finding specific DJ
+Description: As a fan I want to search for a specific DJ by name to quickly find their profile.
+Acceptance Criteria:
+
+- Text search field
+- Partial search (full name not required)
+- List of results matching the query
+- Highlighting of matching name fragments
+- Direct link to found DJ profile
+
+#### US-013: Browsing DJ Profile
+
+Title: Detailed DJ information
+Description: As a fan/organizer I want to browse DJ profile to learn their details and calendar.
+Acceptance Criteria:
+
+- Display of full biography and profile photo
+- List of all music styles
+- Social media links (Instagram/Facebook)
+- Performance calendar as event list
+- Division into upcoming events and performance history
+
+#### US-014: Browsing DJ Calendar
+
+Title: Checking performance schedule
+Description: As a fan/organizer I want to browse DJ calendar to see their upcoming performances and availability.
+Acceptance Criteria:
+
+- List of all events in chronological order
+- Clear marking of upcoming events and history
+- Details of each event: name, location, date, time
+- Ability to scroll between months
+- Information about no events in selected period
+
+#### US-015: Contacting DJ
+
+Title: Establishing contact for performance
+Description: As an event organizer I want to contact DJ to inquire about performance possibility.
+Acceptance Criteria:
+
+- Clearly visible social media links of DJ
+- Opening links in new tabs/applications
+- Information about preferred contact method
+- "Quick contact" feature generating pre-filled message with event date
+- Instructions for copying message to social media
+
+### Group: Mobile Access and Responsiveness
+
+#### US-016: Mobile Access for DJs
+
+Title: Calendar management on mobile devices
+Description: As a DJ I want to be able to manage my profile and calendar on mobile devices.
+Acceptance Criteria:
+
+- Full functionality available on mobile devices
+- Responsive design adapted to small screens
+- Easy adding and editing events on phone
+- Quick access to most important functions
+- Loading speed optimization on mobile devices
+
+#### US-017: Mobile Browsing for Fans
+
+Title: Searching DJs on mobile devices
+Description: As a fan/organizer I want to be able to browse DJ profiles and their calendars on mobile devices.
+Acceptance Criteria:
+
+- All search functions available on mobile
+- Touch filters and navigation
+- Clear calendar display on small screens
+- Easy switching between DJ profiles
+- Quick connection to social media
+
+### Group: Security and Data Quality
+
+#### US-018: Profile Data Validation
+
+Title: Ensuring minimum profile quality
+Description: As a system user I want to be sure that DJ profiles contain basic required information.
+Acceptance Criteria:
+
+- Validation of mandatory biography and at least one music style
+- Checking correctness of social media links
+- Validation error information is clear and helpful
+- Inability to save incomplete profile
+- Suggesting corrections in case of errors
+
+#### US-019: Protection Against Duplicates
+
+Title: Avoiding DJ profile duplication
+Description: As an administrator I want to prevent creation of duplicate profiles by the same DJs.
+Acceptance Criteria:
+
+- Warning when trying to create profile with existing artist name
+- Suggesting similar existing profiles
+- Ability to continue despite warning (no blocking)
+- Information about one DJ = one profile policy
+- Instructions for recovering access to existing profile
+
+### Group: Usability and Navigation
+
+#### US-020: Platform Navigation
+
+Title: Intuitive navigation structure
+Description: As a user I want to easily navigate the platform between different sections.
+Acceptance Criteria:
+
+- Main menu with access to: DJ list, search, DJ login
+- Logo leading to homepage
+- "Back" button on detail pages
+- Consistent placement of navigation elements
+
+#### US-021: Platform Homepage
+
+Title: Platform entry point
+Description: As a new user I want to understand the platform's purpose and know how to use it.
+Acceptance Criteria:
+
+- Description of platform and its main features
+- Clear options: "Find DJ" and "I'm a DJ"
+- Examples of DJ profiles or featured DJs
+- Registration instructions for DJs
+- Information about how to contact artists
 
 ## 6. Success Metrics
 
-1. At least 65% of logged-in users cast one vote on completed events each week.
-2. At least 33% of users who cast a vote also add a comment.
-3. These indicators are monitored through integration with analytical tools (e.g., Google Analytics).
+- 90% of DJ users have filled calendars in the current month (at least one event)
+- Percentage of profiles with complete biography and music styles: 95%
+- Percentage of profiles with added social media contacts: 80%
