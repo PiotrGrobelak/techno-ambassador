@@ -353,6 +353,60 @@ export async function handleServiceError(
 ): Promise<ApiError> {
   const message = error.message;
 
+  // Event creation and validation errors
+  if (message === 'Event date must be today or in the future') {
+    await errorLogService.logBusinessError(message, context, ErrorType.VALIDATION_ERROR);
+    return ApiErrors.businessLogic(message, 400);
+  }
+
+  if (message === 'Event date must be within one year from today') {
+    await errorLogService.logBusinessError(message, context, ErrorType.VALIDATION_ERROR);
+    return ApiErrors.businessLogic(message, 400);
+  }
+
+  if (message === 'Event date must be today or in the future, and within one year') {
+    await errorLogService.logBusinessError(message, context, ErrorType.VALIDATION_ERROR);
+    return ApiErrors.businessLogic(message, 400);
+  }
+
+  // Event retrieval errors
+  if (message === 'Event not found') {
+    await errorLogService.logBusinessError(message, context, ErrorType.NOT_FOUND_ERROR);
+    return ApiErrors.notFound(message);
+  }
+
+  if (message === 'Invalid event ID format') {
+    await errorLogService.logBusinessError(message, context, ErrorType.VALIDATION_ERROR);
+    return ApiErrors.businessLogic(message, 400);
+  }
+
+  // Event authorization errors
+  if (message === 'Cannot modify other user\'s events') {
+    await errorLogService.logBusinessError(message, context, ErrorType.AUTHORIZATION_ERROR);
+    return ApiErrors.forbidden(message);
+  }
+
+  if (message === 'Cannot modify past events') {
+    await errorLogService.logBusinessError(message, context, ErrorType.VALIDATION_ERROR);
+    return ApiErrors.businessLogic(message, 400);
+  }
+
+  // Event database operation errors
+  if (message.includes('Failed to create event') || 
+      message.includes('Failed to update event') ||
+      message.includes('Failed to delete event')) {
+    await errorLogService.logDatabaseError(error, 'Event database operation', context);
+    return ApiErrors.database(message);
+  }
+
+  if (message.includes('Failed to fetch events') ||
+      message.includes('Failed to fetch event') ||
+      message.includes('Failed to verify event ownership') ||
+      message.includes('Failed to verify event date')) {
+    await errorLogService.logDatabaseError(error, 'Event query operation', context);
+    return ApiErrors.database(message);
+  }
+
   // User creation and validation errors
   if (message === 'Artist name already exists') {
     await errorLogService.logBusinessError(message, context, ErrorType.CONFLICT_ERROR);

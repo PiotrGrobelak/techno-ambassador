@@ -177,6 +177,11 @@ export interface EventsListResponseDto {
   pagination: PaginationDto
 }
 
+/** Response for GET /api/events/{id} */
+export interface EventDetailResponseDto {
+  data: EventListItemDto
+}
+
 /** Response for GET /api/users/{user_id}/events */
 export interface UserEventsResponseDto {
   data: UserEventsDto
@@ -186,7 +191,7 @@ export interface UserEventsResponseDto {
 // EVENT COMMAND MODELS
 // ============================================================================
 
-/** Command model for creating a new event - POST /api/users/{user_id}/events */
+/** Command model for creating a new event - POST /api/events */
 export interface CreateEventCommand {
   event_name: string
   country: string
@@ -198,11 +203,11 @@ export interface CreateEventCommand {
 
 /** Command model for updating an event - PUT /api/events/{id} */
 export interface UpdateEventCommand {
-  event_name?: string
-  country?: string
-  city?: string
-  venue_name?: string
-  event_date?: string
+  event_name: string
+  country: string
+  city: string
+  venue_name: string
+  event_date: string
   event_time?: string
 }
 

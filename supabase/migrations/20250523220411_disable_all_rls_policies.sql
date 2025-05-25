@@ -63,11 +63,11 @@ drop policy if exists "error_logs_select_authenticated" on error_logs;
 -- =====================================================================================
 
 -- uncomment the following lines if you want to completely disable rls on all tables
--- alter table users disable row level security;
--- alter table music_styles disable row level security;
--- alter table user_music_styles disable row level security;
--- alter table events disable row level security;
--- alter table error_logs disable row level security;
+alter table users disable row level security;
+alter table music_styles disable row level security;
+alter table user_music_styles disable row level security;
+alter table events disable row level security;
+alter table error_logs disable row level security;
 
 -- =====================================================================================
 -- Migration Complete
