@@ -314,15 +314,11 @@
 - `400 Bad Request`: Invalid query parameters
 - `500 Internal Server Error`: Server error
 
-#### GET /api/users/{user_id}/events
+#### GET /api/events/{id}
 
-**Description**: Retrieve events for specific DJ
+**Description**: Get single event details
 
-**Query Parameters**:
-
-- `upcoming_only` (boolean): Show only future events (default: false)
-- `page` (integer): Page number for pagination (default: 1)
-- `limit` (integer): Items per page (default: 50, max: 100)
+**Query Parameters**: None
 
 **Request Payload**: None
 
@@ -331,46 +327,34 @@
 ```json
 {
   "data": {
-    "upcoming": [
-      {
-        "id": "uuid",
-        "event_name": "string",
-        "country": "string",
-        "city": "string",
-        "venue_name": "string",
-        "event_date": "date",
-        "event_time": "time",
-        "created_at": "timestamp"
-      }
-    ],
-    "past": [
-      {
-        "id": "uuid",
-        "event_name": "string",
-        "country": "string",
-        "city": "string",
-        "venue_name": "string",
-        "event_date": "date",
-        "event_time": "time",
-        "created_at": "timestamp"
-      }
-    ]
+    "id": "uuid",
+    "event_name": "string",
+    "country": "string",
+    "city": "string",
+    "venue_name": "string",
+    "event_date": "date",
+    "event_time": "time",
+    "user": {
+      "id": "uuid",
+      "artist_name": "string"
+    },
+    "created_at": "timestamp"
   }
 }
 ```
 
 **Success Codes**:
 
-- `200 OK`: Successfully retrieved events
+- `200 OK`: Successfully retrieved event
 
 **Error Codes**:
 
-- `404 Not Found`: User not found
+- `404 Not Found`: Event not found
 - `500 Internal Server Error`: Server error
 
-#### POST /api/users/{user_id}/events
+#### POST /api/events
 
-**Description**: Create new event for DJ (authenticated user can only create for own profile)
+**Description**: Create new event for authenticated DJ
 
 **Query Parameters**: None
 
@@ -413,8 +397,6 @@
 
 - `400 Bad Request`: Validation errors (past date, missing fields, name too long)
 - `401 Unauthorized`: Not authenticated
-- `403 Forbidden`: Cannot create events for other users
-- `404 Not Found`: User not found
 - `500 Internal Server Error`: Server error
 
 #### PUT /api/events/{id}
