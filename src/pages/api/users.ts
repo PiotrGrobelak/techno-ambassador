@@ -10,6 +10,8 @@ import {
 import { ErrorLogService } from '../../services/error-log.service';
 import type { CreateUserCommand, UserResponseDto } from '../../types';
 
+export const prerender = false
+
 /**
  * POST /api/users - Create a new DJ profile
  * 

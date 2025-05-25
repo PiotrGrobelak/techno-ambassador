@@ -26,6 +26,7 @@ export class UserService {
 
     // Prepare user data for insertion
     const userInsertData = {
+      id: crypto.randomUUID(), // Generate unique UUID for each user
       artist_name: command.artist_name,
       biography: command.biography,
       instagram_url: command.instagram_url || null,
