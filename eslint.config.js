@@ -14,7 +14,7 @@ export default typescriptEslint.config(
             ...eslintPluginVue.configs['flat/recommended'],
             ...eslintPluginAstro.configs['flat/recommended'], // In CommonJS, the `flat/` prefix is required.
         ],
-        files: ['**/*.{ts,vue}'],
+        files: ['**/*.{astro,ts,vue}'],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
