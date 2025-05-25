@@ -258,6 +258,89 @@ export async function verifyAuthentication(request: Request, supabase: any): Pro
 }
 
 /**
+ * Helper function to sanitize text inputs to prevent XSS and other security issues
+ * @param input - Text input to sanitize
+ * @returns Sanitized text
+ */
+export function sanitizeTextInput(input: string): string {
+  if (!input) return input;
+  
+  return input
+    .trim()
+    // Remove potentially dangerous HTML tags
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
+    .replace(/<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi, '')
+    .replace(/<link\b[^<]*(?:(?!<\/link>)<[^<]*)*<\/link>/gi, '')
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+    // Remove javascript: and data: URLs
+    .replace(/javascript:/gi, '')
+    .replace(/data:/gi, '')
+    // Remove on* event handlers
+    .replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '')
+    .replace(/\s*on\w+\s*=\s*[^>\s]+/gi, '');
+}
+
+/**
+ * Helper function to sanitize user command objects
+ * @param command - User command object to sanitize
+ * @returns Sanitized command object
+ */
+export function sanitizeCreateUserCommand(command: any): any {
+  const sanitized = { ...command };
+  
+  // Sanitize text fields
+  if (sanitized.artist_name) {
+    sanitized.artist_name = sanitizeTextInput(sanitized.artist_name);
+  }
+  
+  if (sanitized.biography) {
+    sanitized.biography = sanitizeTextInput(sanitized.biography);
+  }
+  
+  // URLs are validated by Zod schema, but we can add additional sanitization
+  if (sanitized.instagram_url) {
+    sanitized.instagram_url = sanitized.instagram_url.trim();
+  }
+  
+  if (sanitized.facebook_url) {
+    sanitized.facebook_url = sanitized.facebook_url.trim();
+  }
+  
+  return sanitized;
+}
+
+/**
+ * Helper function to sanitize update user command objects
+ * @param command - Update user command object to sanitize
+ * @returns Sanitized command object
+ */
+export function sanitizeUpdateUserCommand(command: any): any {
+  const sanitized = { ...command };
+  
+  // Sanitize text fields if they exist
+  if (sanitized.artist_name) {
+    sanitized.artist_name = sanitizeTextInput(sanitized.artist_name);
+  }
+  
+  if (sanitized.biography) {
+    sanitized.biography = sanitizeTextInput(sanitized.biography);
+  }
+  
+  // URLs are validated by Zod schema, but we can add additional sanitization
+  if (sanitized.instagram_url) {
+    sanitized.instagram_url = sanitized.instagram_url.trim();
+  }
+  
+  if (sanitized.facebook_url) {
+    sanitized.facebook_url = sanitized.facebook_url.trim();
+  }
+  
+  return sanitized;
+}
+
+/**
  * Helper function to handle business logic errors from services
  * @param error - Service error
  * @param context - Error context for logging
@@ -270,7 +353,7 @@ export async function handleServiceError(
 ): Promise<ApiError> {
   const message = error.message;
 
-  // Map common service errors to appropriate API errors
+  // User creation and validation errors
   if (message === 'Artist name already exists') {
     await errorLogService.logBusinessError(message, context, ErrorType.CONFLICT_ERROR);
     return ApiErrors.conflict(message);
@@ -281,13 +364,39 @@ export async function handleServiceError(
     return ApiErrors.businessLogic(message, 400);
   }
 
-  if (message.includes('Failed to create user') || message.includes('Failed to associate music styles')) {
-    await errorLogService.logDatabaseError(error, 'User creation operation', context);
+  // User retrieval errors
+  if (message === 'User not found') {
+    await errorLogService.logBusinessError(message, context, ErrorType.NOT_FOUND_ERROR);
+    return ApiErrors.notFound(message);
+  }
+
+  if (message === 'Invalid user ID format') {
+    await errorLogService.logBusinessError(message, context, ErrorType.VALIDATION_ERROR);
+    return ApiErrors.businessLogic(message, 400);
+  }
+
+  // Database operation errors
+  if (message.includes('Failed to create user') || 
+      message.includes('Failed to associate music styles') ||
+      message.includes('Failed to update user') ||
+      message.includes('Failed to create new music style associations') ||
+      message.includes('Failed to update music style associations')) {
+    await errorLogService.logDatabaseError(error, 'User database operation', context);
     return ApiErrors.database(message);
   }
 
-  if (message.includes('Failed to validate') || message.includes('Failed to fetch')) {
-    await errorLogService.logDatabaseError(error, 'Database validation operation', context);
+  if (message.includes('Failed to validate') || 
+      message.includes('Failed to fetch') ||
+      message.includes('Failed to fetch user') ||
+      message.includes('Failed to fetch user events') ||
+      message.includes('Failed to fetch user music styles')) {
+    await errorLogService.logDatabaseError(error, 'Database query operation', context);
+    return ApiErrors.database(message);
+  }
+
+  // Search and filtering errors
+  if (message.includes('Failed to fetch users')) {
+    await errorLogService.logDatabaseError(error, 'User search operation', context);
     return ApiErrors.database(message);
   }
 
