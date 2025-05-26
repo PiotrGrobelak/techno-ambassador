@@ -1,265 +1,265 @@
-# Architektura UI dla Techno Ambassador
+# UI Architecture for Techno Ambassador
 
-## 1. Przegląd struktury UI
+## 1. UI Structure Overview
 
-Techno Ambassador to platforma kalendarzowa dla DJ-ów zbudowana w oparciu o Astro 5 z Vue 3 komponentami dla interaktywności. Architektura UI wykorzystuje PrimeVue jako główną bibliotekę komponentów, Tailwind 4 dla stylizacji oraz mobile-first approach z progressive enhancement. Struktura opiera się na dwóch głównych grupach użytkowników: DJ-ów zarządzających swoimi profilami i kalendarzami oraz fanów/organizatorów przeglądających i wyszukujących artystów.
+Techno Ambassador is a calendar platform for DJs built on Astro 5 with Vue 3 components for interactivity. The UI architecture uses PrimeVue as the main component library, Tailwind 4 for styling, and a mobile-first approach with progressive enhancement. The structure is based on two main user groups: DJs managing their profiles and calendars, and fans/event organizers browsing and searching for artists.
 
-## 2. Lista widoków
+## 2. View List
 
-### 2.1 Strona główna (/)
+### 2.1 Homepage (/)
 
-- **Główny cel**: Punkt wejścia do platformy z centralną funkcją wyszukiwania DJ-ów
-- **Kluczowe informacje**: Hero section z opisem platformy, wyszukiwarka DJ-ów, lista wyników wyświetlana domyślnie
-- **Kluczowe komponenty**:
-  - Hero section z opisem platformy
-  - SearchFilters (nazwa DJ-a, styl muzyczny)
-  - DJList z DJCard komponentami
-  - LoadMoreButton dla paginacji
-- **UX/Dostępność/Bezpieczeństwo**:
-  - Debouncing (300ms) dla wyszukiwania
-  - Skeleton loading dla wyników
-  - ARIA labels dla wyszukiwarki
-  - Publiczny dostęp bez autoryzacji
+- **Main goal**: Entry point to the platform with central DJ search functionality
+- **Key information**: Hero section with platform description, DJ search, default results list display
+- **Key components**:
+  - Hero section with platform description
+  - SearchFilters (DJ name, music style)
+  - DJList with DJCard components
+  - LoadMoreButton for pagination
+- **UX/Accessibility/Security**:
+  - Debouncing (300ms) for search
+  - Skeleton loading for results
+  - ARIA labels for search
+  - Public access without authorization
 
-### 2.2 Lista DJ-ów (/djs)
+### 2.2 DJ List (/djs)
 
-- **Główny cel**: Pełna lista wszystkich DJ-ów z zaawansowanymi filtrami
-- **Kluczowe informacje**: Kompletna lista DJ-ów, filtry po lokalizacji, stylu muzycznym, dostępności, nazwie
-- **Kluczowe komponenty**:
-  - AdvancedSearchFilters (wszystkie opcje filtrowania)
-  - DJList w formacie listy (bez grid view)
-  - FilterSidebar na desktop, FilterDrawer na mobile
-  - Pagination z load more button
-- **UX/Dostępność/Bezpieczeństwo**:
-  - Responsive filtry z PrimeVue Sidebar na mobile
-  - Keyboard navigation dla filtrów
-  - Empty state "Nie znaleziono żadnych danych"
-  - Real-time aktualizacja wyników
+- **Main goal**: Complete list of all DJs with advanced filters
+- **Key information**: Complete DJ list, filters by location, music style, availability, name
+- **Key components**:
+  - AdvancedSearchFilters (all filtering options)
+  - DJList in list format (no grid view)
+  - FilterSidebar on desktop, FilterDrawer on mobile
+  - Pagination with load more button
+- **UX/Accessibility/Security**:
+  - Responsive filters with PrimeVue Sidebar on mobile
+  - Keyboard navigation for filters
+  - Empty state "No data found"
+  - Real-time results update
 
-### 2.3 Profil DJ-a (/dj/{artist-name})
+### 2.3 DJ Profile (/dj/{artist-name})
 
-- **Główny cel**: Szczegółowe informacje o DJ-u i jego kalendarz eventów
-- **Kluczowe informacje**: Biografia, style muzyczne, social media, lista eventów (nadchodzące i przeszłe)
-- **Kluczowe komponenty**:
-  - DJProfileHeader (zdjęcie, nazwa, biografia)
+- **Main goal**: Detailed DJ information and event calendar
+- **Key information**: Biography, music styles, social media, event list (upcoming and past)
+- **Key components**:
+  - DJProfileHeader (photo, name, biography)
   - MusicStylesList
-  - SocialMediaLinks (bezpośrednie linki)
-  - EventsList (podział na nadchodzące/przeszłe)
+  - SocialMediaLinks (direct links)
+  - EventsList (split into upcoming/past)
   - ContactSection
-- **UX/Dostępność/Bezpieczeństwo**:
+- **UX/Accessibility/Security**:
   - SEO-friendly URL structure
-  - Bezpośrednie linki do social media (bez modali)
-  - Screen reader support dla wszystkich sekcji
-  - Publiczny dostęp
+  - Direct links to social media (no modals)
+  - Screen reader support for all sections
+  - Public access
 
-### 2.4 Rejestracja DJ-a (/register)
+### 2.4 DJ Registration (/register)
 
-- **Główny cel**: Tworzenie nowego konta DJ-a w systemie
-- **Kluczowe informacje**: Formularz rejestracji z wymaganymi polami
-- **Kluczowe komponenty**:
-  - RegistrationForm (nazwa artysty, biografia, style muzyczne)
+- **Main goal**: Creating a new DJ account in the system
+- **Key information**: Registration form with required fields
+- **Key components**:
+  - RegistrationForm (artist name, biography, music styles)
   - MusicStyleSelector
   - SocialMediaInputs
   - FormValidation
-- **UX/Dostępność/Bezpieczeństwo**:
-  - Inline validation z real-time feedback
-  - Walidacja unikalności nazwy artysty
-  - WCAG compliance dla formularzy
+- **UX/Accessibility/Security**:
+  - Inline validation with real-time feedback
+  - Artist name uniqueness validation
+  - WCAG compliance for forms
   - Supabase Auth integration
 
-### 2.5 Logowanie (/login)
+### 2.5 Login (/login)
 
-- **Główny cel**: Autoryzacja istniejących użytkowników
-- **Kluczowe informacje**: Formularz logowania
-- **Kluczowe komponenty**:
+- **Main goal**: Authorization of existing users
+- **Key information**: Login form
+- **Key components**:
   - LoginForm
   - AuthErrorHandling
   - RedirectLogic
-- **UX/Dostępność/Bezpieczeństwo**:
+- **UX/Accessibility/Security**:
   - Focus management
-  - Error handling z PrimeVue Toast
-  - Secure authentication z Supabase
-  - Redirect po udanym logowaniu
+  - Error handling with PrimeVue Toast
+  - Secure authentication with Supabase
+  - Redirect after successful login
 
-### 2.6 Dashboard DJ-a (/dashboard)
+### 2.6 DJ Dashboard (/dashboard)
 
-- **Główny cel**: Główny panel zarządzania dla DJ-ów
-- **Kluczowe informacje**: Kalendarz eventów (główny element), podstawowe zarządzanie profilem
-- **Kluczowe komponenty**:
-  - DashboardSidebar (nawigacja)
-  - EventsCalendarOverview (na górze)
-  - ProfileManagementSection (na dole)
+- **Main goal**: Main management panel for DJs
+- **Key information**: Event calendar (main element), basic profile management
+- **Key components**:
+  - DashboardSidebar (navigation)
+  - EventsCalendarOverview (at the top)
+  - ProfileManagementSection (at the bottom)
   - QuickActions
-- **UX/Dostępność/Bezpieczeństwo**:
-  - Sidebar navigation z collapsible menu na mobile
-  - Kalendarz jako najważniejszy element
-  - Brak statystyk w MVP
-  - Autoryzacja wymagana (RLS)
+- **UX/Accessibility/Security**:
+  - Sidebar navigation with collapsible menu on mobile
+  - Calendar as the most important element
+  - No statistics in MVP
+  - Authorization required (RLS)
 
-### 2.7 Zarządzanie eventami (/dashboard/events)
+### 2.7 Event Management (/dashboard/events)
 
-- **Główny cel**: CRUD operacje na eventach DJ-a
-- **Kluczowe informacje**: Lista eventów z opcjami edycji, formularz dodawania nowych eventów
-- **Kluczowe komponenty**:
-  - EventsList (z opcjami edycji/usuwania)
+- **Main goal**: CRUD operations on DJ events
+- **Key information**: Event list with editing options, form for adding new events
+- **Key components**:
+  - EventsList (with edit/delete options)
   - AddEventForm
   - EditEventForm
   - EventValidation
-- **UX/Dostępność/Bezpieczeństwo**:
-  - Real-time walidacja dat (tylko przyszłe)
+- **UX/Accessibility/Security**:
+  - Real-time date validation (future only)
   - Inline validation
   - PrimeVue Calendar component
-  - Brak bulk actions w MVP
-  - Tylko własne eventy (RLS)
+  - No bulk actions in MVP
+  - Only own events (RLS)
 
-### 2.8 Edycja profilu (/dashboard/profile)
+### 2.8 Profile Editing (/dashboard/profile)
 
-- **Główny cel**: Aktualizacja informacji w profilu DJ-a
-- **Kluczowe informacje**: Formularz edycji wszystkich danych profilu
-- **Kluczowe komponenty**:
+- **Main goal**: Updating DJ profile information
+- **Key information**: Edit form for all profile data
+- **Key components**:
   - ProfileEditForm
   - MusicStyleSelector
   - SocialMediaInputs
   - ProfilePreview
-- **UX/Dostępność/Bezpieczeństwo**:
-  - Standardowe formularze bez preview
+- **UX/Accessibility/Security**:
+  - Standard forms without preview
   - Inline validation
-  - Walidacja wymaganych pól
-  - Tylko własny profil (RLS)
+  - Required field validation
+  - Only own profile (RLS)
 
-## 3. Mapa podróży użytkownika
+## 3. User Journey Map
 
-### 3.1 Ścieżka fana/organizatora eventów
+### 3.1 Fan/Event Organizer Path
 
-1. **Strona główna** → Wpisanie nazwy DJ-a lub wybór stylu muzycznego
-2. **Wyniki wyszukiwania** → Przeglądanie listy DJ-ów, filtrowanie
-3. **Profil DJ-a** → Sprawdzenie biografii, kalendarza eventów
-4. **Kontakt** → Kliknięcie w link do social media, przejście do zewnętrznej platformy
+1. **Homepage** → Enter DJ name or select music style (US-010, US-012, US-021)
+2. **Search Results** → Browse DJ list, apply filters (US-008, US-009, US-010, US-011, US-012)
+3. **DJ Profile** → Check biography, event calendar (US-013, US-014)
+4. **Contact** → Click social media link, go to external platform (US-015)
 
-### 3.2 Ścieżka DJ-a - pierwsza wizyta
+### 3.2 DJ Path - First Visit
 
-1. **Strona główna** → Kliknięcie "Jestem DJ-em"
-2. **Rejestracja** → Wypełnienie formularza z danymi profilu
-3. **Dashboard** → Przegląd głównego panelu
-4. **Zarządzanie eventami** → Dodanie pierwszych eventów do kalendarza
-5. **Edycja profilu** → Uzupełnienie dodatkowych informacji
+1. **Homepage** → Click "I'm a DJ" (US-021)
+2. **Registration** → Fill out profile data form (US-001)
+3. **Dashboard** → Review main panel (US-003, US-007)
+4. **Event Management** → Add first events to calendar (US-004)
+5. **Profile Editing** → Complete additional information (US-002)
 
-### 3.3 Ścieżka DJ-a - powracający użytkownik
+### 3.3 DJ Path - Returning User
 
-1. **Logowanie** → Autoryzacja w systemie
-2. **Dashboard** → Przegląd kalendarza i aktualności
-3. **Zarządzanie eventami** → Dodanie/edycja eventów
-4. **Edycja profilu** → Aktualizacja informacji w razie potrzeby
+1. **Login** → System authorization
+2. **Dashboard** → Review calendar and updates (US-003, US-007)
+3. **Event Management** → Add/edit events (US-004, US-005, US-006)
+4. **Profile Editing** → Update information as needed (US-002)
 
-### 3.4 Ścieżka przeglądania ogólnego
+### 3.4 General Browsing Path
 
-1. **Strona główna** → Przeglądanie domyślnej listy DJ-ów
-2. **Lista DJ-ów** → Użycie zaawansowanych filtrów
-3. **Profil DJ-a** → Szczegółowe informacje o wybranym artyście
-4. **Powrót do listy** → Kontynuacja przeglądania
+1. **Homepage** → Browse default DJ list (US-008, US-021)
+2. **DJ List** → Use advanced filters (US-008, US-009, US-010, US-011)
+3. **DJ Profile** → Detailed information about selected artist (US-013, US-014)
+4. **Return to List** → Continue browsing (US-008)
 
-## 4. Układ i struktura nawigacji
+## 4. Layout and Navigation Structure
 
-### 4.1 Główna nawigacja (MenuBar z PrimeVue)
+### 4.1 Main Navigation (MenuBar with PrimeVue)
 
-- **Desktop**: Poziomy pasek nawigacji z logo, menu główne, przyciski logowania
-- **Mobile**: Hamburger menu z collapsible navigation
-- **Elementy**:
-  - Logo (link do strony głównej)
-  - "Znajdź DJ-a" (link do listy DJ-ów)
-  - "Jestem DJ-em" (link do rejestracji/dashboardu)
-  - Logowanie/Profil użytkownika
+- **Desktop**: Horizontal navigation bar with logo, main menu, login buttons
+- **Mobile**: Hamburger menu with collapsible navigation
+- **Elements**:
+  - Logo (link to homepage)
+  - "Find DJ" (link to DJ list)
+  - "I'm a DJ" (link to registration/dashboard)
+  - Login/User profile
 
-### 4.2 Nawigacja w dashboardzie (Sidebar)
+### 4.2 Dashboard Navigation (Sidebar)
 
-- **Desktop**: Stały sidebar po lewej stronie
-- **Mobile**: Collapsible sidebar z overlay
-- **Elementy**:
-  - Dashboard (przegląd)
-  - Zarządzanie eventami
-  - Edycja profilu
-  - Ustawienia konta
-  - Wylogowanie
+- **Desktop**: Fixed sidebar on the left side
+- **Mobile**: Collapsible sidebar with overlay
+- **Elements**:
+  - Dashboard (overview)
+  - Event Management
+  - Profile Editing
+  - Account Settings
+  - Logout
 
 ### 4.3 Breadcrumbs
 
-- Implementowane na głębszych poziomach nawigacji
-- Szczególnie w dashboardzie i formularzach edycji
-- Format: Strona główna > Dashboard > Zarządzanie eventami
+- Implemented on deeper navigation levels
+- Especially in dashboard and edit forms
+- Format: Homepage > Dashboard > Event Management
 
-### 4.4 Bottom navigation (Mobile)
+### 4.4 Bottom Navigation (Mobile)
 
-- Do określenia w trakcie implementacji
-- Potencjalne elementy: Strona główna, Wyszukaj, Dashboard (dla DJ-ów)
+- To be determined during implementation
+- Potential elements: Homepage, Search, Dashboard (for DJs)
 
-## 5. Kluczowe komponenty
+## 5. Key Components
 
 ### 5.1 DJCard
 
-- **Cel**: Prezentacja podstawowych informacji o DJ-u w listach
-- **Zawartość**: Nazwa artysty, style muzyczne, najbliższy event, link do profilu
-- **Wykorzystanie**: Strona główna, lista DJ-ów
-- **Funkcjonalności**: Hover effects, responsive design, accessibility support
+- **Purpose**: Present basic DJ information in lists
+- **Content**: Artist name, music styles, next event, profile link
+- **Usage**: Homepage, DJ list
+- **Features**: Hover effects, responsive design, accessibility support
 
 ### 5.2 EventCard
 
-- **Cel**: Wyświetlanie informacji o pojedynczym evencie
-- **Zawartość**: Nazwa eventu, lokalizacja, data, czas
-- **Wykorzystanie**: Profile DJ-ów, dashboard, zarządzanie eventami
-- **Funkcjonalności**: Status (przyszły/przeszły), opcje edycji dla właściciela
+- **Purpose**: Display single event information
+- **Content**: Event name, location, date, time
+- **Usage**: DJ profiles, dashboard, event management
+- **Features**: Status (upcoming/past), edit options for owner
 
 ### 5.3 SearchFilters
 
-- **Cel**: Filtrowanie listy DJ-ów
-- **Zawartość**: Pole tekstowe (nazwa), selector (style muzyczne), filtry lokalizacji i dostępności
-- **Wykorzystanie**: Strona główna, lista DJ-ów
-- **Funkcjonalności**: Debouncing, real-time results, clear filters
+- **Purpose**: Filter DJ list
+- **Content**: Text field (name), selector (music styles), location and availability filters
+- **Usage**: Homepage, DJ list
+- **Features**: Debouncing, real-time results, clear filters
 
 ### 5.4 EventForm
 
-- **Cel**: Dodawanie i edycja eventów
-- **Zawartość**: Nazwa eventu, lokalizacja (kraj, miasto, venue), data, czas
-- **Wykorzystanie**: Zarządzanie eventami
-- **Funkcjonalności**: Real-time validation, date picker z ograniczeniami, inline errors
+- **Purpose**: Add and edit events
+- **Content**: Event name, location (country, city, venue), date, time
+- **Usage**: Event management
+- **Features**: Real-time validation, date picker with constraints, inline errors
 
 ### 5.5 ProfileForm
 
-- **Cel**: Tworzenie i edycja profili DJ-ów
-- **Zawartość**: Nazwa artysty, biografia, style muzyczne, social media
-- **Wykorzystanie**: Rejestracja, edycja profilu
-- **Funkcjonalności**: Multi-select dla stylów, URL validation, character counters
+- **Purpose**: Create and edit DJ profiles
+- **Content**: Artist name, biography, music styles, social media
+- **Usage**: Registration, profile editing
+- **Features**: Multi-select for styles, URL validation, character counters
 
 ### 5.6 Navigation
 
-- **Cel**: Główna nawigacja aplikacji
-- **Zawartość**: Logo, menu główne, user actions
-- **Wykorzystanie**: Wszystkie strony
-- **Funkcjonalności**: Responsive design, active states, accessibility
+- **Purpose**: Main application navigation
+- **Content**: Logo, main menu, user actions
+- **Usage**: All pages
+- **Features**: Responsive design, active states, accessibility
 
 ### 5.7 DashboardSidebar
 
-- **Cel**: Nawigacja w panelu DJ-a
-- **Zawartość**: Menu opcji dashboardu, user info, logout
-- **Wykorzystanie**: Wszystkie strony dashboardu
-- **Funkcjonalności**: Collapsible na mobile, active states, role-based visibility
+- **Purpose**: Navigation in DJ panel
+- **Content**: Dashboard options menu, user info, logout
+- **Usage**: All dashboard pages
+- **Features**: Collapsible on mobile, active states, role-based visibility
 
 ### 5.8 LoadingStates
 
-- **Cel**: Skeleton loading dla różnych typów treści
-- **Zawartość**: Skeleton dla list, kart, formularzy
-- **Wykorzystanie**: Wszystkie strony z dynamiczną treścią
-- **Funkcjonalności**: PrimeVue Skeleton component, responsive placeholders
+- **Purpose**: Skeleton loading for different content types
+- **Content**: Skeleton for lists, cards, forms
+- **Usage**: All pages with dynamic content
+- **Features**: PrimeVue Skeleton component, responsive placeholders
 
 ### 5.9 ErrorHandling
 
-- **Cel**: Obsługa błędów i komunikatów
-- **Zawartość**: Toast messages, error boundaries, empty states
-- **Wykorzystanie**: Cała aplikacja
-- **Funkcjonalności**: PrimeVue Toast, Message components, graceful degradation
+- **Purpose**: Error handling and messaging
+- **Content**: Toast messages, error boundaries, empty states
+- **Usage**: Entire application
+- **Features**: PrimeVue Toast, Message components, graceful degradation
 
 ### 5.10 AuthGuard
 
-- **Cel**: Ochrona tras wymagających autoryzacji
-- **Zawartość**: Sprawdzanie stanu autoryzacji, przekierowania
-- **Wykorzystanie**: Dashboard i wszystkie chronione trasy
-- **Funkcjonalności**: Supabase Auth integration, automatic redirects, session management
+- **Purpose**: Protect routes requiring authorization
+- **Content**: Authorization state checking, redirects
+- **Usage**: Dashboard and all protected routes
+- **Features**: Supabase Auth integration, automatic redirects, session management
