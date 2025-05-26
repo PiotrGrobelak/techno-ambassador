@@ -23,7 +23,8 @@ When introducing changes to the project, always follow the directory structure b
 - `./src/layouts` - Astro layouts
 - `./src/pages` - Astro pages
 - `./src/pages/api` - API endpoints
-- `./src/components` - client-side components written in Astro (static) and React (dynamic)
+- `./src/features/feature-1` - feature client-side components written in Astro (static) and Vue (dynamic)
+- `./src/shared/components` - reusable client-side components written in Astro (static) and Vue (dynamic)
 - `./src/assets` - static internal assets
 - `./public` - public assets
 
