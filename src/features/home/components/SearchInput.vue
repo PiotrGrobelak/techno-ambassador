@@ -1,10 +1,7 @@
 <template>
   <div class="relative">
     <InputText
-      :model-value="modelValue"
-      @update:model-value="
-        (value: string | undefined) => handleInput(value || '')
-      "
+      v-model="searchValue"
       :placeholder="placeholder"
       class="w-full pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       :class="{ 'border-red-500': hasError }"
@@ -31,7 +28,7 @@
 
     <!-- Clear button -->
     <button
-      v-if="modelValue && !disabled"
+      v-if="searchValue && !disabled"
       @click="clearInput"
       class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
       type="button"
@@ -63,13 +60,8 @@ import { computed } from 'vue';
 import InputText from 'primevue/inputtext';
 
 interface Props {
-  modelValue: string;
   placeholder?: string;
   disabled?: boolean;
-}
-
-interface Emits {
-  (e: 'update:modelValue', value: string): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -77,11 +69,12 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
 });
 
-const emit = defineEmits<Emits>();
+// Using defineModel for two-way data binding
+const searchValue = defineModel<string>({ default: '' });
 
 // Validation
 const hasError = computed(() => {
-  const trimmed = props.modelValue.trim();
+  const trimmed = searchValue.value.trim();
   return trimmed.length > 100;
 });
 
@@ -92,16 +85,8 @@ const errorMessage = computed(() => {
   return '';
 });
 
-// Event handlers
-function handleInput(value: string): void {
-  // Prevent input if it would exceed 100 characters
-  if (value.length <= 100) {
-    emit('update:modelValue', value);
-  }
-}
-
 function clearInput(): void {
-  emit('update:modelValue', '');
+  searchValue.value = '';
 }
 </script>
 

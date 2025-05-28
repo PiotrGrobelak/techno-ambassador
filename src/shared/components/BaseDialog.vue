@@ -152,7 +152,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref } from 'vue';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
@@ -194,18 +194,13 @@ interface Props {
   cancelButtonText?: string;
   applyButtonText?: string;
   applyButtonDisabled?: boolean;
-
-  // Control props
-  modelValue?: boolean;
 }
 
 interface Emits {
-  (e: 'update:modelValue', value: boolean): void;
   (e: 'open'): void;
   (e: 'close'): void;
   (e: 'apply'): void;
   (e: 'clear'): void;
-  (e: 'search', value: string): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -237,16 +232,13 @@ const props = withDefaults(defineProps<Props>(), {
   cancelButtonText: 'Cancel',
   applyButtonText: 'Apply',
   applyButtonDisabled: false,
-
-  // Control defaults
-  modelValue: false,
 });
 
 const emit = defineEmits<Emits>();
 
-// Local state
-const isDialogOpen = ref(false);
-const searchTerm = ref('');
+// Using defineModel for dialog visibility and search state
+const isDialogOpen = defineModel<boolean>({ default: false });
+const searchTerm = defineModel<string>('searchTerm', { default: '' });
 
 // Methods
 function openDialog(): void {
@@ -270,85 +262,4 @@ function applyAction(): void {
 function handleClear(): void {
   emit('clear');
 }
-
-// Watch for external control
-watch(
-  () => props.modelValue,
-  (newValue) => {
-    if (newValue !== undefined) {
-      isDialogOpen.value = newValue;
-    }
-  },
-  { immediate: true }
-);
-
-// Watch for dialog state changes
-watch(isDialogOpen, (newValue) => {
-  emit('update:modelValue', newValue);
-});
-
-// Watch for search changes
-watch(searchTerm, (newValue) => {
-  emit('search', newValue);
-});
 </script>
-
-<style scoped>
-/* Ensure proper contrast for dialog content */
-:deep(.p-dialog-content) {
-  background-color: white;
-  color: #1f2937;
-}
-
-/* Improve dialog header */
-:deep(.p-dialog-header) {
-  background-color: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
-  color: #1f2937;
-}
-
-:deep(.p-dialog-title) {
-  font-weight: 600;
-  color: #1f2937;
-}
-
-/* Ensure input text has proper styling */
-:deep(.p-inputtext) {
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  background-color: white;
-  color: #1f2937;
-}
-
-:deep(.p-inputtext:focus) {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Button styling improvements */
-:deep(.p-button) {
-  transition: all 0.2s ease-in-out;
-}
-
-/* Dialog overlay styling */
-:deep(.p-dialog-mask) {
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(2px);
-}
-
-/* Dialog animation */
-:deep(.p-dialog) {
-  animation: dialogSlideIn 0.3s ease-out;
-}
-
-@keyframes dialogSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-50px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-</style>

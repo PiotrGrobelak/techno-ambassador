@@ -15,7 +15,6 @@
     @close="handleClose"
     @apply="handleApply"
     @clear="handleClear"
-    @search="handleSearch"
   >
     <!-- Pass through button icon slot -->
     <template v-if="$slots['button-icon']" #button-icon>
@@ -101,7 +100,6 @@ interface Item {
 
 interface Props {
   items: Item[];
-  modelValue: string[];
   disabled?: boolean;
   dialogHeader?: string;
   searchPlaceholder?: string;
@@ -109,10 +107,6 @@ interface Props {
   defaultButtonText?: string;
   singleItemLabel?: string;
   multipleItemsLabel?: string;
-}
-
-interface Emits {
-  (e: 'update:modelValue', value: string[]): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -125,7 +119,8 @@ const props = withDefaults(defineProps<Props>(), {
   multipleItemsLabel: 'items',
 });
 
-const emit = defineEmits<Emits>();
+// Using defineModel for two-way data binding
+const selectedItems = defineModel<string[]>({ default: () => [] });
 
 // Local state
 const tempSelection = ref<string[]>([]);
@@ -133,7 +128,7 @@ const searchTerm = ref('');
 
 // Computed properties
 const selectedCount = computed(() => {
-  return props.modelValue.length;
+  return selectedItems.value.length;
 });
 
 const tempSelectedCount = computed(() => {
@@ -145,7 +140,7 @@ const buttonText = computed(() => {
     return props.defaultButtonText;
   } else if (selectedCount.value === 1) {
     const selectedItem = props.items.find((item) =>
-      props.modelValue.includes(item.id)
+      selectedItems.value.includes(item.id)
     );
     return selectedItem
       ? selectedItem.name
@@ -183,7 +178,7 @@ function toggleItem(itemId: string): void {
 
 function handleOpen(): void {
   // Initialize temp selection with current values
-  tempSelection.value = [...props.modelValue];
+  tempSelection.value = [...selectedItems.value];
 }
 
 function handleClose(): void {
@@ -197,20 +192,16 @@ function handleApply(): void {
     props.items.some((item) => item.id === id)
   );
 
-  emit('update:modelValue', validSelection);
+  selectedItems.value = validSelection;
 }
 
 function handleClear(): void {
   tempSelection.value = [];
 }
 
-function handleSearch(value: string): void {
-  searchTerm.value = value;
-}
-
-// Watch for external changes to modelValue
+// Watch for external changes to selectedItems
 watch(
-  () => props.modelValue,
+  selectedItems,
   (newValue) => {
     tempSelection.value = [...newValue];
   },

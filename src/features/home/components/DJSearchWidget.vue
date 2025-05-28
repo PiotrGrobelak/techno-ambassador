@@ -45,14 +45,11 @@
 
     <!-- Search filters -->
     <SearchFilters
-      :search-term="searchStore.searchTerm"
-      :selected-music-styles="musicStylesStore.selectedStyles"
+      v-model:search-term="searchStore.searchTerm"
+      v-model:selected-music-styles="musicStylesStore.selectedStyles"
       :music-styles="musicStylesStore.musicStyles"
       :is-loading="djListStore.isLoading"
       :is-loading-music-styles="musicStylesStore.isLoading"
-      @update:search-term="handleSearchTermUpdate"
-      @update:selected-music-styles="handleMusicStylesUpdate"
-      @clear-filters="handleClearFilters"
     />
 
     <!-- DJ List -->
@@ -135,19 +132,6 @@ const hasActiveFilters = computed(() => {
 });
 
 // Event handlers
-function handleSearchTermUpdate(value: string): void {
-  searchStore.setSearchTerm(value);
-}
-
-function handleMusicStylesUpdate(value: string[]): void {
-  musicStylesStore.setSelectedStyles(value);
-}
-
-function handleClearFilters(): void {
-  searchStore.clearSearch();
-  musicStylesStore.clearStyles();
-}
-
 function handleLoadMore(): void {
   djListStore.loadMoreDJs();
 }

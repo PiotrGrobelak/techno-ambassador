@@ -7,8 +7,7 @@
           Search DJs
         </label>
         <SearchInput
-          :model-value="searchTerm"
-          @update:model-value="handleSearchChange"
+          v-model="searchTerm"
           :disabled="isLoading"
           placeholder="Search by artist name..."
         />
@@ -21,8 +20,7 @@
         </label>
         <MusicStyleFilter
           :music-styles="musicStyles"
-          :model-value="selectedMusicStyles"
-          @update:model-value="handleMusicStylesChange"
+          v-model="selectedMusicStyles"
           :disabled="isLoading || isLoadingMusicStyles"
         />
       </div>
@@ -74,17 +72,9 @@ import MusicStyleFilter from './MusicStyleFilter.vue';
 import type { MusicStyleDto } from '../../../types';
 
 interface Props {
-  searchTerm: string;
-  selectedMusicStyles: string[];
   musicStyles: MusicStyleDto[];
   isLoading?: boolean;
   isLoadingMusicStyles?: boolean;
-}
-
-interface Emits {
-  (e: 'update:searchTerm', value: string): void;
-  (e: 'update:selectedMusicStyles', value: string[]): void;
-  (e: 'clear-filters'): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -92,24 +82,28 @@ const props = withDefaults(defineProps<Props>(), {
   isLoadingMusicStyles: false,
 });
 
-const emit = defineEmits<Emits>();
+// Using defineModel for two-way data binding
+const searchTerm = defineModel<string>('searchTerm', { default: '' });
+const selectedMusicStyles = defineModel<string[]>('selectedMusicStyles', {
+  default: () => [],
+});
 
 // Computed properties
 const hasActiveFilters = computed(() => {
   return (
-    props.searchTerm.trim().length > 0 || props.selectedMusicStyles.length > 0
+    searchTerm.value.trim().length > 0 || selectedMusicStyles.value.length > 0
   );
 });
 
 const activeFiltersText = computed(() => {
   const filters = [];
 
-  if (props.searchTerm.trim().length > 0) {
-    filters.push(`Search: "${props.searchTerm.trim()}"`);
+  if (searchTerm.value.trim().length > 0) {
+    filters.push(`Search: "${searchTerm.value.trim()}"`);
   }
 
-  if (props.selectedMusicStyles.length > 0) {
-    const styleCount = props.selectedMusicStyles.length;
+  if (selectedMusicStyles.value.length > 0) {
+    const styleCount = selectedMusicStyles.value.length;
     filters.push(`${styleCount} music style${styleCount !== 1 ? 's' : ''}`);
   }
 
@@ -117,15 +111,8 @@ const activeFiltersText = computed(() => {
 });
 
 // Event handlers
-function handleSearchChange(value: string): void {
-  emit('update:searchTerm', value);
-}
-
-function handleMusicStylesChange(value: string[]): void {
-  emit('update:selectedMusicStyles', value);
-}
-
 function clearAllFilters(): void {
-  emit('clear-filters');
+  searchTerm.value = '';
+  selectedMusicStyles.value = [];
 }
 </script>

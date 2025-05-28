@@ -2,8 +2,7 @@
   <div>
     <SelectDialog
       :items="mappedMusicStyles"
-      :model-value="modelValue"
-      @update:model-value="handleSelectionChange"
+      v-model="selectedStyles"
       :disabled="disabled"
       dialog-header="Select Music Styles"
       search-placeholder="Search music styles..."
@@ -39,19 +38,15 @@ import type { MusicStyleDto } from '../../../types';
 
 interface Props {
   musicStyles: MusicStyleDto[];
-  modelValue: string[];
   disabled?: boolean;
-}
-
-interface Emits {
-  (e: 'update:modelValue', value: string[]): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
 });
 
-const emit = defineEmits<Emits>();
+// Using defineModel for two-way data binding
+const selectedStyles = defineModel<string[]>({ default: () => [] });
 
 // Transform MusicStyleDto to match SelectDialog's Item interface
 const mappedMusicStyles = computed(() => {
@@ -61,9 +56,4 @@ const mappedMusicStyles = computed(() => {
     description: `${style.user_count} DJs`,
   }));
 });
-
-// Event handlers
-function handleSelectionChange(value: string[]): void {
-  emit('update:modelValue', value);
-}
 </script>
