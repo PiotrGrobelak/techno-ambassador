@@ -1,13 +1,19 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-import WelcomeVue from '../components/Welcome.vue';
+import HeroSection from '../layouts/HeroSection.astro';
+import DJSearchWidget from '../features/home/components/DJSearchWidget.vue';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-  <Welcome client:load />
-  <WelcomeVue client:load />
+<Layout title="Techno Ambassador - Discover Electronic Music DJs">
+  <!-- Hero Section -->
+  <HeroSection />
+
+  <!-- Main Content -->
+  <main id="search" class="bg-gray-50 min-h-screen">
+    <!-- DJ Search Widget with client-side hydration -->
+    <DJSearchWidget client:load />
+  </main>
 </Layout>
