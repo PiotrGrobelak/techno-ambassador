@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ExampleSelectDialog
+    <SelectDialog
       :items="mappedMusicStyles"
       :model-value="modelValue"
       @update:model-value="handleSelectionChange"
@@ -28,13 +28,13 @@
           />
         </svg>
       </template>
-    </ExampleSelectDialog>
+    </SelectDialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import ExampleSelectDialog from '../../../shared/components/SelectDialog.vue';
+import SelectDialog from '../../../shared/components/SelectDialog.vue';
 import type { MusicStyleDto } from '../../../types';
 
 interface Props {
@@ -53,7 +53,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-// Transform MusicStyleDto to match ExampleSelectDialog's Item interface
+// Transform MusicStyleDto to match SelectDialog's Item interface
 const mappedMusicStyles = computed(() => {
   return props.musicStyles.map((style) => ({
     id: style.id,
@@ -67,59 +67,3 @@ function handleSelectionChange(value: string[]): void {
   emit('update:modelValue', value);
 }
 </script>
-
-<style scoped>
-/* Ensure proper contrast for dialog content */
-:deep(.p-dialog-content) {
-  background-color: white;
-  color: #1f2937;
-}
-
-/* Enhance checkbox visibility */
-:deep(.p-checkbox) {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-:deep(.p-checkbox .p-checkbox-box) {
-  border: 2px solid #d1d5db;
-  border-radius: 0.375rem;
-  background-color: white;
-  transition: all 0.2s ease-in-out;
-}
-
-:deep(.p-checkbox .p-checkbox-box.p-highlight) {
-  border-color: #3b82f6;
-  background-color: #3b82f6;
-}
-
-:deep(.p-checkbox .p-checkbox-box .p-checkbox-icon) {
-  color: white;
-  font-weight: bold;
-}
-
-/* Improve dialog header */
-:deep(.p-dialog-header) {
-  background-color: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
-  color: #1f2937;
-}
-
-:deep(.p-dialog-title) {
-  font-weight: 600;
-  color: #1f2937;
-}
-
-/* Ensure input text has proper styling */
-:deep(.p-inputtext) {
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  background-color: white;
-  color: #1f2937;
-}
-
-:deep(.p-inputtext:focus) {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-</style>

@@ -37,13 +37,13 @@
           :key="item.id"
           :class="[
             'flex items-center p-3 cursor-pointer transition-colors duration-200',
-            isSelected(item.id)
+            item.isSelected
               ? 'bg-blue-50 hover:bg-blue-100 border-l-4 border-blue-500'
               : 'hover:bg-gray-50',
           ]"
         >
           <Checkbox
-            :model-value="isSelected(item.id)"
+            :v-model="item.isSelected"
             @update:model-value="toggleItem(item.id)"
             :input-id="item.id"
             class="mr-3"
@@ -53,7 +53,7 @@
             <div
               :class="[
                 'font-medium',
-                isSelected(item.id) ? 'text-blue-900' : 'text-gray-800',
+                item.isSelected ? 'text-blue-900' : 'text-gray-800',
               ]"
             >
               {{ item.name }}
@@ -61,7 +61,7 @@
             <div
               :class="[
                 'text-sm',
-                isSelected(item.id) ? 'text-blue-700' : 'text-gray-600',
+                item.isSelected ? 'text-blue-700' : 'text-gray-600',
               ]"
             >
               {{ item.description }}
@@ -69,7 +69,7 @@
           </div>
 
           <!-- Selected indicator -->
-          <div v-if="isSelected(item.id)" class="ml-2">
+          <div v-if="item.isSelected" class="ml-2">
             <svg
               class="w-5 h-5 text-blue-600"
               fill="currentColor"
@@ -155,17 +155,15 @@ const buttonText = computed(() => {
   }
 });
 
-const filteredItems = computed(() => {
-  if (!searchTerm.value.trim()) {
-    return props.items;
-  }
+interface ItemWithIsSelected extends Item {
+  isSelected: boolean;
+}
 
-  const search = searchTerm.value.toLowerCase().trim();
-  return props.items.filter(
-    (item) =>
-      item.name.toLowerCase().includes(search) ||
-      item.description.toLowerCase().includes(search)
-  );
+const filteredItems = computed<ItemWithIsSelected[]>(() => {
+  return props.items.map((item) => ({
+    ...item,
+    isSelected: isSelected(item.id),
+  }));
 });
 
 // Methods
