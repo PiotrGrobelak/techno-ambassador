@@ -9,9 +9,8 @@ Techno Ambassador is a calendar platform for DJs built on Astro 5 with Vue 3 com
 ### 2.1 Homepage (/)
 
 - **Main goal**: Entry point to the platform with central DJ search functionality
-- **Key information**: Hero section with platform description, DJ search, default results list display
+- **Key information**: DJ search, default results list display
 - **Key components**:
-  - Hero section with platform description
   - SearchFilters (DJ name, music style)
   - DJList with DJCard components
   - LoadMoreButton for pagination
@@ -181,13 +180,7 @@ Techno Ambassador is a calendar platform for DJs built on Astro 5 with Vue 3 com
   - Account Settings
   - Logout
 
-### 4.3 Breadcrumbs
-
-- Implemented on deeper navigation levels
-- Especially in dashboard and edit forms
-- Format: Homepage > Dashboard > Event Management
-
-### 4.4 Bottom Navigation (Mobile)
+### 4.3 Bottom Navigation (Mobile)
 
 - To be determined during implementation
 - Potential elements: Homepage, Search, Dashboard (for DJs)

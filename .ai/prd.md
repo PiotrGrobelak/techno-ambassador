@@ -186,19 +186,7 @@ Acceptance Criteria:
 - Pagination for large number of DJs
 - Responsive design for mobile devices
 
-#### US-009: Filtering DJs by Location
-
-Title: Searching for local DJs
-Description: As an event organizer I want to filter DJs by location to find artists in my area.
-Acceptance Criteria:
-
-- Text search field for location
-- Filtering based on event locations in DJ calendars
-- List of DJs having events in specified location
-- Ability to clear filter
-- Information about number of found results
-
-#### US-010: Filtering DJs by Music Style
+#### US-009: Filtering DJs by Music Style
 
 Title: Searching for DJs of specific genre
 Description: As a fan/organizer I want to filter DJs by music style to find artists playing preferred music.
@@ -210,7 +198,7 @@ Acceptance Criteria:
 - Result counter for each style
 - Ability to clear filters
 
-#### US-011: Filtering DJs by Availability
+#### US-010: Filtering DJs by Availability
 
 Title: Finding available DJs on specific dates
 Description: As an event organizer I want to check which DJs are available at a specific time.
@@ -222,7 +210,7 @@ Acceptance Criteria:
 - Ability to extend date range
 - Link to DJ profile for further details
 
-#### US-012: Searching DJ by Name
+#### US-011: Searching DJ by Name
 
 Title: Finding specific DJ
 Description: As a fan I want to search for a specific DJ by name to quickly find their profile.
@@ -234,7 +222,7 @@ Acceptance Criteria:
 - Highlighting of matching name fragments
 - Direct link to found DJ profile
 
-#### US-013: Browsing DJ Profile
+#### US-012: Browsing DJ Profile
 
 Title: Detailed DJ information
 Description: As a fan/organizer I want to browse DJ profile to learn their details and calendar.
@@ -246,7 +234,7 @@ Acceptance Criteria:
 - Performance calendar as event list
 - Division into upcoming events and performance history
 
-#### US-014: Browsing DJ Calendar
+#### US-013: Browsing DJ Calendar
 
 Title: Checking performance schedule
 Description: As a fan/organizer I want to browse DJ calendar to see their upcoming performances and availability.
@@ -258,7 +246,7 @@ Acceptance Criteria:
 - Ability to scroll between months
 - Information about no events in selected period
 
-#### US-015: Contacting DJ
+#### US-014: Contacting DJ
 
 Title: Establishing contact for performance
 Description: As an event organizer I want to contact DJ to inquire about performance possibility.
@@ -272,7 +260,7 @@ Acceptance Criteria:
 
 ### Group: Mobile Access and Responsiveness
 
-#### US-016: Mobile Access for DJs
+#### US-015: Mobile Access for DJs
 
 Title: Calendar management on mobile devices
 Description: As a DJ I want to be able to manage my profile and calendar on mobile devices.
@@ -284,7 +272,7 @@ Acceptance Criteria:
 - Quick access to most important functions
 - Loading speed optimization on mobile devices
 
-#### US-017: Mobile Browsing for Fans
+#### US-016: Mobile Browsing for Fans
 
 Title: Searching DJs on mobile devices
 Description: As a fan/organizer I want to be able to browse DJ profiles and their calendars on mobile devices.
@@ -298,7 +286,7 @@ Acceptance Criteria:
 
 ### Group: Security and Data Quality
 
-#### US-018: Profile Data Validation
+#### US-017: Profile Data Validation
 
 Title: Ensuring minimum profile quality
 Description: As a system user I want to be sure that DJ profiles contain basic required information.
@@ -310,7 +298,7 @@ Acceptance Criteria:
 - Inability to save incomplete profile
 - Suggesting corrections in case of errors
 
-#### US-019: Protection Against Duplicates
+#### US-018: Protection Against Duplicates
 
 Title: Avoiding DJ profile duplication
 Description: As an administrator I want to prevent creation of duplicate profiles by the same DJs.
@@ -324,7 +312,7 @@ Acceptance Criteria:
 
 ### Group: Usability and Navigation
 
-#### US-020: Platform Navigation
+#### US-019: Platform Navigation
 
 Title: Intuitive navigation structure
 Description: As a user I want to easily navigate the platform between different sections.
@@ -335,7 +323,7 @@ Acceptance Criteria:
 - "Back" button on detail pages
 - Consistent placement of navigation elements
 
-#### US-021: Platform Homepage
+#### US-020: Platform Homepage
 
 Title: Platform entry point
 Description: As a new user I want to understand the platform's purpose and know how to use it.
