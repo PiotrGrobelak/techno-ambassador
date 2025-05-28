@@ -2,10 +2,11 @@
   <div class="relative">
     <InputText
       :model-value="modelValue"
-      @update:model-value="handleInput"
+      @update:model-value="
+        (value: string | undefined) => handleInput(value || '')
+      "
       :placeholder="placeholder"
-      :disabled="disabled"
-      class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      class="w-full pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       :class="{ 'border-red-500': hasError }"
     />
 
@@ -103,3 +104,9 @@ function clearInput(): void {
   emit('update:modelValue', '');
 }
 </script>
+
+<style scoped>
+.p-inputtext {
+  padding-left: 40px;
+}
+</style>
