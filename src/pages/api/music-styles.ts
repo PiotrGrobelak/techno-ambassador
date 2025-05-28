@@ -6,7 +6,7 @@ export const prerender = false
 /**
  * GET /api/music-styles - Get all available music styles
  * 
- * Returns all music styles with their UUIDs and names for testing purposes.
+ * Returns all music styles with their UUIDs, names, and user counts.
  * No authentication required as this is public reference data.
  * 
  * @param context - Astro API context with request and locals
@@ -14,11 +14,16 @@ export const prerender = false
  */
 export async function GET(context: APIContext): Promise<Response> {
   try {
-    console.log('Fetching music styles from database...');
+    console.log('Fetching music styles with user counts from database...');
     
     const { data: musicStyles, error } = await context.locals.supabase
       .from('music_styles')
-      .select('id, style_name, created_at')
+      .select(`
+        id,
+        style_name,
+        created_at,
+        user_music_styles(count)
+      `)
       .order('style_name');
 
     console.log('Database response:', { data: musicStyles, error });
@@ -28,9 +33,17 @@ export async function GET(context: APIContext): Promise<Response> {
       throw new Error(`Failed to fetch music styles: ${error.message}`);
     }
 
+    // Transform the data to include user_count
+    const transformedData = (musicStyles || []).map(style => ({
+      id: style.id,
+      style_name: style.style_name,
+      created_at: style.created_at,
+      user_count: style.user_music_styles?.[0]?.count || 0
+    }));
+
     const response = {
-      data: musicStyles || [],
-      total: musicStyles?.length || 0
+      data: transformedData,
+      total: transformedData.length
     };
 
     console.log('Returning response:', response);
