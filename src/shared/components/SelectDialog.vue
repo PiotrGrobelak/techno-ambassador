@@ -12,7 +12,6 @@
     :clear-button-disabled="selectedCount === 0"
     :apply-button-text="`Apply (${selectedCount})`"
     @open="handleOpen"
-    @close="handleClose"
     @apply="handleApply"
     @clear="handleClear"
   >
@@ -22,7 +21,8 @@
     </template>
 
     <!-- Custom content slot -->
-    <template #content="{ searchTerm }">
+    <template #content="{ searchTerm: externalSearchTerm }">
+      {{ syncSearchTerm(externalSearchTerm) }}
       <div
         v-if="filteredItems.length === 0"
         class="p-4 text-center text-gray-500"
@@ -124,15 +124,11 @@ const selectedItems = defineModel<string[]>({ default: () => [] });
 
 // Local state
 const tempSelection = ref<string[]>([]);
-const searchTerm = ref('');
+const searchTerm = ref<string>('');
 
 // Computed properties
 const selectedCount = computed(() => {
   return selectedItems.value.length;
-});
-
-const tempSelectedCount = computed(() => {
-  return tempSelection.value.length;
 });
 
 const buttonText = computed(() => {
@@ -154,8 +150,19 @@ interface ItemWithIsSelected extends Item {
   isSelected: boolean;
 }
 
+// Computed property for filtered items - best practice
 const filteredItems = computed<ItemWithIsSelected[]>(() => {
-  return props.items.map((item) => ({
+  const filtered = props.items.filter((item) => {
+    if (!searchTerm.value) return true;
+
+    const searchLower = searchTerm.value.toLowerCase();
+    return (
+      item.name.toLowerCase().includes(searchLower) ||
+      item.description.toLowerCase().includes(searchLower)
+    );
+  });
+
+  return filtered.map((item) => ({
     ...item,
     isSelected: isSelected(item.id),
   }));
@@ -164,6 +171,11 @@ const filteredItems = computed<ItemWithIsSelected[]>(() => {
 // Methods
 function isSelected(itemId: string): boolean {
   return tempSelection.value.includes(itemId);
+}
+
+function syncSearchTerm(externalSearchTerm: string): string {
+  searchTerm.value = externalSearchTerm;
+  return ''; // Return empty string to avoid rendering anything
 }
 
 function toggleItem(itemId: string): void {
@@ -179,10 +191,7 @@ function toggleItem(itemId: string): void {
 function handleOpen(): void {
   // Initialize temp selection with current values
   tempSelection.value = [...selectedItems.value];
-}
-
-function handleClose(): void {
-  // Reset search when closing
+  // Reset search term when opening
   searchTerm.value = '';
 }
 
