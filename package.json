@@ -17,6 +17,7 @@
     "@primeuix/themes": "^1.1.1",
     "@supabase/supabase-js": "^2.49.8",
     "@tailwindcss/vite": "^4.1.5",
+    "@vueuse/core": "^13.3.0",
     "astro": "^5.7.12",
     "pinia": "^3.0.2",
     "primevue": "^4.3.4",

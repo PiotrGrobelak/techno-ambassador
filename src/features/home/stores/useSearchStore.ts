@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed, type Ref, type ComputedRef } from 'vue'
-import { useDebounce } from '../../../shared/composables/useDebounce'
+import { debouncedRef } from '@vueuse/core'
 
 /**
  * Search functionality store with debouncing and validation
@@ -11,8 +11,8 @@ export const useSearchStore = defineStore('search', () => {
   const searchTerm: Ref<string> = ref('')
   const isSearching: Ref<boolean> = ref(false)
 
-  // Initialize debouncing with 300ms delay
-  const { debouncedValue: debouncedSearchTerm } = useDebounce(searchTerm, 300)
+  // Initialize debouncing with 300ms delay using VueUse
+  const debouncedSearchTerm = debouncedRef(searchTerm, 300)
 
   // Getters
   const hasValidSearchTerm: ComputedRef<boolean> = computed(() => {
