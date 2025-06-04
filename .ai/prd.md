@@ -2,7 +2,7 @@
 
 ## 1. Product Overview
 
-DJCalendar is a global calendar platform dedicated to DJs that enables artists to showcase their availability and upcoming events while allowing fans and event organizers to discover and contact DJs for booking performances.
+Techno Ambassador is a global calendar platform dedicated to DJs that enables artists to showcase their availability and upcoming events while allowing fans and event organizers to discover and contact DJs for booking performances.
 
 The platform connects three main user groups:
 

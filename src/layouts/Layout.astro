@@ -40,11 +40,8 @@ const { title = 'Techno Ambassador', showHeader = true } = Astro.props;
               </a>
             </div>
 
-            <!-- Navigation -->
-            <AuthNavigation 
-              isAuthenticated={false}
-              client:load
-            />
+            <!-- Navigation - now uses Pinia store directly -->
+            <AuthNavigation client:load />
           </div>
         </div>
       </header>

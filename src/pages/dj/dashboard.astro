@@ -1,22 +1,21 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import BaseTypography from '../../shared/components/BaseTypography.vue';
-import BaseCard from '../../shared/components/BaseCard.vue';
-import BaseButton from '../../shared/components/BaseButton.vue';
 import AuthNavigation from '../../shared/components/AuthNavigation.vue';
+import ProfileCompletionBanner from '../../shared/components/ProfileCompletionBanner.vue';
+import DashboardProfileCard from '../../shared/components/DashboardProfileCard.vue';
 
-// This page will require authentication when middleware is implemented
-// For now, it's a static preview of the dashboard interface
+// Note: User authentication and redirect is handled by middleware
+// If we reach this page, user is authenticated
 ---
 
-<Layout title="DJ Dashboard - Techno Ambassador">
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center py-4">
-          <!-- Logo -->
-          <div class="flex items-center">
+<Layout title="DJ Dashboard - Techno Ambassador" showHeader={false}>
+  <!-- Custom header for dashboard -->
+  <header class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <!-- Logo -->
+        <div class="flex items-center">
+          <a href="/" class="flex items-center">
             <div
               class="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center mr-3"
             >
@@ -30,194 +29,154 @@ import AuthNavigation from '../../shared/components/AuthNavigation.vue';
                 ></path>
               </svg>
             </div>
-            <BaseTypography variant="h5" weight="bold" client:load>
-              Techno Ambassador
-            </BaseTypography>
-          </div>
+            <span class="text-xl font-bold text-gray-900"
+              >Techno Ambassador</span
+            >
+          </a>
+        </div>
 
-          <!-- Navigation -->
-          <AuthNavigation
-            isAuthenticated={true}
-            userData={{ id: '1', email: 'dj@example.com', name: 'Example DJ' }}
-            client:load
-          />
+        <!-- Navigation -->
+        <AuthNavigation client:load />
+      </div>
+    </div>
+  </header>
+
+  <!-- Dashboard Content -->
+  <main class="min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-br from-purple-600 to-blue-600 text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center">
+          <h1 class="text-4xl font-bold mb-4">Welcome to Your DJ Dashboard</h1>
+          <p class="text-xl opacity-90 max-w-2xl mx-auto">
+            Manage your events, connect with fans, and grow your presence in the
+            techno music scene.
+          </p>
         </div>
       </div>
-    </header>
+    </div>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Welcome Section -->
-      <div class="mb-8">
-        <div class="mb-2">
-          <BaseTypography variant="h1" weight="bold" client:load>
-            Welcome back, DJ!
-          </BaseTypography>
-        </div>
-        <BaseTypography variant="body-large" color="secondary" client:load>
-          Manage your events, connect with the community, and track your
-          performance.
-        </BaseTypography>
-      </div>
+    <!-- Dashboard Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Profile Completion Banner -->
+      <ProfileCompletionBanner client:load />
 
-      <!-- Dashboard Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <!-- Events Card -->
-        <BaseCard
-          title="My Events"
-          subtitle="Manage your upcoming performances"
-          variant="elevated"
-          :interactive="true"
-          client:load
-        >
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <BaseTypography
-                variant="h3"
-                weight="bold"
-                color="primary"
-                client:load
-              >
-                12
-              </BaseTypography>
-              <BaseTypography variant="caption" color="muted" client:load>
-                Upcoming events
-              </BaseTypography>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Quick Stats -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Quick Stats</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="text-center p-4 bg-purple-50 rounded-lg">
+                <div class="text-2xl font-bold text-purple-600">0</div>
+                <div class="text-sm text-gray-600">Upcoming Events</div>
+              </div>
+              <div class="text-center p-4 bg-blue-50 rounded-lg">
+                <div class="text-2xl font-bold text-blue-600">0</div>
+                <div class="text-sm text-gray-600">Total Events</div>
+              </div>
+              <div class="text-center p-4 bg-green-50 rounded-lg">
+                <div class="text-2xl font-bold text-green-600">0</div>
+                <div class="text-sm text-gray-600">Profile Views</div>
+              </div>
             </div>
-            <BaseButton
-              label="View All Events"
-              variant="primary"
-              size="small"
-              full-width
-              client:load
-            />
           </div>
-        </BaseCard>
 
-        <!-- Profile Card -->
-        <BaseCard
-          title="Profile"
-          subtitle="Update your DJ information"
-          variant="elevated"
-          :interactive="true"
-          client:load
-        >
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <BaseTypography variant="body" color="success" client:load>
-                Profile Complete
-              </BaseTypography>
+          <!-- Recent Activity -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">
+              Recent Activity
+            </h2>
+            <div class="text-center py-8">
               <svg
-                class="w-5 h-5 text-green-500"
-                fill="currentColor"
-                viewBox="0 0 20 20"
+                class="w-16 h-16 text-gray-300 mx-auto mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
                 <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clip-rule="evenodd"></path>
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                ></path>
               </svg>
+              <p class="text-gray-500">
+                No recent activity yet. Start by creating your first event!
+              </p>
             </div>
-            <BaseButton
-              label="Edit Profile"
-              variant="secondary"
-              size="small"
-              full-width
-              client:load
-            />
           </div>
-        </BaseCard>
+        </div>
 
-        <!-- Analytics Card -->
-        <BaseCard
-          title="Analytics"
-          subtitle="Track your performance"
-          variant="elevated"
-          :interactive="true"
-          client:load
-        >
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <BaseTypography
-                variant="h3"
-                weight="bold"
-                color="primary"
-                client:load
+        <!-- Sidebar -->
+        <div class="space-y-6">
+          <!-- Profile Card -->
+          <DashboardProfileCard client:load />
+
+          <!-- Quick Actions -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="font-semibold text-gray-900 mb-4">Quick Actions</h3>
+            <div class="space-y-3">
+              <button
+                class="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors flex items-center"
               >
-                4.8
-              </BaseTypography>
-              <BaseTypography variant="caption" color="muted" client:load>
-                Average rating
-              </BaseTypography>
+                <svg
+                  class="w-5 h-5 text-purple-600 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Add New Event
+              </button>
+              <button
+                class="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors flex items-center"
+              >
+                <svg
+                  class="w-5 h-5 text-blue-600 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  ></path>
+                </svg>
+                Update Profile
+              </button>
+              <button
+                class="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors flex items-center"
+              >
+                <svg
+                  class="w-5 h-5 text-green-600 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  ></path>
+                </svg>
+                View Analytics
+              </button>
             </div>
-            <BaseButton
-              label="View Analytics"
-              variant="ghost"
-              size="small"
-              full-width
-              client:load
-            />
-          </div>
-        </BaseCard>
-      </div>
-
-      <!-- Recent Activity -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="mb-4">
-          <BaseTypography variant="h4" weight="semibold" client:load>
-            Recent Activity
-          </BaseTypography>
-        </div>
-
-        <div class="space-y-4">
-          <div class="flex items-center space-x-4 p-4 rounded-lg bg-gray-50">
-            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-            <div class="flex-1">
-              <BaseTypography variant="body" weight="medium" client:load>
-                New event rating received
-              </BaseTypography>
-              <BaseTypography variant="caption" color="muted" client:load>
-                Someone rated your performance at Warehouse Rave - 5 stars
-              </BaseTypography>
-            </div>
-            <BaseTypography variant="caption" color="muted" client:load>
-              2 hours ago
-            </BaseTypography>
-          </div>
-
-          <div class="flex items-center space-x-4 p-4 rounded-lg bg-gray-50">
-            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-            <div class="flex-1">
-              <BaseTypography variant="body" weight="medium" client:load>
-                Profile viewed
-              </BaseTypography>
-              <BaseTypography variant="caption" color="muted" client:load>
-                Your profile was viewed 15 times this week
-              </BaseTypography>
-            </div>
-            <BaseTypography variant="caption" color="muted" client:load>
-              1 day ago
-            </BaseTypography>
-          </div>
-
-          <div class="flex items-center space-x-4 p-4 rounded-lg bg-gray-50">
-            <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-            <div class="flex-1">
-              <BaseTypography variant="body" weight="medium" client:load>
-                Event added to calendar
-              </BaseTypography>
-              <BaseTypography variant="caption" color="muted" client:load>
-                Underground Sessions - March 15, 2024
-              </BaseTypography>
-            </div>
-            <BaseTypography variant="caption" color="muted" client:load>
-              3 days ago
-            </BaseTypography>
           </div>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
 </Layout>
 
 <script>

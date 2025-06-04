@@ -2,6 +2,12 @@
 import AuthLayout from '../../layouts/AuthLayout.astro';
 import AuthForm from '../../shared/components/AuthForm.vue';
 import BaseTypography from '../../shared/components/BaseTypography.vue';
+
+// Check if user is already authenticated and redirect
+const { user } = Astro.locals;
+if (user) {
+  return Astro.redirect('/dj/dashboard');
+}
 ---
 
 <AuthLayout
@@ -58,6 +64,6 @@ import BaseTypography from '../../shared/components/BaseTypography.vue';
 </AuthLayout>
 
 <script>
-  // Client-side form handling will be implemented when backend is ready
-  // For now, forms are purely presentational
+  // Authentication will be handled by the AuthForm component with Pinia store integration
+  // Successful registration will show confirmation message
 </script>

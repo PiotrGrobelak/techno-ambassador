@@ -60,7 +60,7 @@
     />
 
     <!-- Error display -->
-    <div v-if="generalError" class="animate-fade-in">
+    <div v-if="displayedError" class="animate-fade-in">
       <div class="bg-red-50 border border-red-200 rounded-lg p-4">
         <div class="flex">
           <svg
@@ -76,7 +76,7 @@
           </svg>
           <div class="ml-3">
             <BaseTypography variant="body-small" color="danger">
-              {{ generalError }}
+              {{ displayedError }}
             </BaseTypography>
           </div>
         </div>
@@ -111,6 +111,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
+import { useAuthStore } from '../stores/authStore';
 import BaseInput from './BaseInput.vue';
 import BaseButton from './BaseButton.vue';
 import BaseTypography from './BaseTypography.vue';
@@ -140,6 +141,8 @@ interface Props {
 interface Emits {
   (e: 'submit', data: FormData): void;
   (e: 'clear-error'): void;
+  (e: 'success', message: string): void;
+  (e: 'error', error: string): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -147,6 +150,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+// Pinia store integration
+const authStore = useAuthStore();
 
 // Form state
 const formData = reactive<FormData>({
@@ -156,7 +162,15 @@ const formData = reactive<FormData>({
 });
 
 const errors = reactive<FormErrors>({});
-const isLoading = computed(() => props.loading);
+const internalError = ref<string>('');
+
+// Loading state - combine props.loading with store loading
+const isLoading = computed(() => props.loading || authStore.loading);
+
+// Error display - combine props.generalError with internal error
+const displayedError = computed(
+  () => props.generalError || internalError.value
+);
 
 // Validation with 300ms delay (Apple HIG: responsive feedback)
 let validationTimeout: NodeJS.Timeout;
@@ -175,9 +189,10 @@ function validateField(field: keyof FormData): void {
         validatePasswordConfirmation();
         break;
     }
-    // Clear general error when user starts typing
-    if (props.generalError) {
+    // Clear errors when user starts typing
+    if (props.generalError || internalError.value) {
       emit('clear-error');
+      internalError.value = '';
     }
   }, 300);
 }
@@ -255,8 +270,8 @@ const submitButtonText = computed(() => {
   }
 });
 
-// Form submission
-function handleSubmit(): void {
+// Form submission with backend integration
+async function handleSubmit(): Promise<void> {
   // Validate all required fields
   const requiredFields = getRequiredFields();
   requiredFields.forEach((field) => {
@@ -265,8 +280,125 @@ function handleSubmit(): void {
     if (field === 'passwordConfirmation') validatePasswordConfirmation();
   });
 
-  if (isFormValid.value) {
-    emit('submit', { ...formData });
+  if (!isFormValid.value) {
+    return;
+  }
+
+  // Clear previous errors
+  internalError.value = '';
+
+  try {
+    let result: { success: boolean; error?: string };
+
+    switch (props.mode) {
+      case 'login':
+        result = await authStore.login(formData.email, formData.password);
+        if (result.success) {
+          emit('success', 'Login successful! Redirecting...');
+          // Redirect will be handled by middleware after successful login
+          setTimeout(() => {
+            window.location.href = '/dj/dashboard';
+          }, 1000);
+        } else {
+          internalError.value = result.error || 'Login failed';
+          emit('error', internalError.value);
+        }
+        break;
+
+      case 'register':
+        result = await authStore.register(formData.email, formData.password);
+        if (result.success) {
+          emit(
+            'success',
+            'Account created successfully! Please check your email for verification.'
+          );
+          // Clear form after successful registration
+          Object.assign(formData, {
+            email: '',
+            password: '',
+            passwordConfirmation: '',
+          });
+        } else {
+          internalError.value = result.error || 'Registration failed';
+          emit('error', internalError.value);
+        }
+        break;
+
+      case 'reset-password':
+        // Call reset password API
+        try {
+          const response = await fetch('/api/auth/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: formData.email,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            emit(
+              'success',
+              result.message || 'Password reset link sent to your email.'
+            );
+            // Clear form after successful request
+            formData.email = '';
+          } else {
+            internalError.value = result.error || 'Failed to send reset link';
+            emit('error', internalError.value);
+          }
+        } catch (error) {
+          console.error('Reset password API error:', error);
+          internalError.value = 'Network error occurred';
+          emit('error', internalError.value);
+        }
+        break;
+
+      case 'update-password':
+        // Call update password API
+        try {
+          const response = await fetch('/api/auth/update-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              password: formData.password,
+              passwordConfirmation: formData.passwordConfirmation,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            emit(
+              'success',
+              result.message ||
+                'Password updated successfully! You can now sign in.'
+            );
+            // Clear form after successful update
+            Object.assign(formData, { password: '', passwordConfirmation: '' });
+            // Redirect to login after successful password update
+            setTimeout(() => {
+              window.location.href = '/auth/login';
+            }, 2000);
+          } else {
+            internalError.value = result.error || 'Failed to update password';
+            emit('error', internalError.value);
+          }
+        } catch (error) {
+          console.error('Update password API error:', error);
+          internalError.value = 'Network error occurred';
+          emit('error', internalError.value);
+        }
+        break;
+
+      default:
+        emit('submit', { ...formData });
+    }
+  } catch (error) {
+    console.error('Form submission error:', error);
+    internalError.value = 'An unexpected error occurred. Please try again.';
+    emit('error', internalError.value);
   }
 }
 

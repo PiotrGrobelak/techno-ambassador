@@ -1,19 +1,27 @@
 <template>
   <nav class="flex items-center space-x-4">
+    <!-- Loading state -->
+    <template v-if="authStore.loading">
+      <div class="animate-pulse flex items-center space-x-2">
+        <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+        <div class="w-16 h-4 bg-gray-300 rounded"></div>
+      </div>
+    </template>
+
     <!-- Unauthenticated state -->
-    <template v-if="!isAuthenticated">
+    <template v-else-if="!authStore.isAuthenticated">
       <BaseButton
         label="Sign In"
         variant="ghost"
         size="medium"
-        @click="$emit('navigate', '/auth/login')"
+        @click="navigateToPath('/auth/login')"
         class="hidden sm:inline-flex"
       />
       <BaseButton
         label="I'm a DJ"
         variant="primary"
         size="medium"
-        @click="$emit('navigate', '/auth/register')"
+        @click="navigateToPath('/auth/register')"
         :pulse="true"
       />
     </template>
@@ -37,7 +45,7 @@
           </div>
           <div class="hidden md:block">
             <BaseTypography variant="body-small" weight="medium">
-              {{ userData?.name || userData?.email }}
+              {{ displayName }}
             </BaseTypography>
           </div>
         </div>
@@ -47,7 +55,7 @@
           label="Dashboard"
           variant="ghost"
           size="medium"
-          @click="$emit('navigate', '/dj/dashboard')"
+          @click="navigateToPath('/dj/dashboard')"
         />
 
         <!-- Logout button -->
@@ -56,6 +64,8 @@
           variant="ghost"
           size="medium"
           @click="handleLogout"
+          :loading="logoutLoading"
+          :disabled="logoutLoading"
         />
       </div>
 
@@ -103,7 +113,7 @@
 
     <!-- Mobile menu dropdown (authenticated users only) -->
     <div
-      v-if="isAuthenticated && isMobileMenuOpen"
+      v-if="authStore.isAuthenticated && isMobileMenuOpen"
       class="absolute top-16 right-4 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50 sm:hidden animate-fade-in"
     >
       <!-- User info -->
@@ -118,7 +128,7 @@
           </div>
           <div>
             <BaseTypography variant="body" weight="medium">
-              {{ userData?.name || userData?.email }}
+              {{ displayName }}
             </BaseTypography>
             <BaseTypography variant="caption" color="secondary">
               DJ Profile
@@ -145,10 +155,49 @@
         <button
           @click="handleLogout"
           class="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
+          :disabled="logoutLoading"
         >
-          <BaseTypography variant="body" color="danger"
-            >Sign Out</BaseTypography
+          <BaseTypography
+            variant="body"
+            :color="logoutLoading ? 'muted' : 'danger'"
           >
+            {{ logoutLoading ? 'Signing Out...' : 'Sign Out' }}
+          </BaseTypography>
+        </button>
+      </div>
+    </div>
+
+    <!-- Error toast for logout failures -->
+    <div
+      v-if="logoutError"
+      class="fixed top-4 right-4 bg-red-50 border border-red-200 rounded-lg p-4 z-[60] animate-fade-in"
+    >
+      <div class="flex items-center">
+        <svg
+          class="w-5 h-5 text-red-400 mr-3"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <BaseTypography variant="body-small" color="danger">
+          {{ logoutError }}
+        </BaseTypography>
+        <button
+          @click="logoutError = ''"
+          class="ml-4 text-red-400 hover:text-red-600"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
         </button>
       </div>
     </div>
@@ -156,71 +205,84 @@
 
   <!-- Mobile menu overlay -->
   <div
-    v-if="isAuthenticated && isMobileMenuOpen"
+    v-if="authStore.isAuthenticated && isMobileMenuOpen"
     class="fixed inset-0 bg-black bg-opacity-25 z-40 sm:hidden"
     @click="isMobileMenuOpen = false"
   />
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
+import { useAuthStore } from '../stores/authStore';
 import BaseButton from './BaseButton.vue';
 import BaseTypography from './BaseTypography.vue';
 
-interface UserData {
-  id: string;
-  email: string;
-  name?: string;
-  avatar?: string;
-}
+// Pinia store integration
+const authStore = useAuthStore();
 
-interface Props {
-  isAuthenticated: boolean;
-  userData?: UserData | null;
-  loading?: boolean;
-}
-
-interface Emits {
-  (e: 'navigate', path: string): void;
-  (e: 'logout'): void;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  isAuthenticated: false,
-  userData: null,
-  loading: false,
-});
-
-const emit = defineEmits<Emits>();
-
-// Mobile menu state
+// Local state
 const isMobileMenuOpen = ref(false);
+const logoutLoading = ref(false);
+const logoutError = ref('');
+
+// Initialize auth state when component mounts
+onMounted(async () => {
+  await authStore.initializeAuth();
+});
 
 // Computed properties
 const userInitials = computed(() => {
-  if (!props.userData) return '?';
+  const user = authStore.user;
+  if (!user) return '?';
 
-  if (props.userData.name) {
-    return props.userData.name
-      .split(' ')
-      .map((word) => word.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+  // Try to get initials from email
+  if (user.email) {
+    return user.email.charAt(0).toUpperCase();
   }
 
-  return props.userData.email.charAt(0).toUpperCase();
+  return '?';
 });
 
+const displayName = computed(() => {
+  const user = authStore.user;
+  if (!user) return 'Unknown User';
+
+  // For now, use email as display name
+  // This will be enhanced when user profiles are integrated
+  return user.email || 'DJ';
+});
+
+// Navigation helper
+function navigateToPath(path: string): void {
+  window.location.href = path;
+}
+
 // Event handlers
-function handleLogout(): void {
-  isMobileMenuOpen.value = false;
-  emit('logout');
+async function handleLogout(): Promise<void> {
+  try {
+    logoutLoading.value = true;
+    logoutError.value = '';
+    isMobileMenuOpen.value = false;
+
+    await authStore.logout();
+
+    // Logout success - redirect will be handled by authStore
+  } catch (error) {
+    console.error('Logout failed:', error);
+    logoutError.value = 'Failed to sign out. Please try again.';
+
+    // Auto-hide error after 5 seconds
+    setTimeout(() => {
+      logoutError.value = '';
+    }, 5000);
+  } finally {
+    logoutLoading.value = false;
+  }
 }
 
 function handleMobileNavigation(path: string): void {
   isMobileMenuOpen.value = false;
-  emit('navigate', path);
+  navigateToPath(path);
 }
 </script>
 
