@@ -1,0 +1,40 @@
+---
+// Profile page for DJ - handles both creating and editing profiles
+// Requires authentication (middleware will handle redirect if not logged in)
+
+import Layout from '../../layouts/Layout.astro';
+import ProfileForm from '../../features/profile/components/ProfileForm.vue';
+
+// Get query parameters for mode detection
+const url = Astro.url;
+const mode = url.searchParams.get('mode') || 'edit';
+const isCompleteMode = mode === 'complete';
+
+// Page metadata
+const title = isCompleteMode
+  ? 'Complete Your DJ Profile - Techno Ambassador'
+  : 'Edit Profile - Techno Ambassador';
+---
+
+<Layout title={title}>
+  <main class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Page Header -->
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">
+        {isCompleteMode ? 'Complete Your DJ Profile' : 'Edit Profile'}
+      </h1>
+      <p class="text-lg text-gray-600">
+        {
+          isCompleteMode
+            ? 'Fill out your profile to start connecting with events and other DJs in the techno community.'
+            : 'Manage your profile information, music styles, and social media presence.'
+        }
+      </p>
+    </header>
+
+    <!-- Profile Form Component -->
+    <section aria-label="Profile form">
+      <ProfileForm client:load />
+    </section>
+  </main>
+</Layout>

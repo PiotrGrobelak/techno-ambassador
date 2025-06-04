@@ -144,9 +144,12 @@ const buttonLabel = computed(() => {
 
 // Actions
 const handleProfileAction = () => {
-  // For now, just log the action
-  // In the future, this should navigate to the profile settings page
-  console.log('Navigate to profile settings - to be implemented');
-  // window.location.href = '/dj/profile';
+  if (profileStore.initialized && profileStore.isProfileComplete) {
+    // Navigate to profile edit page
+    window.location.href = '/dj/profile';
+  } else {
+    // Navigate to profile completion page
+    window.location.href = '/dj/profile?mode=complete';
+  }
 };
 </script>

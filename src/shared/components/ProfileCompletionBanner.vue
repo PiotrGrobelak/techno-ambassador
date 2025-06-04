@@ -173,10 +173,8 @@ const shouldShowBanner = computed(() => {
 
 // Actions
 const navigateToProfile = () => {
-  // For now, we'll navigate to a placeholder URL
-  // In the future, this should navigate to the actual profile settings page
-  console.log('Navigate to profile settings - to be implemented');
-  // window.location.href = '/dj/profile';
+  // Navigate to profile completion page
+  window.location.href = '/dj/profile?mode=complete';
 };
 
 const dismissBanner = () => {
