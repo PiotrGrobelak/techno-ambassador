@@ -92,10 +92,9 @@ Title: Registration of new DJ in the system
 Description: As a DJ I want to create my profile in the system so I can showcase my skills and performance calendar.
 Acceptance Criteria:
 
-- System enables profile creation with mandatory fields: artist name, biography, at least one music style
-- Ability to add optional profile photo
-- Ability to add Instagram and/or Facebook links
-- After profile creation, DJ is redirected to calendar management page
+- System enables profile creation with mandatory fields: artist name, biography, at least one music style after registration
+- Ability to add Instagram and/or Facebook links after profile creation
+- After profile creation, DJ is redirected to profile management page
 - Profile is immediately visible on the list of all DJs
 
 #### US-002: Editing DJ Profile
@@ -286,7 +285,24 @@ Acceptance Criteria:
 
 ### Group: Security and Data Quality
 
-#### US-017: Profile Data Validation
+#### US-017: Secure Access and Authentication
+
+Title: Secure Access
+Description: As a user, I want to be able to register and log into the system in a way that ensures the security of my data.
+Acceptance Criteria:
+
+- Login and registration are handled on dedicated pages.
+- Logging in requires providing an email address and a password.
+- Registration requires providing an email address, a password, and password confirmation.
+- The user **CAN** browse the list of DJs and the profile of a specific DJ.
+- The user **CANNOT** use the profile editing feature without logging into the system (US-001, US-002).
+- The user **CANNOT** use event management features without logging into the system (US-004, US-005, US-006).
+- The user can log into the system via a button in the top-right corner.
+- The user can log out of the system via a button in the top-right corner of the main `@Layout.astro`.
+- External login services (e.g., Google, GitHub) are not used.
+- Password recovery should be possible.
+
+#### US-018: Profile Data Validation
 
 Title: Ensuring minimum profile quality
 Description: As a system user I want to be sure that DJ profiles contain basic required information.
@@ -298,7 +314,7 @@ Acceptance Criteria:
 - Inability to save incomplete profile
 - Suggesting corrections in case of errors
 
-#### US-018: Protection Against Duplicates
+#### US-019: Protection Against Duplicates
 
 Title: Avoiding DJ profile duplication
 Description: As an administrator I want to prevent creation of duplicate profiles by the same DJs.
@@ -312,7 +328,7 @@ Acceptance Criteria:
 
 ### Group: Usability and Navigation
 
-#### US-019: Platform Navigation
+#### US-020: Platform Navigation
 
 Title: Intuitive navigation structure
 Description: As a user I want to easily navigate the platform between different sections.
@@ -323,7 +339,7 @@ Acceptance Criteria:
 - "Back" button on detail pages
 - Consistent placement of navigation elements
 
-#### US-020: Platform Homepage
+#### US-021: Platform Homepage
 
 Title: Platform entry point
 Description: As a new user I want to understand the platform's purpose and know how to use it.
