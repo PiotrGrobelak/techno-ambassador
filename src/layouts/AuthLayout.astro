@@ -1,0 +1,81 @@
+---
+import Layout from './Layout.astro';
+import BaseTypography from '../shared/components/BaseTypography.vue';
+
+export interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const { title = 'Techno Ambassador', subtitle } = Astro.props;
+---
+
+<Layout title={title} showHeader={false}>
+  <div
+    class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+  >
+    <div class="max-w-md w-full space-y-8">
+      <!-- Header Section -->
+      <div class="text-center">
+        <!-- Logo/Brand -->
+        <div class="flex justify-center">
+          <div
+            class="w-20 h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg"
+          >
+            <svg
+              class="w-10 h-10 text-white"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <BaseTypography variant="h2" weight="bold" color="primary" client:load>
+          {title}
+        </BaseTypography>
+
+        <!-- Subtitle -->
+        {
+          subtitle && (
+            <BaseTypography variant="body" color="secondary" client:load>
+              {subtitle}
+            </BaseTypography>
+          )
+        }
+      </div>
+
+      <!-- Main Content -->
+      <div class="bg-white rounded-2xl shadow-xl p-8 space-y-6">
+        <slot />
+      </div>
+
+      <!-- Footer Links -->
+      <div class="text-center space-y-2">
+        <slot name="footer" />
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  /* Apple HIG inspired animations */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

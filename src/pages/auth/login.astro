@@ -1,0 +1,53 @@
+---
+import AuthLayout from '../../layouts/AuthLayout.astro';
+import AuthForm from '../../shared/components/AuthForm.vue';
+import BaseTypography from '../../shared/components/BaseTypography.vue';
+---
+
+<AuthLayout
+  title="Welcome Back"
+  subtitle="Sign in to your DJ account to manage events and connect with the techno community"
+>
+  <!-- Login Form -->
+  <AuthForm mode="login" client:load />
+
+  <!-- Navigation Links -->
+  <div class="text-center space-y-3">
+    <BaseTypography variant="body-small" color="muted" client:load>
+      Don't have an account?
+      <a
+        href="/auth/register"
+        class="font-medium text-purple-600 hover:text-purple-500 transition-colors"
+      >
+        Create one here
+      </a>
+    </BaseTypography>
+  </div>
+
+  <!-- Footer slot with additional links -->
+  <div slot="footer" class="space-y-2">
+    <BaseTypography variant="caption" color="muted" client:load>
+      Forgot your password?
+      <a
+        href="/auth/reset-password"
+        class="font-medium text-purple-600 hover:text-purple-500 transition-colors"
+      >
+        Reset it here
+      </a>
+    </BaseTypography>
+
+    <BaseTypography variant="caption" color="muted" client:load>
+      <a
+        href="/"
+        class="font-medium text-gray-600 hover:text-gray-500 transition-colors"
+      >
+        ← Back to home
+      </a>
+    </BaseTypography>
+  </div>
+</AuthLayout>
+
+<script>
+  // Client-side form handling will be implemented when backend is ready
+  // For now, forms are purely presentational
+</script>

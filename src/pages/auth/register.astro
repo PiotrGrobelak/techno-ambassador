@@ -1,0 +1,63 @@
+---
+import AuthLayout from '../../layouts/AuthLayout.astro';
+import AuthForm from '../../shared/components/AuthForm.vue';
+import BaseTypography from '../../shared/components/BaseTypography.vue';
+---
+
+<AuthLayout
+  title="Join the Community"
+  subtitle="Create your DJ profile and start connecting with the techno music community"
+>
+  <!-- Registration Form -->
+  <AuthForm mode="register" client:load />
+
+  <!-- Terms and Privacy -->
+  <div class="text-center">
+    <BaseTypography variant="caption" color="muted" client:load>
+      By creating an account, you agree to our
+      <a
+        href="/terms"
+        class="font-medium text-purple-600 hover:text-purple-500 transition-colors"
+      >
+        Terms of Service
+      </a>
+      and
+      <a
+        href="/privacy"
+        class="font-medium text-purple-600 hover:text-purple-500 transition-colors"
+      >
+        Privacy Policy
+      </a>
+    </BaseTypography>
+  </div>
+
+  <!-- Navigation Links -->
+  <div class="text-center">
+    <BaseTypography variant="body-small" color="muted" client:load>
+      Already have an account?
+      <a
+        href="/auth/login"
+        class="font-medium text-purple-600 hover:text-purple-500 transition-colors"
+      >
+        Sign in here
+      </a>
+    </BaseTypography>
+  </div>
+
+  <!-- Footer slot with additional links -->
+  <div slot="footer" class="space-y-2">
+    <BaseTypography variant="caption" color="muted" client:load>
+      <a
+        href="/"
+        class="font-medium text-gray-600 hover:text-gray-500 transition-colors"
+      >
+        ← Back to home
+      </a>
+    </BaseTypography>
+  </div>
+</AuthLayout>
+
+<script>
+  // Client-side form handling will be implemented when backend is ready
+  // For now, forms are purely presentational
+</script>
