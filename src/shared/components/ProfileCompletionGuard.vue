@@ -201,8 +201,8 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted, watch } from 'vue';
-import { useAuthStore } from '../stores/authStore';
-import { useProfileStore } from '../stores/profileStore';
+import { useAuthStore } from '../stores/useAuthStore';
+import { useProfileStore } from '../stores/useProfileStore';
 import BaseButton from './BaseButton.vue';
 import BaseTypography from './BaseTypography.vue';
 

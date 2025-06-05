@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref, computed, type Ref, type ComputedRef } from 'vue'
 import { z } from 'zod'
-import { useAuthStore } from '../../../shared/stores/authStore'
-import type { UserDetailDto } from '../../../types'
+import { useAuthStore } from '../../../shared/stores/useAuthStore'
+import { useApiClient } from '../../../shared/composables/useApiClient'
+import { useStoreErrorHandling } from '../../../shared/composables/useStoreErrorHandling'
+import type { UserDetailResponseDto } from '../../../types'
 
 // Zod validation schemas
 const profileFormSchema = z.object({
@@ -69,8 +71,10 @@ export interface SaveProfileResponse {
  * Manages form data, validation, submission, and API interactions
  */
 export const useProfileFormStore = defineStore('profileForm', () => {
-  // Get auth store
+  // Get auth store, API client, and error handling
   const authStore = useAuthStore()
+  const apiClient = useApiClient()
+  const errorHandling = useStoreErrorHandling('Profile Form')
 
   // State
   const formData: Ref<ProfileFormData> = ref({
@@ -81,11 +85,16 @@ export const useProfileFormStore = defineStore('profileForm', () => {
     music_style_ids: []
   })
 
-  const errors: Ref<ProfileFormErrors> = ref({})
-  const isLoading: Ref<boolean> = ref(false)
+  const formErrors: Ref<ProfileFormErrors> = ref({})
   const isSubmitting: Ref<boolean> = ref(false)
   const isNewProfile: Ref<boolean> = ref(true)
   const isDirty: Ref<boolean> = ref(false)
+
+  // Re-export error handling state
+  const isLoading = errorHandling.isLoading
+  const error = errorHandling.error
+  const hasError = errorHandling.hasError
+  const isNetworkError = errorHandling.isNetworkError
 
   // Getters
   const isAuthenticated: ComputedRef<boolean> = computed(() => {
@@ -148,7 +157,7 @@ export const useProfileFormStore = defineStore('profileForm', () => {
     markAsDirty()
     
     // Clear field error when user starts typing
-    if (errors.value[field]) {
+    if (formErrors.value[field]) {
       clearFieldError(field)
     }
   }
@@ -158,21 +167,18 @@ export const useProfileFormStore = defineStore('profileForm', () => {
   }
 
   function clearFieldError(field: keyof ProfileFormErrors): void {
-    if (errors.value[field]) {
-      errors.value[field] = undefined
+    if (formErrors.value[field]) {
+      formErrors.value[field] = undefined
     }
   }
 
   function clearAllErrors(): void {
-    errors.value = {}
+    formErrors.value = {}
+    errorHandling.clearError()
   }
 
   function setErrors(newErrors: ProfileFormErrors): void {
-    errors.value = newErrors
-  }
-
-  function setLoading(loading: boolean): void {
-    isLoading.value = loading
+    formErrors.value = newErrors
   }
 
   function setSubmitting(submitting: boolean): void {
@@ -252,45 +258,42 @@ export const useProfileFormStore = defineStore('profileForm', () => {
       return
     }
 
-    setLoading(true)
-    try {
-      const response = await fetch(`/api/users/${targetUserId}`)
-      
-      if (response.status === 404) {
-        // Profile doesn't exist - this is expected for new users
-        console.log('No existing profile found, assuming new user')
-        setNewProfile(true)
-        return
-      }
+    const result = await errorHandling.executeWithErrorHandling(
+      async () => {
+        // The get method returns the parsed data directly or throws an error
+        const response = await apiClient.get<UserDetailResponseDto>(`/users/${targetUserId}`)
+        const profile = response.data
+        
+        
+        // Validate that we have the expected profile structure
+        if (!profile) {
+          throw new Error('No profile data received from API')
+        }
+        
+        // Populate form with existing data
+        setFormData({
+          artist_name: profile.artist_name || '',
+          biography: profile.biography || '',
+          instagram_url: profile.instagram_url || '',
+          facebook_url: profile.facebook_url || '',
+          music_style_ids: profile.music_styles?.map(style => style.id) || []
+        })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        const errorMessage = errorData.error?.message || 'Failed to load profile'
-        console.error('Unexpected error loading profile:', errorMessage)
-        throw new Error(errorMessage)
-      }
+        setNewProfile(false)
+        isDirty.value = false
+        console.log('Profile loaded successfully')
+        
+        return profile
+      },
+      'Load profile',
+      { showToast: false } // Don't show toast for loading
+    )
 
-      const result = await response.json()
-      const profile: UserDetailDto = result.data
-
-      // Populate form with existing data
-      setFormData({
-        artist_name: profile.artist_name,
-        biography: profile.biography,
-        instagram_url: profile.instagram_url || '',
-        facebook_url: profile.facebook_url || '',
-        music_style_ids: profile.music_styles.map(style => style.id)
-      })
-
-      setNewProfile(false)
-      isDirty.value = false
-      console.log('Profile loaded successfully')
-    } catch (error) {
-      console.error('Error loading profile:', error)
-      // Assume new profile if loading fails
+    // Handle 404 specifically for profile loading
+    if (!result && errorHandling.error.value?.includes('404')) {
+      console.log('No existing profile found, assuming new user')
       setNewProfile(true)
-    } finally {
-      setLoading(false)
+      errorHandling.clearError()
     }
   }
 
@@ -311,30 +314,50 @@ export const useProfileFormStore = defineStore('profileForm', () => {
     if (!validateForm()) {
       return {
         success: false,
-        errors: errors.value
+        errors: formErrors.value
       }
     }
 
     setSubmitting(true)
     
     try {
-      const endpoint = isNewProfile.value ? '/api/users' : `/api/users/${getCurrentUserId()}`
-      const method = isNewProfile.value ? 'POST' : 'PUT'
+      const result = await errorHandling.executeWithErrorHandling(
+        async () => {
+          let response: any
 
-      const response = await fetch(endpoint, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
+          if (isNewProfile.value) {
+            // Create new profile using POST
+            response = await apiClient.post('/users', formData.value)
+          } else {
+            // Update existing profile using PUT
+            response = await apiClient.put(`/users/${getCurrentUserId()}`, formData.value)
+          }
+          
+          return response
         },
-        body: JSON.stringify(formData.value),
-        credentials: 'include',
-      })
+        'Save profile',
+        { 
+          showToast: false, // Handle success message manually
+          setLoadingState: false // Use isSubmitting instead
+        }
+      )
 
-      if (!response.ok) {
-        const errorData = await response.json()
+      if (result) {
+        // Update state after successful save
+        setNewProfile(false)
+        isDirty.value = false
+        clearAllErrors()
         
-        // Handle specific error codes
-        if (response.status === 401) {
+        return {
+          success: true,
+          data: result
+        }
+      } else {
+        // Handle specific error cases from the universal error handler
+        const errorMessage = errorHandling.getDisplayError()
+        
+        // Check for specific error types and provide appropriate responses
+        if (errorHandling.isAuthError.value) {
           return {
             success: false,
             errors: {
@@ -343,72 +366,23 @@ export const useProfileFormStore = defineStore('profileForm', () => {
           }
         }
 
-        if (response.status === 403) {
+        if (errorMessage.includes('conflict') || errorMessage.includes('already exists')) {
+          // Try to reload the existing profile
+          console.log('Profile already exists, attempting to reload...')
+          await loadProfile()
           return {
             success: false,
             errors: {
-              general: 'You can only edit your own profile'
+              general: 'A profile already exists for your account. Please refresh the page to edit it.'
             }
           }
         }
 
-        if (response.status === 409) {
-          const errorMessage = errorData.error?.message || 'A profile already exists for this account'
-          
-          // Handle "User profile already exists" specifically
-          if (errorMessage.includes('User profile already exists')) {
-            // Try to reload the existing profile
-            console.log('Profile already exists, attempting to reload...')
-            await loadProfile()
-            return {
-              success: false,
-              errors: {
-                general: 'A profile already exists for your account. Please refresh the page to edit it.'
-              }
-            }
+        return {
+          success: false,
+          errors: {
+            general: errorMessage || 'An unexpected error occurred'
           }
-          
-          return {
-            success: false,
-            errors: {
-              general: errorMessage
-            }
-          }
-        }
-        
-        // Handle validation errors
-        if (response.status === 400 && errorData.error?.details) {
-          const fieldErrors: ProfileFormErrors = {}
-          errorData.error.details.forEach((detail: any) => {
-            fieldErrors[detail.field as keyof ProfileFormErrors] = detail.message
-          })
-          setErrors(fieldErrors)
-          return {
-            success: false,
-            errors: fieldErrors
-          }
-        }
-
-        throw new Error(errorData.error?.message || 'Failed to save profile')
-      }
-
-      const result = await response.json()
-      
-      // Update state after successful save
-      setNewProfile(false)
-      isDirty.value = false
-      clearAllErrors()
-      
-      return {
-        success: true,
-        data: result.data
-      }
-    } catch (error) {
-      console.error('Error saving profile:', error)
-      return {
-        success: false,
-        errors: {
-          general: error instanceof Error ? error.message : 'An unexpected error occurred'
         }
       }
     } finally {
@@ -436,19 +410,38 @@ export const useProfileFormStore = defineStore('profileForm', () => {
    */
   function $reset(): void {
     resetForm()
-    isLoading.value = false
     isSubmitting.value = false
     isNewProfile.value = true
+    errorHandling.resetErrorState()
+  }
+
+  /**
+   * Retry save operation (useful for network errors)
+   */
+  async function retrySaveProfile(): Promise<SaveProfileResponse> {
+    return await saveProfile()
+  }
+
+  /**
+   * Retry load operation (useful for network errors)
+   */
+  async function retryLoadProfile(userId?: string): Promise<void> {
+    return await loadProfile(userId)
   }
 
   return {
     // State
     formData,
-    errors,
-    isLoading,
+    formErrors,
     isSubmitting,
     isNewProfile,
     isDirty,
+    
+    // Error handling state (re-exported)
+    isLoading,
+    error,
+    hasError,
+    isNetworkError,
     
     // Getters
     isAuthenticated,
@@ -464,7 +457,6 @@ export const useProfileFormStore = defineStore('profileForm', () => {
     clearFieldError,
     clearAllErrors,
     setErrors,
-    setLoading,
     setSubmitting,
     setNewProfile,
     validateField,
@@ -474,6 +466,13 @@ export const useProfileFormStore = defineStore('profileForm', () => {
     loadProfile,
     saveProfile,
     resetForm,
-    $reset
+    retrySaveProfile,
+    retryLoadProfile,
+    $reset,
+
+    // Error handling actions
+    clearError: errorHandling.clearError,
+    isRecoverableError: errorHandling.isRecoverableError,
+    getDisplayError: errorHandling.getDisplayError
   }
 }) 

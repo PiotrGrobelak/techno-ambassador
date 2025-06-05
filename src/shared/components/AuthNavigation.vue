@@ -213,7 +213,7 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../stores/useAuthStore';
 import BaseButton from './BaseButton.vue';
 import BaseTypography from './BaseTypography.vue';
 

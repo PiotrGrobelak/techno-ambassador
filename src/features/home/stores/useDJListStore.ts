@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch, type Ref, type ComputedRef } from 'vue'
 import { useApiClient } from '../../../shared/composables/useApiClient'
-import { useToast } from '../../../shared/composables/useToast'
+import { useStoreErrorHandling } from '../../../shared/composables/useStoreErrorHandling'
 import { useSearchStore } from './useSearchStore'
 import { useMusicStylesStore } from './useMusicStylesStore'
 import type { 
@@ -17,7 +17,7 @@ import type {
  */
 export const useDJListStore = defineStore('djList', () => {
   const apiClient = useApiClient()
-  const toast = useToast()
+  const errorHandling = useStoreErrorHandling('DJ List')
   const searchStore = useSearchStore()
   const musicStylesStore = useMusicStylesStore()
 
@@ -31,9 +31,7 @@ export const useDJListStore = defineStore('djList', () => {
     has_next: false,
     has_prev: false
   })
-  const isLoading: Ref<boolean> = ref(false)
   const isLoadingMore: Ref<boolean> = ref(false)
-  const error: Ref<string | null> = ref(null)
   const filters: Ref<UsersQueryParams> = ref({
     page: 1,
     limit: 20
@@ -49,66 +47,68 @@ export const useDJListStore = defineStore('djList', () => {
   })
 
   const isEmpty: ComputedRef<boolean> = computed(() => {
-    return djList.value.length === 0 && !isLoading.value
+    return djList.value.length === 0 && !errorHandling.isLoading.value
   })
 
   const currentFilters: ComputedRef<UsersQueryParams> = computed(() => {
     return { ...filters.value }
   })
 
+  // Re-export error handling state
+  const isLoading = errorHandling.isLoading
+  const error = errorHandling.error
+  const hasError = errorHandling.hasError
+  const isNetworkError = errorHandling.isNetworkError
+
   // Actions
   async function fetchDJs(params?: UsersQueryParams): Promise<void> {
     if (isLoading.value) return
 
-    try {
-      isLoading.value = true
-      error.value = null
+    const result = await errorHandling.executeWithErrorHandling(
+      async () => {
+        const queryParams = { ...filters.value, ...params }
+        
+        // Build query string
+        const searchParams = new URLSearchParams()
+        
+        if (queryParams.search && queryParams.search.trim()) {
+          searchParams.append('search', queryParams.search.trim())
+        }
+        
+        if (queryParams.music_styles) {
+          searchParams.append('music_styles', queryParams.music_styles)
+        }
+        
+        if (queryParams.page) {
+          searchParams.append('page', queryParams.page.toString())
+        }
+        
+        if (queryParams.limit) {
+          searchParams.append('limit', queryParams.limit.toString())
+        }
 
-      const queryParams = { ...filters.value, ...params }
-      
-      // Build query string
-      const searchParams = new URLSearchParams()
-      
-      if (queryParams.search && queryParams.search.trim()) {
-        searchParams.append('search', queryParams.search.trim())
-      }
-      
-      if (queryParams.music_styles) {
-        searchParams.append('music_styles', queryParams.music_styles)
-      }
-      
-      if (queryParams.page) {
-        searchParams.append('page', queryParams.page.toString())
-      }
-      
-      if (queryParams.limit) {
-        searchParams.append('limit', queryParams.limit.toString())
-      }
+        const queryString = searchParams.toString()
+        const endpoint = queryString ? `/users?${queryString}` : '/users'
 
-      const queryString = searchParams.toString()
-      const endpoint = queryString ? `/users?${queryString}` : '/users'
+        const response = await apiClient.get<UsersListResponseDto>(endpoint)
+        
+        // Reset list if it's a new search (page 1)
+        if (queryParams.page === 1) {
+          djList.value = response.data
+        } else {
+          // Append to existing list for pagination
+          djList.value.push(...response.data)
+        }
+        
+        pagination.value = response.pagination
+        filters.value = queryParams
 
-      const response = await apiClient.get<UsersListResponseDto>(endpoint)
-      
-      // Reset list if it's a new search (page 1)
-      if (queryParams.page === 1) {
-        djList.value = response.data
-      } else {
-        // Append to existing list for pagination
-        djList.value.push(...response.data)
-      }
-      
-      pagination.value = response.pagination
-      filters.value = queryParams
+        return response
+      },
+      'Fetch DJs'
+    )
 
-    } catch (err) {
-      const errorMessage = 'Failed to load DJs'
-      error.value = errorMessage
-      toast.showError('Error', errorMessage)
-      console.error('Error fetching DJs:', err)
-    } finally {
-      isLoading.value = false
-    }
+    return result ? Promise.resolve() : Promise.reject()
   }
 
   async function loadMoreDJs(): Promise<void> {
@@ -121,8 +121,10 @@ export const useDJListStore = defineStore('djList', () => {
       await fetchDJs({ ...filters.value, page: nextPage })
       
     } catch (err) {
-      toast.showError('Error', 'Failed to load more DJs')
-      console.error('Error loading more DJs:', err)
+      await errorHandling.handleError(err, 'Load more DJs', { 
+        showToast: true,
+        setLoadingState: false // Don't affect main loading state
+      })
     } finally {
       isLoadingMore.value = false
     }
@@ -163,13 +165,12 @@ export const useDJListStore = defineStore('djList', () => {
       has_next: false,
       has_prev: false
     }
-    isLoading.value = false
     isLoadingMore.value = false
-    error.value = null
     filters.value = {
       page: 1,
       limit: 20
     }
+    errorHandling.resetErrorState()
   }
 
   // Reactive filtering based on other stores
@@ -198,10 +199,14 @@ export const useDJListStore = defineStore('djList', () => {
     // State
     djList,
     pagination,
-    isLoading,
     isLoadingMore,
-    error,
     filters,
+    
+    // Error handling state (re-exported)
+    isLoading,
+    error,
+    hasError,
+    isNetworkError,
     
     // Getters
     hasMorePages,
@@ -214,6 +219,11 @@ export const useDJListStore = defineStore('djList', () => {
     loadMoreDJs,
     resetList,
     updateFilters,
-    $reset
+    $reset,
+    
+    // Error handling actions
+    clearError: errorHandling.clearError,
+    isRecoverableError: errorHandling.isRecoverableError,
+    getDisplayError: errorHandling.getDisplayError
   }
 }) 

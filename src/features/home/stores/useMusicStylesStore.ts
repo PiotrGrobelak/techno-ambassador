@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, type Ref, type ComputedRef } from 'vue'
 import { useApiClient } from '../../../shared/composables/useApiClient'
-import { useToast } from '../../../shared/composables/useToast'
+import { useStoreErrorHandling } from '../../../shared/composables/useStoreErrorHandling'
 import type { MusicStyleDto, MusicStylesListResponseDto } from '../../../types'
 
 /**
@@ -10,13 +10,11 @@ import type { MusicStyleDto, MusicStylesListResponseDto } from '../../../types'
  */
 export const useMusicStylesStore = defineStore('musicStyles', () => {
   const apiClient = useApiClient()
-  const toast = useToast()
+  const errorHandling = useStoreErrorHandling('Music Styles')
 
   // State
   const musicStyles: Ref<MusicStyleDto[]> = ref([])
   const selectedStyles: Ref<string[]> = ref([])
-  const isLoading: Ref<boolean> = ref(false)
-  const error: Ref<string | null> = ref(null)
 
   // Getters
   const selectedStylesCount: ComputedRef<number> = computed(() => {
@@ -31,25 +29,27 @@ export const useMusicStylesStore = defineStore('musicStyles', () => {
     return musicStyles.value.filter(style => style.user_count > 0)
   })
 
+  // Re-export error handling state and computed
+  const isLoading = errorHandling.isLoading
+  const error = errorHandling.error
+  const hasError = errorHandling.hasError
+  const isNetworkError = errorHandling.isNetworkError
+
   // Actions
   async function fetchMusicStyles(): Promise<void> {
     if (isLoading.value) return
 
-    try {
-      isLoading.value = true
-      error.value = null
+    const result = await errorHandling.executeWithErrorHandling(
+      async () => {
+        const response = await apiClient.get<MusicStylesListResponseDto>('/music-styles')
+        musicStyles.value = response.data
+        return response
+      },
+      'Fetch music styles'
+    )
 
-      const response = await apiClient.get<MusicStylesListResponseDto>('/music-styles')
-      musicStyles.value = response.data
-
-    } catch (err) {
-      const errorMessage = 'Failed to load music styles'
-      error.value = errorMessage
-      toast.showError('Error', errorMessage)
-      console.error('Error fetching music styles:', err)
-    } finally {
-      isLoading.value = false
-    }
+    // Operation completed successfully if result is not null
+    return result ? Promise.resolve() : Promise.reject()
   }
 
   function toggleStyle(styleId: string): void {
@@ -78,16 +78,19 @@ export const useMusicStylesStore = defineStore('musicStyles', () => {
   function $reset(): void {
     musicStyles.value = []
     selectedStyles.value = []
-    isLoading.value = false
-    error.value = null
+    errorHandling.resetErrorState()
   }
 
   return {
     // State
     musicStyles,
     selectedStyles,
+    
+    // Error handling state (re-exported)
     isLoading,
     error,
+    hasError,
+    isNetworkError,
     
     // Getters
     selectedStylesCount,
@@ -99,6 +102,11 @@ export const useMusicStylesStore = defineStore('musicStyles', () => {
     toggleStyle,
     clearStyles,
     setSelectedStyles,
-    $reset
+    $reset,
+    
+    // Error handling actions
+    clearError: errorHandling.clearError,
+    isRecoverableError: errorHandling.isRecoverableError,
+    getDisplayError: errorHandling.getDisplayError
   }
 }) 

@@ -32,7 +32,7 @@
                   :model-value="profileFormStore.formData.artist_name"
                   placeholder="Enter your artist/DJ name"
                   :class="inputClasses('artist_name')"
-                  :invalid="Boolean(profileFormStore.errors.artist_name)"
+                  :invalid="Boolean(profileFormStore.formErrors.artist_name)"
                   @update:model-value="
                     (value) =>
                       profileFormStore.updateField('artist_name', value || '')
@@ -40,10 +40,10 @@
                   @blur="() => validateField('artist_name')"
                 />
                 <small
-                  v-if="profileFormStore.errors.artist_name"
+                  v-if="profileFormStore.formErrors.artist_name"
                   class="p-error block mt-1"
                 >
-                  {{ profileFormStore.errors.artist_name }}
+                  {{ profileFormStore.formErrors.artist_name }}
                 </small>
                 <small v-else class="text-gray-600 block mt-1">
                   This is how other users will find you
@@ -65,7 +65,7 @@
                   placeholder="Tell us about your music journey, style, and what makes you unique..."
                   :rows="6"
                   :class="inputClasses('biography')"
-                  :invalid="Boolean(profileFormStore.errors.biography)"
+                  :invalid="Boolean(profileFormStore.formErrors.biography)"
                   @update:model-value="
                     (value) =>
                       profileFormStore.updateField('biography', value || '')
@@ -74,10 +74,10 @@
                 />
                 <div class="flex justify-between items-center mt-1">
                   <small
-                    v-if="profileFormStore.errors.biography"
+                    v-if="profileFormStore.formErrors.biography"
                     class="p-error"
                   >
-                    {{ profileFormStore.errors.biography }}
+                    {{ profileFormStore.formErrors.biography }}
                   </small>
                   <small v-else class="text-gray-600">
                     Share your musical background and style
@@ -91,7 +91,7 @@
               <!-- Music Styles -->
               <MusicStyleSelector
                 :model-value="profileFormStore.formData.music_style_ids"
-                :error-message="profileFormStore.errors.music_style_ids"
+                :error-message="profileFormStore.formErrors.music_style_ids"
                 helper-text="Select the music styles you play or are passionate about"
                 @update:model-value="
                   (value) =>
@@ -119,7 +119,9 @@
                       :model-value="profileFormStore.formData.instagram_url"
                       placeholder="@yourusername or https://instagram.com/yourusername"
                       :class="inputClasses('instagram_url')"
-                      :invalid="Boolean(profileFormStore.errors.instagram_url)"
+                      :invalid="
+                        Boolean(profileFormStore.formErrors.instagram_url)
+                      "
                       @update:model-value="
                         (value) =>
                           profileFormStore.updateField(
@@ -130,10 +132,10 @@
                       @blur="() => validateField('instagram_url')"
                     />
                     <small
-                      v-if="profileFormStore.errors.instagram_url"
+                      v-if="profileFormStore.formErrors.instagram_url"
                       class="p-error block mt-1"
                     >
-                      {{ profileFormStore.errors.instagram_url }}
+                      {{ profileFormStore.formErrors.instagram_url }}
                     </small>
                     <small v-else class="text-gray-600 block mt-1">
                       Optional - your Instagram handle or profile URL
@@ -153,7 +155,9 @@
                       :model-value="profileFormStore.formData.facebook_url"
                       placeholder="yourusername or https://facebook.com/yourusername"
                       :class="inputClasses('facebook_url')"
-                      :invalid="Boolean(profileFormStore.errors.facebook_url)"
+                      :invalid="
+                        Boolean(profileFormStore.formErrors.facebook_url)
+                      "
                       @update:model-value="
                         (value) =>
                           profileFormStore.updateField(
@@ -164,10 +168,10 @@
                       @blur="() => validateField('facebook_url')"
                     />
                     <small
-                      v-if="profileFormStore.errors.facebook_url"
+                      v-if="profileFormStore.formErrors.facebook_url"
                       class="p-error block mt-1"
                     >
-                      {{ profileFormStore.errors.facebook_url }}
+                      {{ profileFormStore.formErrors.facebook_url }}
                     </small>
                     <small v-else class="text-gray-600 block mt-1">
                       Optional - your Facebook username or profile URL
@@ -180,7 +184,7 @@
 
           <!-- General Error Message -->
           <div
-            v-if="profileFormStore.errors.general"
+            v-if="profileFormStore.formErrors.general"
             class="bg-red-50 border border-red-200 rounded-lg p-4"
           >
             <div class="flex items-start">
@@ -202,7 +206,7 @@
                   Error saving profile
                 </h3>
                 <p class="text-sm text-red-700 mt-1">
-                  {{ profileFormStore.errors.general }}
+                  {{ profileFormStore.formErrors.general }}
                 </p>
               </div>
             </div>
@@ -342,7 +346,7 @@ const isProfileComplete = computed(() => {
 // Methods
 const inputClasses = (fieldName: keyof ProfileFormData) => {
   const baseClasses = 'w-full';
-  const hasError = Boolean(profileFormStore.errors[fieldName]);
+  const hasError = Boolean(profileFormStore.formErrors[fieldName]);
 
   return hasError ? `${baseClasses} p-invalid` : baseClasses;
 };
@@ -353,7 +357,7 @@ const validateField = (fieldName: keyof ProfileFormData) => {
 
   if (error) {
     profileFormStore.setErrors({
-      ...profileFormStore.errors,
+      ...profileFormStore.formErrors,
       [fieldName]: error,
     });
   } else {
@@ -365,7 +369,7 @@ const handleSubmit = async () => {
   // Check authentication before submitting
   if (!profileFormStore.isAuthenticated) {
     profileFormStore.setErrors({
-      ...profileFormStore.errors,
+      ...profileFormStore.formErrors,
       general: 'You must be logged in to save your profile',
     });
     return;

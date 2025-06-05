@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed, readonly } from 'vue';
+import { useStoreErrorHandling } from '../composables/useStoreErrorHandling';
 
 interface ProfileStatus {
   isComplete: boolean;
@@ -8,10 +9,10 @@ interface ProfileStatus {
 }
 
 export const useProfileStore = defineStore('profile', () => {
+  const errorHandling = useStoreErrorHandling('Profile Status')
+
   // State
   const profileStatus = ref<ProfileStatus | null>(null);
-  const loading = ref(false);
-  const error = ref<string>('');
   const initialized = ref(false);
 
   // Getters
@@ -21,19 +22,13 @@ export const useProfileStore = defineStore('profile', () => {
     return profileStatus.value !== null && !profileStatus.value.isComplete;
   });
 
+  // Re-export error handling state
+  const loading = errorHandling.isLoading
+  const error = errorHandling.error
+  const hasError = errorHandling.hasError
+  const isNetworkError = errorHandling.isNetworkError
+
   // Actions
-  const setLoading = (isLoading: boolean) => {
-    loading.value = isLoading;
-  };
-
-  const setError = (errorMessage: string) => {
-    error.value = errorMessage;
-  };
-
-  const clearError = () => {
-    error.value = '';
-  };
-
   const setProfileStatus = (status: ProfileStatus) => {
     profileStatus.value = status;
   };
@@ -42,27 +37,26 @@ export const useProfileStore = defineStore('profile', () => {
    * Check profile completion status from API
    */
   const checkProfileStatus = async (): Promise<void> => {
-    try {
-      setLoading(true);
-      clearError();
+    const result = await errorHandling.executeWithErrorHandling(
+      async () => {
+        const response = await fetch('/api/auth/profile-status', {
+          method: 'GET',
+          credentials: 'include',
+        });
 
-      const response = await fetch('/api/auth/profile-status', {
-        method: 'GET',
-        credentials: 'include',
-      });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to check profile status');
+        }
 
-      if (response.ok) {
         const data = await response.json();
         setProfileStatus(data.data);
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error || 'Failed to check profile status');
-      }
-    } catch (error) {
-      console.error('Profile status check failed:', error);
-      setError('Network error occurred while checking profile status');
-    } finally {
-      setLoading(false);
+        return data;
+      },
+      'Check profile status'
+    );
+
+    if (result) {
       initialized.value = true;
     }
   };
@@ -80,9 +74,8 @@ export const useProfileStore = defineStore('profile', () => {
    */
   const resetState = () => {
     profileStatus.value = null;
-    loading.value = false;
-    error.value = '';
     initialized.value = false;
+    errorHandling.resetErrorState();
   };
 
   /**
@@ -129,12 +122,17 @@ export const useProfileStore = defineStore('profile', () => {
     return missingFields.value.map(field => fieldLabels[field] || field);
   });
 
+
   return {
     // Readonly state
     profileStatus: readonly(profileStatus),
-    loading: readonly(loading),
-    error: readonly(error),
     initialized: readonly(initialized),
+
+    // Error handling state (re-exported)
+    loading,
+    error,
+    hasError,
+    isNetworkError,
 
     // Computed getters
     isProfileComplete,
@@ -144,14 +142,16 @@ export const useProfileStore = defineStore('profile', () => {
     getMissingFieldLabels,
 
     // Actions
-    setLoading,
-    setError,
-    clearError,
     setProfileStatus,
     checkProfileStatus,
     initializeProfile,
     resetState,
     markProfileComplete,
     shouldRedirectToCompletion,
+
+    // Error handling actions
+    clearError: errorHandling.clearError,
+    isRecoverableError: errorHandling.isRecoverableError,
+    getDisplayError: errorHandling.getDisplayError
   };
 }); 
