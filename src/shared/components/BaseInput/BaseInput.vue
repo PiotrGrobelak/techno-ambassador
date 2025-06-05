@@ -35,6 +35,7 @@
         :readonly="readonly"
         :required="required"
         :type="inputType"
+        :rows="multiline ? rows : undefined"
         :aria-label="ariaLabel || label"
         :aria-describedby="
           hasError
@@ -363,7 +364,8 @@ function handleFocus(event: FocusEvent): void {
 
 function handleInput(event: Event): void {
   const target = event.target as HTMLInputElement;
-  emit('update:modelValue', target.value);
+  // Use the stringValue setter to handle number conversion
+  stringValue.value = target.value;
   emit('input', event);
 }
 

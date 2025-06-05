@@ -4,6 +4,7 @@
     :dialog-header="dialogHeader"
     :show-search="true"
     :search-placeholder="searchPlaceholder"
+    :disabled="disabled"
     :info-text="
       selectedCount > 0
         ? `${selectedCount} item${selectedCount !== 1 ? 's' : ''} selected`

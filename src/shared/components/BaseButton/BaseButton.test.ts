@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { VueWrapper } from '@vue/test-utils';
-import BaseButton from './BaseButton.vue';
+import BaseButton from '@/shared/components/BaseButton/BaseButton.vue';
 import { mountComponent } from '@/test/utils';
 
 // Mock PrimeVue Button component with more realistic behavior
@@ -27,6 +27,7 @@ vi.mock('primevue/button', () => ({
       size: String,
     },
     emits: ['click'],
+    inheritAttrs: false,
   },
 }));
 
@@ -108,7 +109,7 @@ describe('BaseButton', () => {
 
   describe('Button Classes Generation', () => {
     it('applies correct size classes', () => {
-      const sizeTests = [
+      const sizeTests: Array<[string, string[]]> = [
         ['small', ['px-3', 'py-1.5', 'text-sm']],
         ['medium', ['px-4', 'py-2']],
         ['large', ['px-6', 'py-3', 'text-lg']],
@@ -120,7 +121,7 @@ describe('BaseButton', () => {
         });
         
         const button = wrapper.find('button');
-        expectedClasses.forEach(cls => {
+        expectedClasses.forEach((cls: string) => {
           expect(button.classes()).toContain(cls);
         });
       });
@@ -145,7 +146,7 @@ describe('BaseButton', () => {
     });
 
     it('applies variant-specific classes', () => {
-      const variantTests = [
+      const variantTests: Array<[string, string[]]> = [
         ['primary', ['font-semibold', 'shadow-sm']],
         ['destructive', ['font-medium']],
         ['link', ['underline-offset-4']],
@@ -159,7 +160,7 @@ describe('BaseButton', () => {
         });
         
         const button = wrapper.find('button');
-        expectedClasses.forEach(cls => {
+        expectedClasses.forEach((cls: string) => {
           expect(button.classes()).toContain(cls);
         });
       });
@@ -214,7 +215,7 @@ describe('BaseButton', () => {
     });
 
     it('generates correct icon classes for different sizes', () => {
-      const sizeIconTests = [
+      const sizeIconTests: Array<[string, string]> = [
         ['small', 'w-4 h-4'],
         ['medium', 'w-5 h-5'],
         ['large', 'w-6 h-6'],
