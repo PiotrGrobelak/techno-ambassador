@@ -1,21 +1,21 @@
 import type { APIContext } from 'astro';
-import { createEventSchemaRelaxed, getEventsQuerySchema } from '../../schemas/event.schema';
-import { EventService } from '../../services/event.service';
+import { createEventSchemaRelaxed, getEventsQuerySchema } from '@/schemas/event.schema';
+import { EventService } from '@/services/event.service';
 import { 
   handleApiError, 
   parseJsonBody, 
   handleServiceError,
   // verifyAuthentication,
   ApiErrors 
-} from '../../middleware/error-handler';
-import { ErrorLogService } from '../../services/error-log.service';
+} from '@/middleware/error-handler';
+import { ErrorLogService } from '@/services/error-log.service';
 import type { 
   CreateEventCommand, 
   EventResponseDto, 
   EventsListResponseDto, 
   EventsQueryParams 
-} from '../../types';
-import { DEFAULT_USER_ID } from '../../db/supabase.client';
+} from '@/types';
+import { DEFAULT_USER_ID } from '@/db/supabase.client';
 
 export const prerender = false
 

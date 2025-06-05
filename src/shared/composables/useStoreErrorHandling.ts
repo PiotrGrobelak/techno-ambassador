@@ -1,5 +1,5 @@
 import { ref, computed, readonly, type Ref } from 'vue'
-import { useErrorHandler, ClientErrorType, type ClientError } from './useErrorHandler'
+import { useErrorHandler, ClientErrorType, type ClientError } from '@/shared/composables/useErrorHandler'
 
 /**
  * Standard error state interface for stores

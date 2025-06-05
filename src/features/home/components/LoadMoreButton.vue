@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import Button from 'primevue/button';
-import type { PaginationDto } from '../../../types';
+import type { PaginationDto } from '@/types';
 
 interface Props {
   pagination: PaginationDto;

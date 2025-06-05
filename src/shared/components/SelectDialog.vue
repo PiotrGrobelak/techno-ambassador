@@ -90,7 +90,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import Checkbox from 'primevue/checkbox';
-import BaseDialog from './BaseDialog.vue';
+import BaseDialog from '@/shared/components/BaseDialog.vue';
 
 interface Item {
   id: string;

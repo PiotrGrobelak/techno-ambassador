@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref, computed, type Ref, type ComputedRef } from 'vue'
 import { z } from 'zod'
-import { useAuthStore } from '../../../shared/stores/useAuthStore'
-import { useApiClient } from '../../../shared/composables/useApiClient'
-import { useStoreErrorHandling } from '../../../shared/composables/useStoreErrorHandling'
-import type { UserDetailResponseDto } from '../../../types'
+import { useAuthStore } from '@/shared/stores/useAuthStore'
+import { useApiClient } from '@/shared/composables/useApiClient'
+import { useStoreErrorHandling } from '@/shared/composables/useStoreErrorHandling'
+import type { UserDetailResponseDto } from '@/types'
 
 // Zod validation schemas
 const profileFormSchema = z.object({

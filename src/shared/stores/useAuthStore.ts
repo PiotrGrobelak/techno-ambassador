@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed, readonly } from 'vue';
-import { useStoreErrorHandling } from '../composables/useStoreErrorHandling';
+import { useStoreErrorHandling } from '@/shared/composables/useStoreErrorHandling';
 import type { User, Session } from '@supabase/supabase-js';
 
 interface AuthState {
@@ -104,7 +104,7 @@ export const useAuthStore = defineStore('auth', () => {
         
         // Reset profile store state if it exists
         try {
-          const { useProfileStore } = await import('./useProfileStore');
+          const { useProfileStore } = await import('@/shared/stores/useProfileStore');
           const profileStore = useProfileStore();
           profileStore.resetState();
         } catch (error) {

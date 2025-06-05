@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '../db/database.types';
+import type { Database } from '@/db/database.types';
 import type { 
   CreateEventCommand, 
   UpdateEventCommand,
@@ -11,7 +11,7 @@ import type {
   PaginationDto,
   EventInsert,
   EventUpdate
-} from '../types';
+} from '@/types';
 
 /**
  * Service class for event-related business logic and database operations

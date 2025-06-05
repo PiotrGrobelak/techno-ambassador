@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed, type Ref, type ComputedRef } from 'vue'
-import { useApiClient } from '../../../shared/composables/useApiClient'
-import { useStoreErrorHandling } from '../../../shared/composables/useStoreErrorHandling'
-import type { MusicStyleDto, MusicStylesListResponseDto } from '../../../types'
+import { useApiClient } from '@/shared/composables/useApiClient'
+import { useStoreErrorHandling } from '@/shared/composables/useStoreErrorHandling'
+import type { MusicStyleDto, MusicStylesListResponseDto } from '@/types'
 
 /**
  * Music styles data management and selection state store

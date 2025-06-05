@@ -1,5 +1,5 @@
-import { UserService } from '../../services/user.service'
-import { supabaseClient } from '../../db/supabase.client'
+import { UserService } from '@/services/user.service'
+import { supabaseClient } from '@/db/supabase.client'
 
 /**
  * User service composable for client-side operations

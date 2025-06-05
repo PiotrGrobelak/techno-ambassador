@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database, TablesInsert } from '../db/database.types';
+import type { Database, TablesInsert } from '@/db/database.types';
 import type { 
   CreateUserCommand, 
   UpdateUserCommand,
@@ -14,7 +14,7 @@ import type {
   UserMusicStyleDto,
   UsersQueryParams,
   PaginationDto
-} from '../types';
+} from '@/types';
 
 /**
  * Service class for user-related business logic and database operations

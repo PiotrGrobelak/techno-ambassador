@@ -1,4 +1,4 @@
-import { useToast } from './useToast'
+import { useToast } from '@/shared/composables/useToast'
 
 /**
  * Standard error types for client-side error handling

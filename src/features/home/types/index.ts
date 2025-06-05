@@ -1,4 +1,4 @@
-import type { MusicStyleDto, PaginationDto, UsersQueryParams, UserListItemDto } from '../../../types'
+import type { MusicStyleDto, PaginationDto, UsersQueryParams, UserListItemDto } from '@/types'
 
 /**
  * Search state management for DJ search functionality

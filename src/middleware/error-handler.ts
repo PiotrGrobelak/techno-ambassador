@@ -1,6 +1,6 @@
 import type { APIContext } from 'astro';
-import { ErrorLogService, ErrorType, type ErrorContext } from '../services/error-log.service';
-import type { ErrorResponseDto, ValidationErrorDto } from '../types';
+import { ErrorLogService, ErrorType, type ErrorContext } from '@/services/error-log.service';
+import type { ErrorResponseDto, ValidationErrorDto } from '@/types';
 
 /**
  * Custom error class for API errors with structured information

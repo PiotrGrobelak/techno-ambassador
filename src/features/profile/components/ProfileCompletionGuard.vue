@@ -201,10 +201,10 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted, watch } from 'vue';
-import { useAuthStore } from '../stores/useAuthStore';
-import { useProfileStore } from '../stores/useProfileStore';
-import BaseButton from './BaseButton.vue';
-import BaseTypography from './BaseTypography.vue';
+import { useAuthStore } from '@/shared/stores/useAuthStore';
+import { useProfileStore } from '@/shared/stores/useProfileStore';
+import BaseButton from '@/shared/components/BaseButton.vue';
+import BaseTypography from '@/shared/components/BaseTypography.vue';
 
 interface Props {
   /** Whether to enforce profile completion (true) or just show prompt (false) */

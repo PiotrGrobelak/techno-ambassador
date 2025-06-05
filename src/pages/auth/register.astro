@@ -1,7 +1,7 @@
 ---
-import AuthLayout from '../../layouts/AuthLayout.astro';
-import AuthForm from '../../shared/components/AuthForm.vue';
-import BaseTypography from '../../shared/components/BaseTypography.vue';
+import AuthLayout from '@/layouts/AuthLayout.astro';
+import AuthForm from '@/features/auth/components/AuthForm.vue';
+import BaseTypography from '@/shared/components/BaseTypography.vue';
 
 // Check if user is already authenticated and redirect
 const { user } = Astro.locals;

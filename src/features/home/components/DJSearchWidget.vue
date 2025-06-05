@@ -114,9 +114,9 @@ import Button from 'primevue/button';
 import SearchFilters from './SearchFilters.vue';
 import DJList from './DJList.vue';
 import LoadMoreButton from './LoadMoreButton.vue';
-import { useSearchStore } from '../stores/useSearchStore';
-import { useMusicStylesStore } from '../stores/useMusicStylesStore';
-import { useDJListStore } from '../stores/useDJListStore';
+import { useSearchStore } from '@/features/home/stores/useSearchStore';
+import { useMusicStylesStore } from '@/features/home/stores/useMusicStylesStore';
+import { useDJListStore } from '@/features/home/stores/useDJListStore';
 
 // Initialize stores
 const searchStore = useSearchStore();

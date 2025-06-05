@@ -111,10 +111,10 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
-import { useAuthStore } from '../stores/useAuthStore';
-import BaseInput from './BaseInput.vue';
-import BaseButton from './BaseButton.vue';
-import BaseTypography from './BaseTypography.vue';
+import { useAuthStore } from '@/shared/stores/useAuthStore';
+import BaseInput from '@/shared/components/BaseInput.vue';
+import BaseButton from '@/shared/components/BaseButton.vue';
+import BaseTypography from '@/shared/components/BaseTypography.vue';
 
 type AuthMode = 'login' | 'register' | 'reset-password' | 'update-password';
 
@@ -335,17 +335,18 @@ async function handleSubmit(): Promise<void> {
             }),
           });
 
-          const result = await response.json();
+          const resultData = await response.json(); // Renamed to avoid conflict
 
           if (response.ok) {
             emit(
               'success',
-              result.message || 'Password reset link sent to your email.'
+              resultData.message || 'Password reset link sent to your email.'
             );
             // Clear form after successful request
             formData.email = '';
           } else {
-            internalError.value = result.error || 'Failed to send reset link';
+            internalError.value =
+              resultData.error || 'Failed to send reset link';
             emit('error', internalError.value);
           }
         } catch (error) {
@@ -367,12 +368,12 @@ async function handleSubmit(): Promise<void> {
             }),
           });
 
-          const result = await response.json();
+          const updateResult = await response.json(); // Renamed to avoid conflict
 
           if (response.ok) {
             emit(
               'success',
-              result.message ||
+              updateResult.message ||
                 'Password updated successfully! You can now sign in.'
             );
             // Clear form after successful update
@@ -382,7 +383,8 @@ async function handleSubmit(): Promise<void> {
               window.location.href = '/auth/login';
             }, 2000);
           } else {
-            internalError.value = result.error || 'Failed to update password';
+            internalError.value =
+              updateResult.error || 'Failed to update password';
             emit('error', internalError.value);
           }
         } catch (error) {

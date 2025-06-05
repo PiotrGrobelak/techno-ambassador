@@ -58,7 +58,7 @@
 import { computed } from 'vue';
 import DJCard from './DJCard.vue';
 import LoadingSkeletons from './LoadingSkeletons.vue';
-import type { UserListItemDto } from '../../../types';
+import type { UserListItemDto } from '@/types';
 
 interface Props {
   djList: UserListItemDto[];

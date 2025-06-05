@@ -1,5 +1,5 @@
 import { defineMiddleware } from 'astro:middleware';
-import { createSupabaseServerInstance } from '../db/supabase.client.ts';
+import { createSupabaseServerInstance } from '@/db/supabase.client.ts';
 
 // Public paths - accessible without authentication
 const PUBLIC_PATHS = [

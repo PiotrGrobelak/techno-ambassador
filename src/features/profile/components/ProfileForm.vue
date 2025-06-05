@@ -309,8 +309,8 @@ import Button from 'primevue/button';
 import ProfileCompletionBanner from './ProfileCompletionBanner.vue';
 import ProfilePreview from './ProfilePreview.vue';
 import MusicStyleSelector from './MusicStyleSelector.vue';
-import { useProfileFormStore } from '../stores/useProfileFormStore';
-import type { ProfileFormData } from '../stores/useProfileFormStore';
+import { useProfileFormStore } from '@/features/profile/stores/useProfileFormStore';
+import type { ProfileFormData } from '@/features/profile/types';
 
 // Use the profile form store
 const profileFormStore = useProfileFormStore();

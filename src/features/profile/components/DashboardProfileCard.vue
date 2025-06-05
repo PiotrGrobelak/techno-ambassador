@@ -102,10 +102,10 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
-import { useProfileStore } from '../stores/useProfileStore';
-import { useAuthStore } from '../stores/useAuthStore';
-import BaseButton from './BaseButton.vue';
-import BaseTypography from './BaseTypography.vue';
+import { useProfileStore } from '@/shared/stores/useProfileStore';
+import { useAuthStore } from '@/shared/stores/useAuthStore';
+import BaseButton from '@/shared/components/BaseButton.vue';
+import BaseTypography from '@/shared/components/BaseTypography.vue';
 
 // Stores
 const profileStore = useProfileStore();

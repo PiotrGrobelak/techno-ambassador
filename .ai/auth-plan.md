@@ -56,14 +56,14 @@
 
 #### 1.1.3 Vue components for interactivity
 
-**Navigation component `src/shared/components/AuthNavigation.vue`**
+**Navigation component `src/features/auth/components/AuthNavigation.vue`**
 
 - Interface accepting authentication state and user data
 - Dynamic display of Login/Register buttons for unauthenticated users
 - User menu with Logout option for logged in users
 - Responsive menu adapted for mobile devices
 
-**Universal form `src/shared/components/AuthForm.vue`**
+**Universal form `src/features/auth/components/AuthForm.vue`**
 
 - Working modes: login, registration, reset and password update
 - Optional initial data for form pre-filling
@@ -71,7 +71,7 @@
 - Handling of loading, error and success states
 - Direct integration with authentication service
 
-**Protected route component `src/shared/components/ProtectedRoute.vue`**
+**Protected route component `src/features/auth/components/ProtectedRoute.vue`**
 
 - Optional requirement for specific user role
 - Configurable redirect URL

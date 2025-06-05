@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed, readonly } from 'vue';
-import { useStoreErrorHandling } from '../composables/useStoreErrorHandling';
+import { useStoreErrorHandling } from '@/shared/composables/useStoreErrorHandling';
 
 interface ProfileStatus {
   isComplete: boolean;

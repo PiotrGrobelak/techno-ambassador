@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-import { createSupabaseServerInstance } from '../../../db/supabase.client.ts';
-import { type AuthUser, type ErrorResponse } from '../../../schemas/auth.schemas.ts';
+import { createSupabaseServerInstance } from '@/db/supabase.client.ts';
+import { type AuthUser, type ErrorResponse } from '@/schemas/auth.schemas.ts';
 
 export const GET: APIRoute = async ({ request, cookies }) => {
   try {

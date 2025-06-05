@@ -72,7 +72,7 @@
 import { computed } from 'vue';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
-import type { UserListItemDto } from '../../../types';
+import type { UserListItemDto } from '@/types';
 
 interface Props {
   dj: UserListItemDto;

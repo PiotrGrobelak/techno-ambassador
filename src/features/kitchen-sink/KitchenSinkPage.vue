@@ -750,11 +750,11 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
-import BaseButton from './BaseButton.vue';
-import BaseInput from './BaseInput.vue';
-import BaseTypography from './BaseTypography.vue';
-import BaseModal from './BaseModal.vue';
-import BaseCard from './BaseCard.vue';
+import BaseButton from '@/shared/components/BaseButton.vue';
+import BaseInput from '@/shared/components/BaseInput.vue';
+import BaseTypography from '@/shared/components/BaseTypography.vue';
+import BaseModal from '@/shared/components/BaseModal.vue';
+import BaseCard from '@/shared/components/BaseCard.vue';
 
 // Form data
 const form = reactive({

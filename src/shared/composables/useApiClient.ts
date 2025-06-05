@@ -1,4 +1,4 @@
-import { useErrorHandler, type ClientError } from './useErrorHandler'
+import { useErrorHandler, type ClientError } from '@/shared/composables/useErrorHandler'
 
 /**
  * HTTP client wrapper with enhanced error handling for API integration

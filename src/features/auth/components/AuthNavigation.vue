@@ -213,9 +213,9 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue';
-import { useAuthStore } from '../stores/useAuthStore';
-import BaseButton from './BaseButton.vue';
-import BaseTypography from './BaseTypography.vue';
+import { useAuthStore } from '@/shared/stores/useAuthStore';
+import BaseButton from '@/shared/components/BaseButton.vue';
+import BaseTypography from '@/shared/components/BaseTypography.vue';
 
 // Pinia store integration
 const authStore = useAuthStore();

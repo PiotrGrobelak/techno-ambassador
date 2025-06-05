@@ -57,7 +57,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import BaseTypography from './BaseTypography.vue';
+import BaseTypography from '@/shared/components/BaseTypography.vue';
 
 type CardVariant = 'elevated' | 'outlined' | 'filled' | 'ghost';
 type CardSize = 'small' | 'medium' | 'large';

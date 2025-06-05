@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import Dialog from 'primevue/dialog';
-import BaseButton from './BaseButton.vue';
+import BaseButton from '@/shared/components/BaseButton.vue';
 
 type ModalVariant = 'sheet' | 'alert' | 'fullscreen' | 'drawer';
 type ModalFriction = 'high' | 'low' | 'none';

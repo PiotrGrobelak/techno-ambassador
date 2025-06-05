@@ -1,89 +1,137 @@
 <template>
   <div
     v-if="shouldShowBanner"
-    :class="bannerClasses"
-    role="banner"
-    aria-live="polite"
+    class="bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-xl p-6 mb-6"
   >
-    <div class="flex items-start gap-4">
+    <div class="flex items-start space-x-4">
       <!-- Icon -->
       <div class="flex-shrink-0">
-        <svg
-          :class="iconClasses"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          aria-hidden="true"
+        <div
+          class="w-12 h-12 bg-gradient-to-br from-orange-400 to-yellow-500 rounded-xl flex items-center justify-center"
         >
-          <path
-            v-if="bannerVariant === 'success'"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-          <path
-            v-else-if="bannerVariant === 'warning'"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
-          />
-          <path
-            v-else
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-9-3.75h.008v.008H12V8.25z"
-          />
-        </svg>
+          <svg
+            class="w-6 h-6 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
+          </svg>
+        </div>
       </div>
 
       <!-- Content -->
       <div class="flex-1 min-w-0">
-        <h3 :class="titleClasses">
-          {{ bannerTitle }}
-        </h3>
-        <p :class="descriptionClasses">
-          {{ bannerDescription }}
-        </p>
-
-        <!-- Progress bar for completion mode -->
-        <div
-          v-if="mode === 'complete' && completionPercentage < 100"
-          class="mt-3"
-        >
-          <div
-            class="flex items-center justify-between text-sm text-gray-600 mb-1"
+        <div class="flex items-center justify-between mb-3">
+          <BaseTypography variant="h3" weight="bold" class="text-orange-800">
+            Complete Your DJ Profile
+          </BaseTypography>
+          <BaseTypography
+            variant="caption"
+            weight="bold"
+            class="text-orange-600 bg-white px-2 py-1 rounded-full"
           >
-            <span>Profile completion</span>
-            <span>{{ completionPercentage }}%</span>
-          </div>
-          <div class="w-full bg-gray-200 rounded-full h-2">
+            {{ profileStore.getCompletionProgress }}% Complete
+          </BaseTypography>
+        </div>
+
+        <BaseTypography
+          variant="body"
+          color="secondary"
+          class="text-orange-700 mb-4"
+        >
+          Complete your profile to attract more event organizers and increase
+          your visibility in the techno music scene.
+        </BaseTypography>
+
+        <!-- Progress Bar -->
+        <div class="mb-4">
+          <div class="w-full bg-orange-200 rounded-full h-2">
             <div
-              class="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-in-out"
-              :style="{ width: `${completionPercentage}%` }"
+              class="bg-gradient-to-r from-orange-500 to-yellow-500 h-2 rounded-full transition-all duration-300"
+              :style="{ width: `${profileStore.getCompletionProgress}%` }"
             ></div>
           </div>
         </div>
+
+        <!-- Missing fields -->
+        <div class="mb-4">
+          <BaseTypography
+            variant="caption"
+            weight="medium"
+            class="text-orange-700 mb-2 block"
+          >
+            Missing Information:
+          </BaseTypography>
+          <div class="flex flex-wrap gap-2">
+            <span
+              v-for="field in profileStore.getMissingFieldLabels"
+              :key="field"
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800"
+            >
+              <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fill-rule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              {{ field }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <BaseButton
+            label="Complete Profile Now"
+            variant="primary"
+            size="medium"
+            class="bg-orange-600 hover:bg-orange-700 border-orange-600"
+            @click="navigateToProfile"
+          >
+            <template #icon-trailing>
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </template>
+          </BaseButton>
+          <BaseButton
+            label="Remind Me Later"
+            variant="ghost"
+            size="medium"
+            @click="dismissBanner"
+            class="text-orange-700 hover:bg-orange-100"
+          />
+        </div>
       </div>
 
-      <!-- Close button for edit mode -->
+      <!-- Dismiss button -->
       <button
-        v-if="mode === 'edit' && dismissible"
-        @click="$emit('dismiss')"
-        class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+        @click="dismissBanner"
+        class="flex-shrink-0 p-1 text-orange-400 hover:text-orange-600 transition-colors"
         aria-label="Dismiss banner"
       >
-        <svg
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-        >
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
           <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M6 18L18 6M6 6l12 12"
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
           />
         </svg>
       </button>
@@ -92,139 +140,56 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import type { ProfileFormMode } from '../types/profile.types';
+import { computed, ref, onMounted } from 'vue';
+import { useProfileStore } from '@/shared/stores/useProfileStore';
+import { useAuthStore } from '@/shared/stores/useAuthStore';
+import BaseButton from '@/shared/components/BaseButton.vue';
+import BaseTypography from '@/shared/components/BaseTypography.vue';
 
-interface Props {
-  mode: ProfileFormMode;
-  isComplete: boolean;
-  completionPercentage: number;
-  missingFields: string[];
-  dismissible?: boolean;
-}
+// Stores
+const profileStore = useProfileStore();
+const authStore = useAuthStore();
 
-interface Emits {
-  (e: 'dismiss'): void;
-}
+// Local state
+const dismissed = ref(false);
 
-const props = withDefaults(defineProps<Props>(), {
-  dismissible: true,
+// Initialize profile store when component mounts
+onMounted(async () => {
+  if (authStore.isAuthenticated && !profileStore.initialized) {
+    await profileStore.initializeProfile();
+  }
 });
 
-const emit = defineEmits<Emits>();
-
-/** Determine if banner should be shown */
+// Computed properties
 const shouldShowBanner = computed(() => {
-  if (props.mode === 'complete') return true;
-  if (props.mode === 'edit' && !props.isComplete) return true;
-  return false;
+  return (
+    authStore.isAuthenticated &&
+    profileStore.initialized &&
+    profileStore.needsCompletion &&
+    !profileStore.error &&
+    !dismissed.value
+  );
 });
 
-/** Banner variant based on completion status */
-const bannerVariant = computed(() => {
-  if (props.isComplete) return 'success';
-  if (props.mode === 'complete') return 'warning';
-  return 'info';
-});
+// Actions
+const navigateToProfile = () => {
+  // Navigate to profile completion page
+  window.location.href = '/dj/profile?mode=complete';
+};
 
-/** Banner title text */
-const bannerTitle = computed(() => {
-  if (props.isComplete && props.mode === 'edit') {
-    return 'Profile Complete';
-  }
+const dismissBanner = () => {
+  dismissed.value = true;
+  // Optional: Store dismissal in localStorage to persist across sessions
+  localStorage.setItem('profile-completion-banner-dismissed', 'true');
+};
 
-  if (props.mode === 'complete') {
-    return 'Complete Your DJ Profile';
-  }
-
-  return 'Profile Incomplete';
-});
-
-/** Banner description text */
-const bannerDescription = computed(() => {
-  if (props.isComplete && props.mode === 'edit') {
-    return 'Your profile is complete and visible to other users.';
-  }
-
-  if (props.mode === 'complete') {
-    return 'Fill out your profile information to start connecting with events and other DJs in the techno community.';
-  }
-
-  const fieldNames = props.missingFields
-    .map((field) => {
-      switch (field) {
-        case 'artist_name':
-          return 'artist name';
-        case 'biography':
-          return 'biography';
-        case 'instagram_url':
-          return 'Instagram URL';
-        case 'facebook_url':
-          return 'Facebook URL';
-        case 'music_style_ids':
-          return 'music styles';
-        default:
-          return field;
-      }
-    })
-    .join(', ');
-
-  return `Please complete the following fields: ${fieldNames}`;
-});
-
-/** Dynamic banner CSS classes */
-const bannerClasses = computed(() => {
-  const baseClasses = 'rounded-lg p-4 mb-6 border';
-
-  switch (bannerVariant.value) {
-    case 'success':
-      return `${baseClasses} bg-green-50 border-green-200`;
-    case 'warning':
-      return `${baseClasses} bg-yellow-50 border-yellow-200`;
-    default:
-      return `${baseClasses} bg-blue-50 border-blue-200`;
-  }
-});
-
-/** Icon CSS classes */
-const iconClasses = computed(() => {
-  const baseClasses = 'h-6 w-6';
-
-  switch (bannerVariant.value) {
-    case 'success':
-      return `${baseClasses} text-green-600`;
-    case 'warning':
-      return `${baseClasses} text-yellow-600`;
-    default:
-      return `${baseClasses} text-blue-600`;
-  }
-});
-
-/** Title CSS classes */
-const titleClasses = computed(() => {
-  const baseClasses = 'text-sm font-medium';
-
-  switch (bannerVariant.value) {
-    case 'success':
-      return `${baseClasses} text-green-800`;
-    case 'warning':
-      return `${baseClasses} text-yellow-800`;
-    default:
-      return `${baseClasses} text-blue-800`;
-  }
-});
-
-/** Description CSS classes */
-const descriptionClasses = computed(() => {
-  const baseClasses = 'mt-1 text-sm';
-
-  switch (bannerVariant.value) {
-    case 'success':
-      return `${baseClasses} text-green-700`;
-    case 'warning':
-      return `${baseClasses} text-yellow-700`;
-    default:
-      return `${baseClasses} text-blue-700`;
+// Check if banner was previously dismissed
+onMounted(() => {
+  const wasDismissed = localStorage.getItem(
+    'profile-completion-banner-dismissed'
+  );
+  if (wasDismissed === 'true') {
+    dismissed.value = true;
   }
 });
 </script>

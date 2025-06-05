@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-import { createSupabaseServerInstance } from '../../../db/supabase.client.ts';
-import { type ErrorResponse } from '../../../schemas/auth.schemas.ts';
+import { createSupabaseServerInstance } from '@/db/supabase.client.ts';
+import { type ErrorResponse } from '@/schemas/auth.schemas.ts';
 
 interface ProfileStatus {
   isComplete: boolean;

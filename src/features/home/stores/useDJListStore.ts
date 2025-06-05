@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch, type Ref, type ComputedRef } from 'vue'
-import { useApiClient } from '../../../shared/composables/useApiClient'
-import { useStoreErrorHandling } from '../../../shared/composables/useStoreErrorHandling'
+import { useApiClient } from '@/shared/composables/useApiClient'
+import { useStoreErrorHandling } from '@/shared/composables/useStoreErrorHandling'
 import { useSearchStore } from './useSearchStore'
 import { useMusicStylesStore } from './useMusicStylesStore'
 import type { 
@@ -9,7 +9,7 @@ import type {
   UsersListResponseDto, 
   PaginationDto, 
   UsersQueryParams 
-} from '../../../types'
+} from '@/types'
 
 /**
  * DJ list data, pagination, and filtering coordination store

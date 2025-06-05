@@ -1,19 +1,19 @@
 import type { APIContext } from 'astro';
-import { eventIdParamSchema, updateEventSchema } from '../../../schemas/event.schema';
-import { EventService } from '../../../services/event.service';
+import { eventIdParamSchema, updateEventSchema } from '@/schemas/event.schema';
+import { EventService } from '@/services/event.service';
 import { 
   handleApiError, 
   parseJsonBody, 
   handleServiceError,
   // verifyAuthentication,
   ApiErrors 
-} from '../../../middleware/error-handler';
-import { ErrorLogService } from '../../../services/error-log.service';
+} from '@/middleware/error-handler';
+import { ErrorLogService } from '@/services/error-log.service';
 import type { 
   UpdateEventCommand, 
   EventResponseDto, 
   EventListItemDto 
-} from '../../../types';
+} from '@/types';
 
 export const prerender = false
 

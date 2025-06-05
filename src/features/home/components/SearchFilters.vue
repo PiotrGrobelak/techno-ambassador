@@ -69,7 +69,7 @@ import { computed } from 'vue';
 import Button from 'primevue/button';
 import SearchInput from './SearchInput.vue';
 import MusicStyleFilter from './MusicStyleFilter.vue';
-import type { MusicStyleDto } from '../../../types';
+import type { MusicStyleDto } from '@/types';
 
 interface Props {
   musicStyles: MusicStyleDto[];

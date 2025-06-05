@@ -97,7 +97,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
 import MultiSelect from 'primevue/multiselect';
-import type { MusicStyleDto } from '../../../types';
+import type { MusicStyleDto } from '@/types';
 
 interface Props {
   modelValue: string[];

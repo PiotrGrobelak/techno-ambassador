@@ -1,14 +1,14 @@
 import type { APIContext } from 'astro';
-import { createUserSchema, getUsersQuerySchema } from '../../schemas/user.schema';
-import { UserService } from '../../services/user.service';
+import { createUserSchema, getUsersQuerySchema } from '@/schemas/user.schema';
+import { UserService } from '@/services/user.service';
 import { 
   handleApiError, 
   parseJsonBody, 
   handleServiceError,
   ApiErrors 
-} from '../../middleware/error-handler';
-import { ErrorLogService } from '../../services/error-log.service';
-import type { CreateUserCommand, UserResponseDto, UsersListResponseDto, UsersQueryParams } from '../../types';
+} from '@/middleware/error-handler';
+import { ErrorLogService } from '@/services/error-log.service';
+import type { CreateUserCommand, UserResponseDto, UsersListResponseDto, UsersQueryParams } from '@/types';
 
 export const prerender = false
 

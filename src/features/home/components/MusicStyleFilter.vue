@@ -33,8 +33,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import SelectDialog from '../../../shared/components/SelectDialog.vue';
-import type { MusicStyleDto } from '../../../types';
+import SelectDialog from '@/shared/components/SelectDialog.vue';
+import type { MusicStyleDto } from '@/types';
 
 interface Props {
   musicStyles: MusicStyleDto[];

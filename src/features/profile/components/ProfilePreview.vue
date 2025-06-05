@@ -229,8 +229,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
 import Button from 'primevue/button';
-import type { ProfileFormData } from '../types/profile.types';
-import type { MusicStyleDto, UserMusicStyleDto } from '../../../types';
+import type { ProfileFormData } from '@/features/profile/types';
+import type { MusicStyleDto, UserMusicStyleDto } from '@/types';
 
 interface Props {
   profileData: ProfileFormData;

@@ -77,8 +77,8 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import BaseTypography from './BaseTypography.vue';
-import BaseButton from './BaseButton.vue';
+import BaseTypography from '@/shared/components/BaseTypography.vue';
+import BaseButton from '@/shared/components/BaseButton.vue';
 
 interface Props {
   requiredRole?: string;
