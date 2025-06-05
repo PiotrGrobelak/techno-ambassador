@@ -113,7 +113,7 @@
 import { computed, reactive, ref, watch } from 'vue';
 import { useAuthStore } from '@/shared/stores/useAuthStore';
 import BaseInput from '@/shared/components/BaseInput.vue';
-import BaseButton from '@/shared/components/BaseButton.vue';
+import BaseButton from '@/shared/components/BaseButton/BaseButton.vue';
 import BaseTypography from '@/shared/components/BaseTypography.vue';
 
 type AuthMode = 'login' | 'register' | 'reset-password' | 'update-password';

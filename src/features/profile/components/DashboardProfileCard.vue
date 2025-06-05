@@ -104,7 +104,7 @@
 import { computed, onMounted } from 'vue';
 import { useProfileStore } from '@/shared/stores/useProfileStore';
 import { useAuthStore } from '@/shared/stores/useAuthStore';
-import BaseButton from '@/shared/components/BaseButton.vue';
+import BaseButton from '@/shared/components/BaseButton/BaseButton.vue';
 import BaseTypography from '@/shared/components/BaseTypography.vue';
 
 // Stores

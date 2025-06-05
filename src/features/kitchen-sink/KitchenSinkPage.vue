@@ -750,7 +750,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
-import BaseButton from '@/shared/components/BaseButton.vue';
+import BaseButton from '@/shared/components/BaseButton/BaseButton.vue';
 import BaseInput from '@/shared/components/BaseInput.vue';
 import BaseTypography from '@/shared/components/BaseTypography.vue';
 import BaseModal from '@/shared/components/BaseModal.vue';

@@ -22,3 +22,11 @@ CI/CD and Hosting:
 
 - Github Actions for creating CI/CD pipelines
 - DigitalOcean for hosting the application via docker image
+
+Testing - A comprehensive suite of tools for various testing types:
+
+- Vitest for unit and integration tests
+- Vue Test Utils for testing Vue components
+- Playwright for End-to-End tests
+- MSW (Mock Service Worker) for API mocking
+- Faker.js for generating test data

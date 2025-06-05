@@ -19,6 +19,11 @@ A global calendar platform dedicated to DJs that enables artists to showcase the
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
   - [Available Scripts](#available-scripts)
+  - [Testing](#testing)
+    - [Testing Frameworks](#testing-frameworks)
+    - [Test Commands](#test-commands)
+    - [Test Structure](#test-structure)
+    - [Writing Tests](#writing-tests)
   - [Project Scope](#project-scope)
     - [Core Features](#core-features)
     - [Features NOT Included in MVP](#features-not-included-in-mvp)
@@ -129,6 +134,93 @@ The platform addresses the lack of a centralized tool for DJs to showcase their 
 - `npm run lint:check` - Run ESLint without fixing issues
 - `npm run format` - Format code with Prettier
 - `npm run format:check` - Check if code formatting meets Prettier standards
+
+## Testing
+
+The project implements a comprehensive testing strategy with multiple layers to ensure code quality and functionality.
+
+### Testing Frameworks
+
+- **Vitest** - Fast unit testing framework with Vue Test Utils integration
+- **Playwright** - End-to-end testing for cross-browser compatibility
+- **Vue Test Utils** - Official testing utilities for Vue components
+- **MSW (Mock Service Worker)** - API mocking for reliable tests
+- **Faker.js** - Test data generation
+
+### Test Commands
+
+```bash
+# Unit Tests
+npm run test              # Run tests in watch mode
+npm run test:watch        # Run tests in watch mode (explicit)
+npm run test:ui           # Open Vitest UI for interactive testing
+npm run test:coverage     # Run tests with coverage report
+
+# End-to-End Tests
+npm run test:e2e          # Run E2E tests headlessly
+npm run test:e2e:ui       # Run E2E tests with Playwright UI
+npm run test:e2e:headed   # Run E2E tests with visible browser
+npm run test:e2e:debug    # Debug E2E tests step by step
+
+# All Tests
+npm run test:all          # Run all tests with coverage + E2E
+```
+
+### Test Structure
+
+```
+src/test/               # Unit test configuration
+├── setup.ts           # Global test setup and mocks
+├── utils.ts           # Test utilities and helpers
+└── vitest.d.ts        # TypeScript declarations
+
+e2e/                   # End-to-end tests
+├── pages/             # Page Object Model files
+├── global-setup.ts    # E2E global setup
+├── global-teardown.ts # E2E global cleanup
+└── *.spec.ts          # E2E test files
+
+src/**/*.{test,spec}.{ts,vue}  # Unit test files
+```
+
+### Writing Tests
+
+**Unit Tests Example:**
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { mountComponent } from '@/test/utils';
+import MyComponent from './MyComponent.vue';
+
+describe('MyComponent', () => {
+  it('renders correctly', () => {
+    const wrapper = mountComponent(MyComponent, {
+      props: { title: 'Test' },
+    });
+
+    expect(wrapper.text()).toContain('Test');
+  });
+});
+```
+
+**E2E Tests Example:**
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('user can navigate to DJ profile', async ({ page }) => {
+  await page.goto('/');
+  await page.click('[data-testid="dj-link"]');
+  await expect(page).toHaveURL(/\/dj\/.+/);
+});
+```
+
+**Test Coverage Requirements:**
+
+- **80%** minimum coverage for branches, functions, lines, and statements
+- Visual regression testing with Playwright screenshots
+- Component interaction testing with Vue Test Utils
+- API integration testing with MSW mocks
 
 ## Project Scope
 

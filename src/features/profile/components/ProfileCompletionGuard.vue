@@ -203,7 +203,7 @@
 import { computed, ref, onMounted, watch } from 'vue';
 import { useAuthStore } from '@/shared/stores/useAuthStore';
 import { useProfileStore } from '@/shared/stores/useProfileStore';
-import BaseButton from '@/shared/components/BaseButton.vue';
+import BaseButton from '@/shared/components/BaseButton/BaseButton.vue';
 import BaseTypography from '@/shared/components/BaseTypography.vue';
 
 interface Props {
