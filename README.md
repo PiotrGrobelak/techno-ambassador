@@ -1,6 +1,6 @@
 # Techno Ambassador
 
-A centralized platform for techno music event ratings, reviews, and information.
+A global calendar platform dedicated to DJs that enables artists to showcase their availability and upcoming events while allowing fans and event organizers to discover and contact DJs for booking performances.
 
 ## Table of Contents
 
@@ -9,6 +9,7 @@ A centralized platform for techno music event ratings, reviews, and information.
   - [Project Description](#project-description)
     - [Key Features](#key-features)
     - [Problem Solved](#problem-solved)
+    - [Target Users](#target-users)
   - [Tech Stack](#tech-stack)
     - [Frontend](#frontend)
     - [Backend](#backend)
@@ -19,35 +20,49 @@ A centralized platform for techno music event ratings, reviews, and information.
     - [Installation](#installation)
   - [Available Scripts](#available-scripts)
   - [Project Scope](#project-scope)
-    - [Features Included](#features-included)
-    - [Limitations](#limitations)
-    - [User Roles](#user-roles)
+    - [Core Features](#core-features)
+    - [Features NOT Included in MVP](#features-not-included-in-mvp)
+    - [Technical Limitations](#technical-limitations)
   - [Project Status](#project-status)
     - [Success Metrics](#success-metrics)
   - [License](#license)
 
 ## Project Description
 
-Techno Ambassador is a platform that brings together all event cycles and events related to techno music. The main purpose of the platform is to enable users to check event ratings and provide ratings and comments on completed events.
+Techno Ambassador is a global calendar platform dedicated to DJs that connects three main user groups: DJs managing their calendars, fans seeking information about their favorite artists' performances, and event organizers looking for DJs for their events.
 
 ### Key Features
 
-- User registration and authentication
-- Browsing and searching for techno music events
-- Rating events on a scale of 1-5
-- Commenting on events
-- AI-powered integration with Facebook for event data retrieval
-- Administrator dashboard for event management
-- Analytics integration for monitoring user activity
+- **DJ Profile Management**: Complete profiles with biography, music styles, social media links, and optional photos
+- **Calendar System**: Simple event list with one-year planning horizon and event history preservation
+- **Advanced Search & Filtering**: Find DJs by location, music style, availability, and name
+- **Mobile-First Design**: Full functionality across web and mobile devices
+- **Direct Contact**: Social media integration for booking inquiries
+- **SEO-Friendly**: Clean URL structure (e.g., /dj/dj-name)
 
 ### Problem Solved
 
-The platform addresses the lack of a central place where techno music fans can rate, comment on, and learn about events. This solves several issues:
+The platform addresses the lack of a centralized tool for DJs to showcase their availability and upcoming performances. It solves several key issues:
 
-- Provides reliable event ratings to help users choose valuable events
-- Creates opportunity to share opinions and experiences after events
-- Gives users insight into ratings from other participants
-- Helps event organizers understand how to improve future events
+**For DJs:**
+
+- Lack of platform to showcase their schedule and availability
+- Difficulties in reaching potential clients and fans
+- Need to manage multiple communication channels
+- Lack of tools for professional presentation of their calendar
+
+**For Fans & Event Organizers:**
+
+- Finding information about DJ availability for specific dates
+- Discovering new artists in their area
+- Checking performance schedules of favorite DJs
+- Contacting artists for potential bookings
+
+### Target Users
+
+- **DJs (Artists)**: Managing their performance calendars and showcasing availability
+- **Fans**: Seeking information about their favorite artists' performances
+- **Event Organizers**: Looking for DJs for their events and checking availability
 
 ## Tech Stack
 
@@ -117,36 +132,47 @@ The platform addresses the lack of a central place where techno music fans can r
 
 ## Project Scope
 
-### Features Included
+### Core Features
 
-- Basic user authentication (registration, login)
-- Event browsing and rating
-- Commenting on events
-- Administrator event management
-- AI integration for data retrieval from Facebook
-- Analytics integration
+- **DJ Registration & Profile Management**: Create and edit profiles with mandatory biography and music styles
+- **Calendar Management**: Add, edit, and delete future events with up to one-year planning horizon
+- **Search & Discovery**: Browse all DJs with filtering by location, music style, availability, and name search
+- **Public DJ Profiles**: Accessible calendars with performance history and upcoming events
+- **Social Media Integration**: Contact DJs through Instagram/Facebook links
+- **Mobile Responsive Design**: Full functionality across all devices
+- **Authentication System**: Secure login/registration with email and password
 
-### Limitations
+### Features NOT Included in MVP
 
-- Limited to basic authentication without advanced account management
-- Event creation limited to administrators only
-- AI integration limited to location data retrieval from Facebook
-- Only two user roles: regular user and administrator
+- Social features (comments, likes, sharing)
+- Event organizer accounts
+- Automatic event addition from external sources
+- Interactive planning calendar (only simple date selection)
+- User verification process
+- Conflict resolution for overlapping events
+- Marking unavailable days
+- Editing or deleting past events
+- Internal messaging system
+- Payment or booking system
+- Integration with external calendars
 
-### User Roles
+### Technical Limitations
 
-- **Regular User**: Can register, login, browse events, rate events, and add comments
-- **Administrator**: Can add new events, approve or supplement data from AI integration
+- No real-time conflict resolution
+- DJs responsible for managing overlapping events
+- Simple, form-based event creation method
+- Contact exclusively through social media
+- No external login services (Google, GitHub)
 
 ## Project Status
 
-The project is currently in development. Initial focus is on implementing core features related to user authentication, event management, and the rating system.
+The project is currently in development. Initial focus is on implementing core features related to DJ profile management, calendar system, and search functionality.
 
 ### Success Metrics
 
-- At least 65% of logged-in users cast one vote on completed events each week
-- At least 33% of users who cast a vote also add a comment
-- Metrics monitored through integration with analytical tools
+- **90%** of DJ users have filled calendars in the current month (at least one event)
+- **95%** of profiles have complete biography and music styles
+- **80%** of profiles have added social media contacts
 
 ## License
 
@@ -154,12 +180,13 @@ The project is currently in development. Initial focus is on implementing core f
 
 ---
 
-Project structure:
+**Project Structure:**
 
 - `./src` - Source code
 - `./src/layouts` - Astro layouts
 - `./src/pages` - Astro pages
 - `./src/pages/api` - API endpoints
-- `./src/components` - Client-side components (Astro for static, Vue for dynamic)
+- `./src/features/feature-1` - Feature client-side components (Astro static, Vue dynamic)
+- `./src/shared/components` - Reusable client-side components (Astro static, Vue dynamic)
 - `./src/assets` - Static internal assets
 - `./public` - Public assets
