@@ -40,8 +40,8 @@ The POST /api/users endpoint allows authenticated users to create new DJ profile
 
 **Optional Fields:**
 
-- `instagram_url` (string): Instagram profile URL, max 500 characters
-- `facebook_url` (string): Facebook profile URL, max 500 characters
+- `instagram_url` (string): Instagram handle or URL, max 500 characters (no format validation)
+- `facebook_url` (string): Facebook handle or URL, max 500 characters (no format validation)
 
 ### Request Body Example
 
@@ -254,8 +254,8 @@ COMMIT;
 export const createUserSchema = z.object({
   artist_name: z.string().min(1).max(255),
   biography: z.string().min(1).max(10000),
-  instagram_url: z.string().url().max(500).optional(),
-  facebook_url: z.string().url().max(500).optional(),
+  instagram_url: z.string().max(500).optional(),
+  facebook_url: z.string().max(500).optional(),
   music_style_ids: z.array(z.string().uuid()).min(1),
 });
 ```
@@ -771,8 +771,8 @@ The PUT /api/users/{id} endpoint allows authenticated users to update their own 
 
 **Optional Fields:**
 
-- `instagram_url` (string): Instagram profile URL, max 500 characters
-- `facebook_url` (string): Facebook profile URL, max 500 characters
+- `instagram_url` (string): Instagram handle or URL, max 500 characters (no format validation)
+- `facebook_url` (string): Facebook handle or URL, max 500 characters (no format validation)
 
 ### Request Body Example
 
@@ -1032,8 +1032,8 @@ COMMIT;
 export const updateUserSchema = z.object({
   artist_name: z.string().min(1).max(255),
   biography: z.string().min(1).max(10000),
-  instagram_url: z.string().url().max(500).optional(),
-  facebook_url: z.string().url().max(500).optional(),
+  instagram_url: z.string().max(500).optional(),
+  facebook_url: z.string().max(500).optional(),
   music_style_ids: z.array(z.string().uuid()).min(1),
 });
 

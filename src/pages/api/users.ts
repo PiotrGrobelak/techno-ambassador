@@ -16,7 +16,7 @@ export const prerender = false
  * POST /api/users - Create a new DJ profile
  * 
  * Creates a new user with artist information, biography, optional social media links,
- * and required music style associations. No authentication required for registration.
+ * and required music style associations. Requires authentication.
  * 
  * @param context - Astro API context with request and locals
  * @returns Response with created user data or error
@@ -26,10 +26,23 @@ export async function POST(context: APIContext): Promise<Response> {
   let requestBody: any;
   
   try {
-    // Step 1: Parse and validate request body
+    // Step 1: Get authenticated user from Supabase
+    const { data: { user }, error: authError } = await locals.supabase.auth.getUser();
+    
+    if (authError || !user) {
+      throw ApiErrors.unauthorized('You must be logged in to create a profile');
+    }
+
+    // Step 2: Parse and validate request body
     requestBody = await parseJsonBody(request);
     
-    const validationResult = createUserSchema.safeParse(requestBody);
+    // Add authenticated user ID to the command
+    const commandWithUserId = {
+      ...requestBody,
+      user_id: user.id
+    };
+    
+    const validationResult = createUserSchema.safeParse(commandWithUserId);
     
     if (!validationResult.success) {
       const validationErrors = validationResult.error.errors.map(err => ({
@@ -42,20 +55,20 @@ export async function POST(context: APIContext): Promise<Response> {
 
     const command: CreateUserCommand = validationResult.data;
 
-    // Step 2: Business logic validation and user creation
+    // Step 3: Business logic validation and user creation
     const userService = new UserService(locals.supabase);
     
     try {
       const userResponse: UserResponseDto = await userService.createUser(command);
 
-      // Step 3: Success response
+      // Step 4: Success response
       return new Response(JSON.stringify(userResponse), {
         status: 201,
         headers: { 'Content-Type': 'application/json' }
       });
 
     } catch (serviceError: any) {
-      // Step 4: Handle business logic errors using centralized error handler
+      // Step 5: Handle business logic errors using centralized error handler
       const errorLogService = new ErrorLogService(locals.supabase);
       const errorContext = ErrorLogService.createContextFromRequest(request);
       const contextWithBody = ErrorLogService.addRequestBodyToContext(errorContext, requestBody);
@@ -65,7 +78,7 @@ export async function POST(context: APIContext): Promise<Response> {
     }
 
   } catch (error: any) {
-    // Step 5: Centralized error handling with logging
+    // Step 6: Centralized error handling with logging
     return await handleApiError(error, context, undefined, requestBody);
   }
 }

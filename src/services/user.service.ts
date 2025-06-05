@@ -25,7 +25,7 @@ export class UserService {
 
   /**
    * Creates a new user with music style associations
-   * @param command - User creation data
+   * @param command - User creation data including user ID
    * @returns Promise<UserResponseDto> - Created user with music styles
    */
   async createUser(command: CreateUserCommand): Promise<UserResponseDto> {
@@ -33,9 +33,24 @@ export class UserService {
     await this.validateArtistNameUniqueness(command.artist_name);
     await this.validateMusicStylesExist(command.music_style_ids);
 
-    // Prepare user data for insertion
+    // Validate that the authenticated user doesn't already have a profile
+    const { data: existingUser, error: checkError } = await this.supabase
+      .from('users')
+      .select('id')
+      .eq('id', command.user_id)
+      .single();
+
+    if (checkError && checkError.code !== 'PGRST116') {
+      throw new Error(`Failed to check existing user: ${checkError.message}`);
+    }
+
+    if (existingUser) {
+      throw new Error('User profile already exists');
+    }
+
+    // Prepare user data for insertion using authenticated user ID
     const userInsertData = {
-      id: crypto.randomUUID(), // Generate unique UUID for each user
+      id: command.user_id, // Use user ID from command
       artist_name: command.artist_name,
       biography: command.biography,
       instagram_url: command.instagram_url || null,
@@ -327,19 +342,13 @@ export class UserService {
   }
 
   /**
-   * Updates user profile without ownership verification
-   * @param userId - User ID to update
-   * @param command - Update command with new data
-   * @param authenticatedUserId - ID of authenticated user (not used, kept for compatibility)
+   * Updates user profile with ownership verification
+   * @param command - Update command with user ID and new data
    * @returns Promise<UserResponseDto> - Updated user data
    */
-  async updateUser(
-    userId: string,
-    command: UpdateUserCommand,
-    authenticatedUserId: string
-  ): Promise<UserResponseDto> {
+  async updateUser(command: UpdateUserCommand): Promise<UserResponseDto> {
     // Validate UUID format
-    if (!this.isValidUUID(userId)) {
+    if (!this.isValidUUID(command.user_id)) {
       throw new Error('Invalid user ID format');
     }
 
@@ -347,7 +356,7 @@ export class UserService {
     const { data: existingUser, error: userExistsError } = await this.supabase
       .from('users')
       .select('id')
-      .eq('id', userId)
+      .eq('id', command.user_id)
       .single();
 
     if (userExistsError || !existingUser) {
@@ -356,7 +365,7 @@ export class UserService {
 
     // Validate artist name uniqueness if provided
     if (command.artist_name) {
-      await this.validateArtistNameUniqueness(command.artist_name, userId);
+      await this.validateArtistNameUniqueness(command.artist_name, command.user_id);
     }
 
     // Validate music styles if provided
@@ -378,7 +387,7 @@ export class UserService {
     const { error: updateError } = await this.supabase
       .from('users')
       .update(updateData)
-      .eq('id', userId);
+      .eq('id', command.user_id);
 
     if (updateError) {
       throw new Error(`Failed to update user: ${updateError.message}`);
@@ -390,7 +399,7 @@ export class UserService {
       const { error: deleteError } = await this.supabase
         .from('user_music_styles')
         .delete()
-        .eq('user_id', userId);
+        .eq('user_id', command.user_id);
 
       if (deleteError) {
         throw new Error(`Failed to update music style associations: ${deleteError.message}`);
@@ -398,7 +407,7 @@ export class UserService {
 
       // Insert new associations
       const musicStyleInserts: UserMusicStyleInsert[] = command.music_style_ids.map(styleId => ({
-        user_id: userId,
+        user_id: command.user_id,
         music_style_id: styleId
       }));
 
@@ -412,7 +421,7 @@ export class UserService {
     }
 
     // Return updated user data
-    return await this.getUserWithMusicStyles(userId);
+    return await this.getUserWithMusicStyles(command.user_id);
   }
 
   /**

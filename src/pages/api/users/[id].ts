@@ -76,7 +76,7 @@ export async function GET(context: APIContext): Promise<Response> {
  * 
  * Allows users to update DJ profiles. Handles complete profile updates including 
  * artist information, biography, social media links, and music style associations.
- * No authentication required for this endpoint.
+ * Requires authentication to ensure users can only update their own profiles.
  * 
  * @param context - Astro API context with request, params, and locals
  * @returns Response with updated user data or error
@@ -86,7 +86,14 @@ export async function PUT(context: APIContext): Promise<Response> {
   let requestBody: any;
   
   try {
-    // Step 1: Validate path parameters
+    // Step 1: Get authenticated user from Supabase
+    const { data: { user }, error: authError } = await locals.supabase.auth.getUser();
+    
+    if (authError || !user) {
+      throw ApiErrors.unauthorized('You must be logged in to update a profile');
+    }
+
+    // Step 2: Validate path parameters
     const paramValidation = userIdParamSchema.safeParse(params);
     
     if (!paramValidation.success) {
@@ -100,10 +107,21 @@ export async function PUT(context: APIContext): Promise<Response> {
 
     const { id: userId } = paramValidation.data;
 
-    // Step 2: Parse and validate request body
+    // Step 3: Verify user can only update their own profile
+    if (user.id !== userId) {
+      throw ApiErrors.forbidden('You can only update your own profile');
+    }
+
+    // Step 4: Parse and validate request body
     requestBody = await parseJsonBody(request);
     
-    const validationResult = updateUserSchema.safeParse(requestBody);
+    // Add user ID to the command
+    const commandWithUserId = {
+      ...requestBody,
+      user_id: userId
+    };
+    
+    const validationResult = updateUserSchema.safeParse(commandWithUserId);
     
     if (!validationResult.success) {
       const validationErrors = validationResult.error.errors.map(err => ({
@@ -114,8 +132,8 @@ export async function PUT(context: APIContext): Promise<Response> {
       throw ApiErrors.validation(validationErrors);
     }
 
-    // Transform validated data to match service expectations
     const command: UpdateUserCommand = {
+      user_id: validationResult.data.user_id,
       artist_name: validationResult.data.artist_name,
       biography: validationResult.data.biography,
       instagram_url: validationResult.data.instagram_url || undefined,
@@ -123,25 +141,20 @@ export async function PUT(context: APIContext): Promise<Response> {
       music_style_ids: validationResult.data.music_style_ids
     };
 
-    // Step 3: Business logic validation and user update
+    // Step 5: Business logic validation and user update
     const userService = new UserService(locals.supabase);
     
     try {
-      // Use userId as authenticatedUserId since no auth is required
-      const userResponse: UserResponseDto = await userService.updateUser(
-        userId, 
-        command, 
-        userId
-      );
+      const userResponse: UserResponseDto = await userService.updateUser(command);
 
-      // Step 4: Success response
+      // Step 6: Success response
       return new Response(JSON.stringify(userResponse), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
       });
 
     } catch (serviceError: any) {
-      // Step 5: Handle business logic errors
+      // Step 7: Handle business logic errors
       const errorLogService = new ErrorLogService(locals.supabase);
       const errorContext = ErrorLogService.createContextFromRequest(request);
       const contextWithBody = ErrorLogService.addRequestBodyToContext(errorContext, requestBody);
@@ -151,7 +164,7 @@ export async function PUT(context: APIContext): Promise<Response> {
     }
 
   } catch (error: any) {
-    // Step 6: Centralized error handling with logging
+    // Step 8: Centralized error handling with logging
     return await handleApiError(error, context, undefined, requestBody);
   }
 } 

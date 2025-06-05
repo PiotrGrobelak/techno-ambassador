@@ -2,10 +2,10 @@
   <div class="profile-form">
     <!-- Completion Banner -->
     <ProfileCompletionBanner
-      :mode="formMode"
+      :mode="profileFormStore.formMode"
       :is-complete="isProfileComplete"
-      :completion-percentage="completionPercentage"
-      :missing-fields="missingFields"
+      :completion-percentage="profileFormStore.completionPercentage"
+      :missing-fields="profileFormStore.missingFields"
       @dismiss="dismissBanner"
     />
 
@@ -29,17 +29,21 @@
                 </label>
                 <InputText
                   id="artist-name"
-                  v-model="formData.artist_name"
+                  :model-value="profileFormStore.formData.artist_name"
                   placeholder="Enter your artist/DJ name"
                   :class="inputClasses('artist_name')"
-                  :invalid="Boolean(errors.artist_name)"
-                  @blur="
-                    () => validateField('artist_name', formData.artist_name)
+                  :invalid="Boolean(profileFormStore.errors.artist_name)"
+                  @update:model-value="
+                    (value) =>
+                      profileFormStore.updateField('artist_name', value || '')
                   "
-                  @input="clearFieldError('artist_name')"
+                  @blur="() => validateField('artist_name')"
                 />
-                <small v-if="errors.artist_name" class="p-error block mt-1">
-                  {{ errors.artist_name }}
+                <small
+                  v-if="profileFormStore.errors.artist_name"
+                  class="p-error block mt-1"
+                >
+                  {{ profileFormStore.errors.artist_name }}
                 </small>
                 <small v-else class="text-gray-600 block mt-1">
                   This is how other users will find you
@@ -57,33 +61,45 @@
                 </label>
                 <Textarea
                   id="biography"
-                  v-model="formData.biography"
+                  :model-value="profileFormStore.formData.biography"
                   placeholder="Tell us about your music journey, style, and what makes you unique..."
                   :rows="6"
                   :class="inputClasses('biography')"
-                  :invalid="Boolean(errors.biography)"
-                  @blur="() => validateField('biography', formData.biography)"
-                  @input="clearFieldError('biography')"
+                  :invalid="Boolean(profileFormStore.errors.biography)"
+                  @update:model-value="
+                    (value) =>
+                      profileFormStore.updateField('biography', value || '')
+                  "
+                  @blur="() => validateField('biography')"
                 />
                 <div class="flex justify-between items-center mt-1">
-                  <small v-if="errors.biography" class="p-error">
-                    {{ errors.biography }}
+                  <small
+                    v-if="profileFormStore.errors.biography"
+                    class="p-error"
+                  >
+                    {{ profileFormStore.errors.biography }}
                   </small>
                   <small v-else class="text-gray-600">
                     Share your musical background and style
                   </small>
                   <small class="text-gray-500">
-                    {{ formData.biography.length }} / 10,000
+                    {{ profileFormStore.formData.biography.length }} / 10,000
                   </small>
                 </div>
               </div>
 
               <!-- Music Styles -->
               <MusicStyleSelector
-                v-model="formData.music_style_ids"
-                :error-message="errors.music_style_ids"
+                :model-value="profileFormStore.formData.music_style_ids"
+                :error-message="profileFormStore.errors.music_style_ids"
                 helper-text="Select the music styles you play or are passionate about"
-                @change="clearFieldError('music_style_ids')"
+                @update:model-value="
+                  (value) =>
+                    profileFormStore.updateField('music_style_ids', value || [])
+                "
+                @change="
+                  () => profileFormStore.clearFieldError('music_style_ids')
+                "
               />
 
               <!-- Social Media URLs -->
@@ -96,28 +112,31 @@
                       for="instagram-url"
                       class="block text-sm font-medium text-gray-700 mb-2"
                     >
-                      Instagram URL
+                      Instagram
                     </label>
                     <InputText
                       id="instagram-url"
-                      v-model="formData.instagram_url"
-                      placeholder="https://instagram.com/yourusername"
+                      :model-value="profileFormStore.formData.instagram_url"
+                      placeholder="@yourusername or https://instagram.com/yourusername"
                       :class="inputClasses('instagram_url')"
-                      :invalid="Boolean(errors.instagram_url)"
-                      @blur="
-                        () =>
-                          validateField('instagram_url', formData.instagram_url)
+                      :invalid="Boolean(profileFormStore.errors.instagram_url)"
+                      @update:model-value="
+                        (value) =>
+                          profileFormStore.updateField(
+                            'instagram_url',
+                            value || ''
+                          )
                       "
-                      @input="clearFieldError('instagram_url')"
+                      @blur="() => validateField('instagram_url')"
                     />
                     <small
-                      v-if="errors.instagram_url"
+                      v-if="profileFormStore.errors.instagram_url"
                       class="p-error block mt-1"
                     >
-                      {{ errors.instagram_url }}
+                      {{ profileFormStore.errors.instagram_url }}
                     </small>
                     <small v-else class="text-gray-600 block mt-1">
-                      Optional - your Instagram profile
+                      Optional - your Instagram handle or profile URL
                     </small>
                   </div>
 
@@ -127,28 +146,31 @@
                       for="facebook-url"
                       class="block text-sm font-medium text-gray-700 mb-2"
                     >
-                      Facebook URL
+                      Facebook
                     </label>
                     <InputText
                       id="facebook-url"
-                      v-model="formData.facebook_url"
-                      placeholder="https://facebook.com/yourusername"
+                      :model-value="profileFormStore.formData.facebook_url"
+                      placeholder="yourusername or https://facebook.com/yourusername"
                       :class="inputClasses('facebook_url')"
-                      :invalid="Boolean(errors.facebook_url)"
-                      @blur="
-                        () =>
-                          validateField('facebook_url', formData.facebook_url)
+                      :invalid="Boolean(profileFormStore.errors.facebook_url)"
+                      @update:model-value="
+                        (value) =>
+                          profileFormStore.updateField(
+                            'facebook_url',
+                            value || ''
+                          )
                       "
-                      @input="clearFieldError('facebook_url')"
+                      @blur="() => validateField('facebook_url')"
                     />
                     <small
-                      v-if="errors.facebook_url"
+                      v-if="profileFormStore.errors.facebook_url"
                       class="p-error block mt-1"
                     >
-                      {{ errors.facebook_url }}
+                      {{ profileFormStore.errors.facebook_url }}
                     </small>
                     <small v-else class="text-gray-600 block mt-1">
-                      Optional - your Facebook profile
+                      Optional - your Facebook username or profile URL
                     </small>
                   </div>
                 </div>
@@ -158,7 +180,7 @@
 
           <!-- General Error Message -->
           <div
-            v-if="errors.general"
+            v-if="profileFormStore.errors.general"
             class="bg-red-50 border border-red-200 rounded-lg p-4"
           >
             <div class="flex items-start">
@@ -180,7 +202,7 @@
                   Error saving profile
                 </h3>
                 <p class="text-sm text-red-700 mt-1">
-                  {{ errors.general }}
+                  {{ profileFormStore.errors.general }}
                 </p>
               </div>
             </div>
@@ -192,10 +214,18 @@
           >
             <!-- Left side - Info -->
             <div class="text-sm text-gray-600">
-              <span v-if="isDirty && !isSubmitting">
+              <span
+                v-if="
+                  profileFormStore.isDirty && !profileFormStore.isSubmitting
+                "
+              >
                 You have unsaved changes
               </span>
-              <span v-else-if="!isDirty && !isNewProfile">
+              <span
+                v-else-if="
+                  !profileFormStore.isDirty && !profileFormStore.isNewProfile
+                "
+              >
                 All changes saved
               </span>
             </div>
@@ -203,19 +233,21 @@
             <!-- Right side - Actions -->
             <div class="flex gap-3">
               <Button
-                v-if="isDirty"
+                v-if="profileFormStore.isDirty"
                 label="Reset"
                 severity="secondary"
                 outlined
-                :disabled="isSubmitting"
+                :disabled="profileFormStore.isSubmitting"
                 @click="handleReset"
               />
 
               <Button
                 type="submit"
                 :label="submitButtonLabel"
-                :loading="isSubmitting"
-                :disabled="!isFormValid || isSubmitting"
+                :loading="profileFormStore.isSubmitting"
+                :disabled="
+                  !profileFormStore.isFormValid || profileFormStore.isSubmitting
+                "
                 class="min-w-32"
               />
             </div>
@@ -228,9 +260,9 @@
         <!-- Sticky Preview -->
         <div class="lg:sticky lg:top-8">
           <ProfilePreview
-            :profile-data="formData"
-            :completion-percentage="completionPercentage"
-            :show-public-profile-button="!isNewProfile"
+            :profile-data="profileFormStore.formData"
+            :completion-percentage="profileFormStore.completionPercentage"
+            :show-public-profile-button="!profileFormStore.isNewProfile"
             :show-tips="true"
           />
         </div>
@@ -265,7 +297,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
@@ -273,108 +305,73 @@ import Button from 'primevue/button';
 import ProfileCompletionBanner from './ProfileCompletionBanner.vue';
 import ProfilePreview from './ProfilePreview.vue';
 import MusicStyleSelector from './MusicStyleSelector.vue';
-import { useProfileForm } from '../composables/useProfileForm';
-import type { ProfileFormData } from '../types/profile.types';
+import { useProfileFormStore } from '../stores/useProfileFormStore';
+import type { ProfileFormData } from '../stores/useProfileFormStore';
 
-// Use the profile form composable
-const {
-  formData,
-  errors,
-  isLoading,
-  isSubmitting,
-  isNewProfile,
-  isDirty,
-  formMode,
-  isAuthenticated,
-  validateField,
-  validateForm,
-  loadProfile,
-  saveProfile,
-  resetForm,
-  getCurrentUserId,
-  initializeAuth,
-} = useProfileForm();
+// Use the profile form store
+const profileFormStore = useProfileFormStore();
 
 // Component state
 const showSuccessMessage = ref(false);
 const bannerDismissed = ref(false);
 
 // Computed properties
-const isFormValid = computed(() => {
-  return (
-    formData.value.artist_name.length >= 2 &&
-    formData.value.biography.length > 0 &&
-    formData.value.music_style_ids.length > 0
-  );
-});
-
 const submitButtonLabel = computed(() => {
-  if (isSubmitting.value) {
-    return isNewProfile.value ? 'Creating Profile...' : 'Saving Changes...';
+  if (profileFormStore.isSubmitting) {
+    return profileFormStore.isNewProfile
+      ? 'Creating Profile...'
+      : 'Saving Changes...';
   }
-  return isNewProfile.value ? 'Create Profile' : 'Save Changes';
+  return profileFormStore.isNewProfile ? 'Create Profile' : 'Save Changes';
 });
 
 const successMessage = computed(() => {
-  return isNewProfile.value
+  return profileFormStore.isNewProfile
     ? 'Profile created successfully!'
     : 'Profile updated successfully!';
 });
 
 const isProfileComplete = computed(() => {
   return (
-    isFormValid.value &&
-    formData.value.instagram_url.length > 0 &&
-    formData.value.facebook_url.length > 0
+    profileFormStore.isFormValid &&
+    profileFormStore.formData.instagram_url.length > 0 &&
+    profileFormStore.formData.facebook_url.length > 0
   );
-});
-
-const completionPercentage = computed(() => {
-  let completed = 0;
-  const totalFields = 5;
-
-  if (formData.value.artist_name.length >= 2) completed++;
-  if (formData.value.biography.length > 0) completed++;
-  if (formData.value.music_style_ids.length > 0) completed++;
-  if (formData.value.instagram_url.length > 0) completed++;
-  if (formData.value.facebook_url.length > 0) completed++;
-
-  return Math.round((completed / totalFields) * 100);
-});
-
-const missingFields = computed(() => {
-  const missing: string[] = [];
-
-  if (formData.value.artist_name.length < 2) missing.push('artist_name');
-  if (formData.value.biography.length === 0) missing.push('biography');
-  if (formData.value.music_style_ids.length === 0)
-    missing.push('music_style_ids');
-
-  return missing;
 });
 
 // Methods
 const inputClasses = (fieldName: keyof ProfileFormData) => {
   const baseClasses = 'w-full';
-  const hasError = Boolean(errors.value[fieldName]);
+  const hasError = Boolean(profileFormStore.errors[fieldName]);
 
   return hasError ? `${baseClasses} p-invalid` : baseClasses;
 };
 
-const clearFieldError = (fieldName: keyof ProfileFormData) => {
-  if (errors.value[fieldName]) {
-    errors.value[fieldName] = undefined;
+const validateField = (fieldName: keyof ProfileFormData) => {
+  const value = profileFormStore.formData[fieldName];
+  const error = profileFormStore.validateField(fieldName, value);
+
+  if (error) {
+    profileFormStore.setErrors({
+      ...profileFormStore.errors,
+      [fieldName]: error,
+    });
+  } else {
+    profileFormStore.clearFieldError(fieldName);
   }
 };
 
 const handleSubmit = async () => {
   // Check authentication before submitting
-  if (!isAuthenticated.value) {
-    errors.value.general = 'You must be logged in to save your profile';
+  if (!profileFormStore.isAuthenticated) {
+    profileFormStore.setErrors({
+      ...profileFormStore.errors,
+      general: 'You must be logged in to save your profile',
+    });
     return;
   }
 
-  const result = await saveProfile();
+  const result = await profileFormStore.saveProfile();
 
   if (result.success) {
     showSuccessMessage.value = true;
@@ -385,7 +382,7 @@ const handleSubmit = async () => {
     }, 3000);
 
     // Redirect to dashboard if this was profile completion
-    if (formMode.value === 'complete') {
+    if (profileFormStore.formMode === 'complete') {
       setTimeout(() => {
         window.location.href = '/dj/dashboard';
       }, 1500);
@@ -394,7 +391,7 @@ const handleSubmit = async () => {
 };
 
 const handleReset = () => {
-  resetForm();
+  profileFormStore.resetForm();
   bannerDismissed.value = false;
 };
 
@@ -405,13 +402,13 @@ const dismissBanner = () => {
 // Lifecycle
 onMounted(async () => {
   // Initialize authentication first
-  await initializeAuth();
+  await profileFormStore.initializeAuth();
 
   // Only proceed if authenticated
-  if (isAuthenticated.value) {
-    const userId = getCurrentUserId();
+  if (profileFormStore.isAuthenticated) {
+    const userId = profileFormStore.getCurrentUserId();
     if (userId) {
-      await loadProfile(userId);
+      await profileFormStore.loadProfile(userId);
     }
   } else {
     // Redirect to login if not authenticated

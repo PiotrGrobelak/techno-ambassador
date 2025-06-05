@@ -1,23 +1,15 @@
 import type { CreateUserCommand, UpdateUserCommand, UserDetailDto } from '../../../types'
 
-/** Profile form data structure */
-export interface ProfileFormData {
-  artist_name: string
-  biography: string
-  instagram_url: string
-  facebook_url: string
-  music_style_ids: string[]
-}
+// Re-export types from the store for backward compatibility
+export type {
+  ProfileFormData,
+  ProfileFormErrors,
+  ProfileFormMode,
+  SaveProfileResponse
+} from '../stores/useProfileFormStore'
 
-/** Profile form validation errors */
-export interface ProfileFormErrors {
-  artist_name?: string
-  biography?: string
-  instagram_url?: string
-  facebook_url?: string
-  music_style_ids?: string
-  general?: string
-}
+// Import types for use in this file
+import type { ProfileFormData, ProfileFormErrors } from '../stores/useProfileFormStore'
 
 /** Profile form state for the composable */
 export interface ProfileFormState {
@@ -27,6 +19,16 @@ export interface ProfileFormState {
   isSubmitting: boolean
   isNewProfile: boolean
   isDirty: boolean
+  formMode: 'create' | 'edit' | 'complete'
+  isAuthenticated: boolean
+  completionPercentage: number
+}
+
+/** Profile completion calculation */
+export interface ProfileCompletion {
+  percentage: number
+  missingFields: string[]
+  isComplete: boolean
 }
 
 /** Profile completion status */
@@ -34,14 +36,4 @@ export interface ProfileCompletionStatus {
   isComplete: boolean
   missingFields: string[]
   completionPercentage: number
-}
-
-/** Profile form mode */
-export type ProfileFormMode = 'create' | 'edit' | 'complete'
-
-/** Save profile response */
-export interface SaveProfileResponse {
-  success: boolean
-  data?: UserDetailDto
-  errors?: ProfileFormErrors
 } 

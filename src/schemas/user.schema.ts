@@ -5,6 +5,10 @@ import { z } from 'zod';
  * Validates all required and optional fields with appropriate constraints
  */
 export const createUserSchema = z.object({
+  user_id: z
+    .string()
+    .uuid('Invalid user ID format'),
+  
   artist_name: z
     .string()
     .min(1, 'Artist name is required')
@@ -19,14 +23,14 @@ export const createUserSchema = z.object({
   
   instagram_url: z
     .string()
-    .url('Invalid Instagram URL format')
     .max(500, 'Instagram URL must be less than 500 characters')
+    .trim()
     .optional(),
   
   facebook_url: z
     .string()
-    .url('Invalid Facebook URL format')
     .max(500, 'Facebook URL must be less than 500 characters')
+    .trim()
     .optional(),
   
   music_style_ids: z
@@ -42,9 +46,13 @@ export type CreateUserCommandSchema = z.infer<typeof createUserSchema>;
 
 /**
  * Validation schema for updating a user (PUT /api/users/{id})
- * All fields are optional for partial updates
+ * All fields except user_id are optional for partial updates
  */
 export const updateUserSchema = z.object({
+  user_id: z
+    .string()
+    .uuid('Invalid user ID format'),
+  
   artist_name: z
     .string()
     .min(1, 'Artist name cannot be empty')
@@ -61,17 +69,15 @@ export const updateUserSchema = z.object({
   
   instagram_url: z
     .string()
-    .url('Invalid Instagram URL format')
     .max(500, 'Instagram URL must be less than 500 characters')
-    .optional()
-    .nullable(),
+    .trim()
+    .optional(),
   
   facebook_url: z
     .string()
-    .url('Invalid Facebook URL format')
     .max(500, 'Facebook URL must be less than 500 characters')
-    .optional()
-    .nullable(),
+    .trim()
+    .optional(),
   
   music_style_ids: z
     .array(z.string().uuid('Invalid music style ID format'))

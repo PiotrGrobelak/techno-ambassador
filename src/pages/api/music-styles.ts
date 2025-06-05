@@ -14,7 +14,6 @@ export const prerender = false
  */
 export async function GET(context: APIContext): Promise<Response> {
   try {
-    console.log('Fetching music styles with user counts from database...');
     
     const { data: musicStyles, error } = await context.locals.supabase
       .from('music_styles')
@@ -26,7 +25,6 @@ export async function GET(context: APIContext): Promise<Response> {
       `)
       .order('style_name');
 
-    console.log('Database response:', { data: musicStyles, error });
 
     if (error) {
       console.error('Database error:', error);
@@ -46,7 +44,6 @@ export async function GET(context: APIContext): Promise<Response> {
       total: transformedData.length
     };
 
-    console.log('Returning response:', response);
 
     return new Response(JSON.stringify(response), {
       status: 200,

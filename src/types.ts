@@ -118,6 +118,7 @@ export interface UserDetailResponseDto {
 
 /** Command model for creating a new user - POST /api/users */
 export interface CreateUserCommand {
+  user_id: string
   artist_name: string
   biography: string
   instagram_url?: string
@@ -127,6 +128,7 @@ export interface CreateUserCommand {
 
 /** Command model for updating user profile - PUT /api/users/{id} */
 export interface UpdateUserCommand {
+  user_id: string
   artist_name?: string
   biography?: string
   instagram_url?: string

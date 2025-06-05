@@ -299,7 +299,7 @@ export function sanitizeCreateUserCommand(command: any): any {
     sanitized.biography = sanitizeTextInput(sanitized.biography);
   }
   
-  // URLs are validated by Zod schema, but we can add additional sanitization
+  // Social media URLs - only basic trimming, no format validation required
   if (sanitized.instagram_url) {
     sanitized.instagram_url = sanitized.instagram_url.trim();
   }
@@ -328,7 +328,7 @@ export function sanitizeUpdateUserCommand(command: any): any {
     sanitized.biography = sanitizeTextInput(sanitized.biography);
   }
   
-  // URLs are validated by Zod schema, but we can add additional sanitization
+  // Social media URLs - only basic trimming, no format validation required
   if (sanitized.instagram_url) {
     sanitized.instagram_url = sanitized.instagram_url.trim();
   }
@@ -409,6 +409,11 @@ export async function handleServiceError(
 
   // User creation and validation errors
   if (message === 'Artist name already exists') {
+    await errorLogService.logBusinessError(message, context, ErrorType.CONFLICT_ERROR);
+    return ApiErrors.conflict(message);
+  }
+
+  if (message === 'User profile already exists') {
     await errorLogService.logBusinessError(message, context, ErrorType.CONFLICT_ERROR);
     return ApiErrors.conflict(message);
   }
