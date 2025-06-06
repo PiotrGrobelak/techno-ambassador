@@ -24,6 +24,7 @@
         size="medium"
         @click="navigateToPath('/auth/register')"
         :pulse="true"
+        data-testid="nav-register-dj-button"
       />
     </template>
 

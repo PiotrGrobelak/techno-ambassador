@@ -46,6 +46,7 @@
       required
       @blur="validateField('passwordConfirmation')"
       class="animate-fade-in"
+      data-testid="auth-password-confirmation-input"
     />
 
     <!-- Submit button -->

@@ -5,3 +5,4 @@
 
 export { NavigationComponent } from './NavigationComponent';
 export { LoginPage } from './LoginPage';
+export { RegisterPage } from './RegisterPage';
