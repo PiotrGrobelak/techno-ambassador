@@ -85,7 +85,7 @@ Modal/dialog component with Apple HIG presentation styles and friction levels.
 **Note:** This component uses the `v-if` pattern for visibility control instead of `v-model`. The parent component controls visibility and listens to close/confirm/cancel events.
 
 ```vue
-<BaseDialogV2
+<BaseDialog
   v-if="showModal"
   variant="sheet"
   friction="low"
@@ -98,7 +98,7 @@ Modal/dialog component with Apple HIG presentation styles and friction levels.
   <template #default>
     Modal content goes here
   </template>
-</BaseDialogV2>
+</BaseDialog>
 ```
 
 **Props:**
@@ -220,7 +220,7 @@ Card component for organizing content with Apple HIG spacing and visual hierarch
 
 ```vue
 <template>
-  <BaseDialogV2
+  <BaseDialog
     v-if="showDeleteModal"
     variant="alert"
     friction="high"
@@ -236,7 +236,7 @@ Card component for organizing content with Apple HIG spacing and visual hierarch
     <BaseTypography variant="body" color="secondary">
       Are you sure you want to delete this item? This action cannot be undone.
     </BaseTypography>
-  </BaseDialogV2>
+  </BaseDialog>
 </template>
 ```
 

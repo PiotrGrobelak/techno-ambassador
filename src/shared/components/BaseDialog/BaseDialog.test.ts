@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { VueWrapper } from '@vue/test-utils';
-import BaseDialogV2 from './BaseDialogV2.vue';
+import BaseDialog from './BaseDialog.vue';
 import { mountComponent } from '@/test/utils';
 
 // Mock PrimeVue Dialog component
@@ -57,7 +57,7 @@ vi.mock('@/shared/components/BaseButton/BaseButton.vue', () => ({
   },
 }));
 
-describe('BaseDialogV2', () => {
+describe('BaseDialog', () => {
   let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
@@ -66,7 +66,7 @@ describe('BaseDialogV2', () => {
 
   describe('1. Basic Dialog Properties', () => {
     it('should render with default properties', () => {
-      wrapper = mountComponent(BaseDialogV2);
+      wrapper = mountComponent(BaseDialog); 
 
       // Check default computed values
       expect(wrapper.vm.showCancel).toBe(true);
@@ -77,7 +77,7 @@ describe('BaseDialogV2', () => {
     });
 
     it('should apply custom header text', () => {
-      wrapper = mountComponent(BaseDialogV2, {
+      wrapper = mountComponent(BaseDialog, {
         props: { header: 'Custom Dialog Title' }
       });
 
@@ -85,7 +85,7 @@ describe('BaseDialogV2', () => {
     });
 
     it('should apply custom button text', () => {
-      wrapper = mountComponent(BaseDialogV2, {
+      wrapper = mountComponent(BaseDialog, {
         props: {
           cancelText: 'Custom Cancel',
           confirmText: 'Custom Confirm'
@@ -104,7 +104,7 @@ describe('BaseDialogV2', () => {
 
   describe('2. Dialog Styling', () => {
     it('should apply correct default width styling', () => {
-      wrapper = mountComponent(BaseDialogV2);
+      wrapper = mountComponent(BaseDialog);
 
       const dialogStyle = wrapper.vm.dialogStyle;
       expect(dialogStyle.width).toBe('90vw');
@@ -112,7 +112,7 @@ describe('BaseDialogV2', () => {
     });
 
     it('should have correct default classes', () => {
-      wrapper = mountComponent(BaseDialogV2);
+      wrapper = mountComponent(BaseDialog);
 
       // Check that the dialog has the correct base classes
       const dialog = wrapper.findComponent({ name: 'Dialog' });
@@ -124,7 +124,7 @@ describe('BaseDialogV2', () => {
 
   describe('3. Event Handling', () => {
     it('should emit close event on handleClose', () => {
-      wrapper = mountComponent(BaseDialogV2);
+      wrapper = mountComponent(BaseDialog);
 
       // Trigger handleClose method
       wrapper.vm.handleClose();
@@ -134,7 +134,7 @@ describe('BaseDialogV2', () => {
     });
 
     it('should emit confirm event on handleConfirm', () => {
-      wrapper = mountComponent(BaseDialogV2);
+      wrapper = mountComponent(BaseDialog);
 
       // Trigger handleConfirm method
       wrapper.vm.handleConfirm();
@@ -144,7 +144,7 @@ describe('BaseDialogV2', () => {
     });
 
     it('should call handleClose when cancel button is clicked', async () => {
-      wrapper = mountComponent(BaseDialogV2, {
+      wrapper = mountComponent(BaseDialog, {
         props: { 
           showCancel: true 
         }
@@ -161,7 +161,7 @@ describe('BaseDialogV2', () => {
     });
 
     it('should call handleConfirm when confirm button is clicked', async () => {
-      wrapper = mountComponent(BaseDialogV2, {
+      wrapper = mountComponent(BaseDialog, {
         props: { 
           showConfirm: true 
         }
@@ -180,7 +180,7 @@ describe('BaseDialogV2', () => {
 
   describe('4. Button Visibility Logic', () => {
     it('should show both cancel and confirm buttons by default', () => {
-      wrapper = mountComponent(BaseDialogV2);
+      wrapper = mountComponent(BaseDialog);
 
       expect(wrapper.vm.showCancel).toBe(true);
       expect(wrapper.vm.showConfirm).toBe(true);
@@ -190,7 +190,7 @@ describe('BaseDialogV2', () => {
     });
 
     it('should hide cancel button when showCancel is false', () => {
-      wrapper = mountComponent(BaseDialogV2, {
+                wrapper = mountComponent(BaseDialog, {
         props: { 
           showCancel: false 
         }
@@ -205,7 +205,7 @@ describe('BaseDialogV2', () => {
     });
 
     it('should hide confirm button when showConfirm is false', () => {
-      wrapper = mountComponent(BaseDialogV2, {
+      wrapper = mountComponent(BaseDialog, {
         props: { 
           showConfirm: false 
         }
@@ -220,7 +220,7 @@ describe('BaseDialogV2', () => {
     });
 
     it('should show no buttons when both are disabled', () => {
-      wrapper = mountComponent(BaseDialogV2, {
+      wrapper = mountComponent(BaseDialog, {
         props: { 
           showCancel: false,
           showConfirm: false
@@ -237,13 +237,13 @@ describe('BaseDialogV2', () => {
 
   describe('5. Closable Logic', () => {
     it('should be closable by default', () => {
-      wrapper = mountComponent(BaseDialogV2);
+      wrapper = mountComponent(BaseDialog);
 
       expect(wrapper.vm.closable).toBe(true);
     });
 
     it('should not be closable when persistent is true', () => {
-      wrapper = mountComponent(BaseDialogV2, {
+      wrapper = mountComponent(BaseDialog, {
         props: { 
           persistent: true 
         }
@@ -253,7 +253,7 @@ describe('BaseDialogV2', () => {
     });
 
     it('should respect closable prop when not persistent', () => {
-      wrapper = mountComponent(BaseDialogV2, {
+      wrapper = mountComponent(BaseDialog, {
         props: { 
           closable: false,
           persistent: false
@@ -264,7 +264,7 @@ describe('BaseDialogV2', () => {
     });
 
     it('should override closable when persistent takes precedence', () => {
-      wrapper = mountComponent(BaseDialogV2, {
+        wrapper = mountComponent(BaseDialog, {
         props: { 
           closable: true,
           persistent: true  // Should override closable

@@ -1,7 +1,7 @@
 <template>
   <Dialog
+    :modal="true"
     :visible="true"
-    modal
     :style="dialogStyle"
     :closable="closable"
     :draggable="false"
@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import BaseButton from '@/shared/components/BaseButton/BaseButton.vue';
 import Dialog from 'primevue/dialog';
 

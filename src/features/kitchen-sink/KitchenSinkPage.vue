@@ -707,7 +707,7 @@
 
     <!-- All Dialogs -->
     <!-- Default Dialog -->
-    <BaseDialogV2
+    <BaseDialog
       v-if="dialogs.default"
       header="Information"
       @close="dialogs.default = false"
@@ -734,10 +734,10 @@
         This is a default dialog with both Cancel and OK buttons. Perfect for
         general information or simple confirmations.
       </BaseTypography>
-    </BaseDialogV2>
+    </BaseDialog>
 
     <!-- Confirmation Dialog -->
-    <BaseDialogV2
+    <BaseDialog
       v-if="dialogs.confirmation"
       header="Delete Item"
       cancel-text="Cancel"
@@ -766,10 +766,10 @@
         Are you sure you want to delete this item? This action cannot be undone.
         All associated data will be permanently removed.
       </BaseTypography>
-    </BaseDialogV2>
+    </BaseDialog>
 
     <!-- Alert Dialog -->
-    <BaseDialogV2
+    <BaseDialog
       v-if="dialogs.alert"
       header="Success"
       confirm-text="OK"
@@ -798,10 +798,10 @@
         Your changes have been saved successfully! The system has been updated
         and all users will see the new configuration.
       </BaseTypography>
-    </BaseDialogV2>
+    </BaseDialog>
 
     <!-- Form Dialog -->
-    <BaseDialogV2
+    <BaseDialog
       v-if="dialogs.form"
       header="Edit User Profile"
       cancel-text="Cancel"
@@ -847,10 +847,10 @@
           </div>
         </form>
       </template>
-    </BaseDialogV2>
+    </BaseDialog>
 
     <!-- Confirm Only Dialog -->
-    <BaseDialogV2
+    <BaseDialog
       v-if="dialogs.confirmOnly"
       header="Information"
       :show-cancel="false"
@@ -862,10 +862,10 @@
         This dialog only has a confirm button. The cancel button is hidden using
         the showCancel prop.
       </BaseTypography>
-    </BaseDialogV2>
+    </BaseDialog>
 
     <!-- Cancel Only Dialog -->
-    <BaseDialogV2
+    <BaseDialog
       v-if="dialogs.cancelOnly"
       header="Read Only Information"
       :show-confirm="false"
@@ -876,10 +876,10 @@
         This dialog only has a close button. The confirm button is hidden using
         the showConfirm prop.
       </BaseTypography>
-    </BaseDialogV2>
+    </BaseDialog>
 
     <!-- No Buttons Dialog -->
-    <BaseDialogV2
+    <BaseDialog
       v-if="dialogs.noButtons"
       header="Auto-Dismissing Dialog"
       :show-cancel="false"
@@ -890,10 +890,10 @@
         This dialog has no footer buttons. You can close it using the X button
         or by pressing ESC. It will also auto-close in 3 seconds.
       </BaseTypography>
-    </BaseDialogV2>
+    </BaseDialog>
 
     <!-- Custom Text Dialog -->
-    <BaseDialogV2
+    <BaseDialog
       v-if="dialogs.customText"
       header="Custom Button Text"
       cancel-text="Not Now"
@@ -905,10 +905,10 @@
         This dialog demonstrates custom button text using the cancelText and
         confirmText props.
       </BaseTypography>
-    </BaseDialogV2>
+    </BaseDialog>
 
     <!-- Persistent Dialog -->
-    <BaseDialogV2
+    <BaseDialog
       v-if="dialogs.persistent"
       header="Important Decision"
       :persistent="true"
@@ -921,10 +921,10 @@
         This is a persistent dialog. You cannot close it by clicking outside or
         pressing ESC. You must make an explicit choice using one of the buttons.
       </BaseTypography>
-    </BaseDialogV2>
+    </BaseDialog>
 
     <!-- Not Closable Dialog -->
-    <BaseDialogV2
+    <BaseDialog
       v-if="dialogs.notClosable"
       header="Force Decision"
       :closable="false"
@@ -937,10 +937,10 @@
         This dialog has the close button (X) hidden using the closable prop. You
         must use one of the action buttons to continue.
       </BaseTypography>
-    </BaseDialogV2>
+    </BaseDialog>
 
     <!-- Custom Header Dialog -->
-    <BaseDialogV2
+    <BaseDialog
       v-if="dialogs.customHeader"
       :closable="false"
       @close="dialogs.customHeader = false"
@@ -1002,7 +1002,7 @@
           </div>
         </div>
       </template>
-    </BaseDialogV2>
+    </BaseDialog>
 
     <!-- Toast Notification -->
     <div
@@ -1019,7 +1019,7 @@ import { ref, reactive } from 'vue';
 import BaseButton from '@/shared/components/BaseButton/BaseButton.vue';
 import BaseInput from '@/shared/components/BaseInput/BaseInput.vue';
 import BaseTypography from '@/shared/components/BaseTypography.vue';
-import BaseDialogV2 from '@/shared/components/BaseDialog/BaseDialogV2.vue';
+import BaseDialog from '@/shared/components/BaseDialog/BaseDialog.vue';
 import BaseCard from '@/shared/components/BaseCard.vue';
 
 // Form data

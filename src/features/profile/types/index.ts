@@ -6,7 +6,7 @@ export type {
   ProfileFormErrors,
   ProfileFormMode,
   SaveProfileResponse
-} from '@/features/profile/stores/useProfileFormStore'
+} from '@/features/profile/stores/useProfileFormStore/useProfileFormStore'
 
 /** Profile completion calculation */
 export interface ProfileCompletion {
