@@ -82,20 +82,23 @@ Typography component implementing Apple's SF font system with proper hierarchy.
 
 Modal/dialog component with Apple HIG presentation styles and friction levels.
 
+**Note:** This component uses the `v-if` pattern for visibility control instead of `v-model`. The parent component controls visibility and listens to close/confirm/cancel events.
+
 ```vue
-<BaseModal
-  v-model="showModal"
+<BaseDialogV2
+  v-if="showModal"
   variant="sheet"
   friction="low"
   header="Confirm Action"
   :persistent="false"
   @confirm="handleConfirm"
   @cancel="handleCancel"
+  @close="showModal = false"
 >
   <template #default>
     Modal content goes here
   </template>
-</BaseModal>
+</BaseDialogV2>
 ```
 
 **Props:**
@@ -105,6 +108,13 @@ Modal/dialog component with Apple HIG presentation styles and friction levels.
 - `size`: `'small'` | `'medium'` | `'large'` | `'xlarge'`
 - `persistent`: Boolean - High friction modals require explicit decisions
 - `highlightPrimary`: Boolean - Pulses primary action button
+- `header`: String - Header text (can be overridden with header slot)
+
+**Events:**
+
+- `@close` - Emitted when dialog is closed (ESC, close button, backdrop click)
+- `@confirm` - Emitted when confirm button is clicked
+- `@cancel` - Emitted when cancel button is clicked or dialog is closed
 
 ### BaseCard
 
@@ -210,21 +220,23 @@ Card component for organizing content with Apple HIG spacing and visual hierarch
 
 ```vue
 <template>
-  <BaseModal
-    v-model="showDeleteModal"
+  <BaseDialogV2
+    v-if="showDeleteModal"
     variant="alert"
     friction="high"
     header="Delete Item"
     confirm-text="Delete"
     confirm-variant="destructive"
     :persistent="true"
+    :highlight-primary="true"
     @confirm="confirmDelete"
     @cancel="showDeleteModal = false"
+    @close="showDeleteModal = false"
   >
     <BaseTypography variant="body" color="secondary">
       Are you sure you want to delete this item? This action cannot be undone.
     </BaseTypography>
-  </BaseModal>
+  </BaseDialogV2>
 </template>
 ```
 

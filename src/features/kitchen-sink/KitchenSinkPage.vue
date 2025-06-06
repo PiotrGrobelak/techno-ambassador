@@ -479,60 +479,137 @@
     <!-- Modals Section -->
     <section>
       <h2 class="text-2xl font-semibold text-gray-900 mb-6">
-        Modals & Dialogs
+        Dialogs & Modals
       </h2>
       <div class="bg-white rounded-lg p-6 shadow-sm">
         <div class="space-y-6">
-          <!-- Modal Triggers -->
+          <!-- Basic Dialog Examples -->
           <div>
             <h3 class="text-lg font-medium text-gray-900 mb-4">
-              Modal Variants
+              Basic Dialog Examples
             </h3>
             <div class="flex flex-wrap gap-4">
               <BaseButton
-                label="Sheet Modal"
-                variant="secondary"
-                @click="openModal('sheet')"
+                label="Default Dialog"
+                variant="primary"
+                @click="openDialog('default')"
               />
               <BaseButton
-                label="Alert Modal"
-                variant="secondary"
-                @click="openModal('alert')"
+                label="Confirmation Dialog"
+                variant="destructive"
+                @click="openDialog('confirmation')"
               />
               <BaseButton
-                label="Fullscreen Modal"
+                label="Alert Dialog"
                 variant="secondary"
-                @click="openModal('fullscreen')"
+                @click="openDialog('alert')"
               />
               <BaseButton
-                label="Drawer Modal"
-                variant="secondary"
-                @click="openModal('drawer')"
+                label="Form Dialog"
+                variant="primary"
+                @click="openDialog('form')"
               />
             </div>
           </div>
 
-          <!-- Friction Levels -->
+          <!-- Dialog Button Configurations -->
           <div>
             <h3 class="text-lg font-medium text-gray-900 mb-4">
-              Friction Levels
+              Button Configurations
             </h3>
             <div class="flex flex-wrap gap-4">
               <BaseButton
-                label="High Friction"
-                variant="destructive"
-                @click="openFrictionModal('high')"
+                label="Only Confirm Button"
+                variant="primary"
+                @click="openDialog('confirmOnly')"
               />
               <BaseButton
-                label="Low Friction"
+                label="Only Cancel Button"
                 variant="secondary"
-                @click="openFrictionModal('low')"
+                @click="openDialog('cancelOnly')"
               />
               <BaseButton
-                label="No Friction"
+                label="No Buttons"
                 variant="ghost"
-                @click="openFrictionModal('none')"
+                @click="openDialog('noButtons')"
               />
+              <BaseButton
+                label="Custom Button Text"
+                variant="primary"
+                @click="openDialog('customText')"
+              />
+            </div>
+          </div>
+
+          <!-- Dialog Closable Options -->
+          <div>
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+              Closable Options
+            </h3>
+            <div class="flex flex-wrap gap-4">
+              <BaseButton
+                label="Persistent Dialog"
+                variant="destructive"
+                @click="openDialog('persistent')"
+              />
+              <BaseButton
+                label="Not Closable"
+                variant="secondary"
+                @click="openDialog('notClosable')"
+              />
+              <BaseButton
+                label="Custom Header Dialog"
+                variant="primary"
+                @click="openDialog('customHeader')"
+              />
+            </div>
+          </div>
+
+          <!-- Dialog Features -->
+          <div>
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+              Dialog Features
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="p-4 border rounded-lg">
+                <h4 class="font-medium mb-2">Simple & Clean</h4>
+                <p class="text-sm text-gray-600">
+                  Simplified API with only essential props for basic dialog
+                  functionality
+                </p>
+              </div>
+              <div class="p-4 border rounded-lg">
+                <h4 class="font-medium mb-2">Focus Management</h4>
+                <p class="text-sm text-gray-600">
+                  Automatic focus trap and keyboard navigation with VueUse
+                </p>
+              </div>
+              <div class="p-4 border rounded-lg">
+                <h4 class="font-medium mb-2">Flexible Slots</h4>
+                <p class="text-sm text-gray-600">
+                  Custom header, content, and footer with slot-based
+                  architecture
+                </p>
+              </div>
+              <div class="p-4 border rounded-lg">
+                <h4 class="font-medium mb-2">Button Control</h4>
+                <p class="text-sm text-gray-600">
+                  Show/hide cancel and confirm buttons with custom text
+                </p>
+              </div>
+              <div class="p-4 border rounded-lg">
+                <h4 class="font-medium mb-2">Persistent Mode</h4>
+                <p class="text-sm text-gray-600">
+                  Prevent dismissal for critical actions requiring explicit
+                  choice
+                </p>
+              </div>
+              <div class="p-4 border rounded-lg">
+                <h4 class="font-medium mb-2">Accessibility</h4>
+                <p class="text-sm text-gray-600">
+                  Built-in ARIA attributes and keyboard support
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -628,115 +705,304 @@
       </div>
     </section>
 
-    <!-- All Modals -->
-    <BaseModal
-      v-model="modals.sheet"
-      variant="sheet"
-      header="Sheet Modal"
-      @confirm="handleModalAction('Sheet confirmed')"
-      @cancel="modals.sheet = false"
+    <!-- All Dialogs -->
+    <!-- Default Dialog -->
+    <BaseDialogV2
+      v-if="dialogs.default"
+      header="Information"
+      @close="dialogs.default = false"
+      @confirm="dialogs.default = false"
     >
-      <BaseTypography variant="body">
-        This is a sheet modal that slides down from the top. It's great for
-        contextual actions and forms.
-      </BaseTypography>
-    </BaseModal>
+      <template #header>
+        <div class="flex items-center space-x-2">
+          <svg
+            class="w-5 h-5 text-blue-500"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span>Information</span>
+        </div>
+      </template>
 
-    <BaseModal
-      v-model="modals.alert"
-      variant="alert"
-      friction="high"
-      header="Alert Dialog"
+      <BaseTypography variant="body">
+        This is a default dialog with both Cancel and OK buttons. Perfect for
+        general information or simple confirmations.
+      </BaseTypography>
+    </BaseDialogV2>
+
+    <!-- Confirmation Dialog -->
+    <BaseDialogV2
+      v-if="dialogs.confirmation"
+      header="Delete Item"
+      cancel-text="Cancel"
       confirm-text="Delete"
-      confirm-variant="destructive"
-      :persistent="true"
-      @confirm="handleModalAction('Alert confirmed')"
-      @cancel="modals.alert = false"
+      @close="dialogs.confirmation = false"
+      @confirm="handleDialogAction('Item deleted successfully')"
     >
+      <template #header>
+        <div class="flex items-center space-x-2">
+          <svg
+            class="w-5 h-5 text-red-500"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span>Delete Item</span>
+        </div>
+      </template>
+
       <BaseTypography variant="body" color="secondary">
         Are you sure you want to delete this item? This action cannot be undone.
+        All associated data will be permanently removed.
       </BaseTypography>
-    </BaseModal>
+    </BaseDialogV2>
 
-    <BaseModal
-      v-model="modals.fullscreen"
-      variant="fullscreen"
-      header="Fullscreen Modal"
-      @confirm="handleModalAction('Fullscreen confirmed')"
-      @cancel="modals.fullscreen = false"
+    <!-- Alert Dialog -->
+    <BaseDialogV2
+      v-if="dialogs.alert"
+      header="Success"
+      confirm-text="OK"
+      :show-cancel="false"
+      @close="dialogs.alert = false"
+      @confirm="dialogs.alert = false"
     >
-      <div class="space-y-4">
-        <BaseTypography variant="body">
-          This is a fullscreen modal that takes up the entire viewport. Perfect
-          for complex forms or detailed content.
-        </BaseTypography>
+      <template #header>
+        <div class="flex items-center space-x-2">
+          <svg
+            class="w-5 h-5 text-green-500"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span>Success</span>
+        </div>
+      </template>
 
-        <BaseCard title="Content Card" variant="outlined">
-          <BaseTypography variant="body" color="secondary">
-            You can include any content in fullscreen modals, including other
-            components like cards.
-          </BaseTypography>
-        </BaseCard>
-      </div>
-    </BaseModal>
+      <BaseTypography variant="body">
+        Your changes have been saved successfully! The system has been updated
+        and all users will see the new configuration.
+      </BaseTypography>
+    </BaseDialogV2>
 
-    <BaseModal
-      v-model="modals.drawer"
-      variant="drawer"
-      header="Drawer Modal"
-      @confirm="handleModalAction('Drawer confirmed')"
-      @cancel="modals.drawer = false"
+    <!-- Form Dialog -->
+    <BaseDialogV2
+      v-if="dialogs.form"
+      header="Edit User Profile"
+      cancel-text="Cancel"
+      confirm-text="Save"
+      @close="dialogs.form = false"
+      @confirm="handleFormDialogSubmit"
+    >
+      <template #default="{ close }">
+        <form @submit.prevent="handleFormDialogSubmit" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Display Name
+            </label>
+            <BaseInput
+              v-model="dialogForm.displayName"
+              placeholder="Enter display name"
+              :clearable="true"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
+            <BaseInput
+              v-model="dialogForm.email"
+              variant="email"
+              placeholder="user@example.com"
+              :clearable="true"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Bio
+            </label>
+            <BaseInput
+              v-model="dialogForm.bio"
+              :multiline="true"
+              :rows="3"
+              placeholder="Tell us about yourself..."
+            />
+          </div>
+        </form>
+      </template>
+    </BaseDialogV2>
+
+    <!-- Confirm Only Dialog -->
+    <BaseDialogV2
+      v-if="dialogs.confirmOnly"
+      header="Information"
+      :show-cancel="false"
+      confirm-text="Got it"
+      @close="dialogs.confirmOnly = false"
+      @confirm="dialogs.confirmOnly = false"
     >
       <BaseTypography variant="body">
-        This is a drawer modal that slides in from the side. Great for
-        navigation or secondary actions.
+        This dialog only has a confirm button. The cancel button is hidden using
+        the showCancel prop.
       </BaseTypography>
-    </BaseModal>
+    </BaseDialogV2>
 
-    <!-- Friction Modals -->
-    <BaseModal
-      v-model="modals.highFriction"
-      variant="alert"
-      friction="high"
-      header="High Friction Modal"
+    <!-- Cancel Only Dialog -->
+    <BaseDialogV2
+      v-if="dialogs.cancelOnly"
+      header="Read Only Information"
+      :show-confirm="false"
+      cancel-text="Close"
+      @close="dialogs.cancelOnly = false"
+    >
+      <BaseTypography variant="body">
+        This dialog only has a close button. The confirm button is hidden using
+        the showConfirm prop.
+      </BaseTypography>
+    </BaseDialogV2>
+
+    <!-- No Buttons Dialog -->
+    <BaseDialogV2
+      v-if="dialogs.noButtons"
+      header="Auto-Dismissing Dialog"
+      :show-cancel="false"
+      :show-confirm="false"
+      @close="dialogs.noButtons = false"
+    >
+      <BaseTypography variant="body">
+        This dialog has no footer buttons. You can close it using the X button
+        or by pressing ESC. It will also auto-close in 3 seconds.
+      </BaseTypography>
+    </BaseDialogV2>
+
+    <!-- Custom Text Dialog -->
+    <BaseDialogV2
+      v-if="dialogs.customText"
+      header="Custom Button Text"
+      cancel-text="Not Now"
+      confirm-text="Let's Go!"
+      @close="dialogs.customText = false"
+      @confirm="handleDialogAction('Custom action executed!')"
+    >
+      <BaseTypography variant="body">
+        This dialog demonstrates custom button text using the cancelText and
+        confirmText props.
+      </BaseTypography>
+    </BaseDialogV2>
+
+    <!-- Persistent Dialog -->
+    <BaseDialogV2
+      v-if="dialogs.persistent"
+      header="Important Decision"
       :persistent="true"
-      confirm-text="I Understand"
-      confirm-variant="destructive"
-      @confirm="handleModalAction('High friction confirmed')"
-      @cancel="modals.highFriction = false"
+      cancel-text="Cancel"
+      confirm-text="Proceed"
+      @close="dialogs.persistent = false"
+      @confirm="handleDialogAction('Persistent action confirmed')"
     >
       <BaseTypography variant="body" color="secondary">
-        This modal requires explicit user decision. It can't be dismissed by
-        clicking outside.
+        This is a persistent dialog. You cannot close it by clicking outside or
+        pressing ESC. You must make an explicit choice using one of the buttons.
       </BaseTypography>
-    </BaseModal>
+    </BaseDialogV2>
 
-    <BaseModal
-      v-model="modals.lowFriction"
-      variant="sheet"
-      friction="low"
-      header="Low Friction Modal"
-      @confirm="handleModalAction('Low friction confirmed')"
-      @cancel="modals.lowFriction = false"
+    <!-- Not Closable Dialog -->
+    <BaseDialogV2
+      v-if="dialogs.notClosable"
+      header="Force Decision"
+      :closable="false"
+      cancel-text="Decline"
+      confirm-text="Accept"
+      @close="dialogs.notClosable = false"
+      @confirm="handleDialogAction('Decision accepted')"
     >
-      <BaseTypography variant="body">
-        This modal can be easily dismissed and doesn't require as much
-        attention.
+      <BaseTypography variant="body" color="secondary">
+        This dialog has the close button (X) hidden using the closable prop. You
+        must use one of the action buttons to continue.
       </BaseTypography>
-    </BaseModal>
+    </BaseDialogV2>
 
-    <BaseModal
-      v-model="modals.noFriction"
-      variant="sheet"
-      friction="none"
-      header="No Friction Modal"
-      :show-footer="false"
-      @hide="handleModalAction('No friction dismissed')"
+    <!-- Custom Header Dialog -->
+    <BaseDialogV2
+      v-if="dialogs.customHeader"
+      :closable="false"
+      @close="dialogs.customHeader = false"
+      @confirm="dialogs.customHeader = false"
     >
-      <BaseTypography variant="body">
-        This modal has minimal friction and can be dismissed very easily.
-      </BaseTypography>
-    </BaseModal>
+      <template #header>
+        <div class="flex items-center justify-between w-full">
+          <div class="flex items-center space-x-2">
+            <svg
+              class="w-6 h-6 text-purple-500"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <span class="text-lg font-semibold">Custom Header Layout</span>
+          </div>
+          <BaseButton
+            @click="dialogs.customHeader = false"
+            variant="ghost"
+            label="✕"
+            size="small"
+          />
+        </div>
+      </template>
+
+      <template #default>
+        <div class="space-y-4">
+          <BaseTypography variant="body">
+            This demonstrates a completely custom header with manual close
+            button and custom icon. The dialog's closable prop is disabled.
+          </BaseTypography>
+
+          <BaseCard title="Features" variant="outlined">
+            <ul class="space-y-2 text-sm">
+              <li>• Custom header slot with icon and styling</li>
+              <li>• Manual close button in header</li>
+              <li>• Disabled default close button</li>
+              <li>• Focus trap still works perfectly</li>
+            </ul>
+          </BaseCard>
+        </div>
+      </template>
+
+      <template #footer="{ close }">
+        <div class="flex justify-between w-full">
+          <BaseButton
+            @click="handleDialogAction('Custom action executed')"
+            variant="secondary"
+            label="Custom Action"
+          />
+          <div class="space-x-2">
+            <BaseButton @click="close" variant="ghost" label="Cancel" />
+            <BaseButton @click="close" variant="primary" label="Done" />
+          </div>
+        </div>
+      </template>
+    </BaseDialogV2>
 
     <!-- Toast Notification -->
     <div
@@ -751,9 +1017,9 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 import BaseButton from '@/shared/components/BaseButton/BaseButton.vue';
-import BaseInput from '@/shared/components/BaseInput.vue';
+import BaseInput from '@/shared/components/BaseInput/BaseInput.vue';
 import BaseTypography from '@/shared/components/BaseTypography.vue';
-import BaseModal from '@/shared/components/BaseModal.vue';
+import BaseDialogV2 from '@/shared/components/BaseDialog/BaseDialogV2.vue';
 import BaseCard from '@/shared/components/BaseCard.vue';
 
 // Form data
@@ -793,6 +1059,13 @@ const settings = reactive({
   bio: 'Frontend developer passionate about great user experiences.',
 });
 
+// Dialog form
+const dialogForm = reactive({
+  displayName: 'Jane Smith',
+  email: 'jane@example.com',
+  bio: 'UX Designer with passion for accessibility and user-centered design.',
+});
+
 // Cards
 const selectedCard = ref<number | null>(null);
 const sampleCards = [
@@ -820,15 +1093,24 @@ const sampleCards = [
   },
 ];
 
-// Modals
-const modals = reactive({
-  sheet: false,
+// Dialogs
+const dialogs = reactive({
+  // Basic dialog examples
+  default: false,
+  confirmation: false,
   alert: false,
-  fullscreen: false,
-  drawer: false,
-  highFriction: false,
-  lowFriction: false,
-  noFriction: false,
+  form: false,
+
+  // Button configuration examples
+  confirmOnly: false,
+  cancelOnly: false,
+  noButtons: false,
+  customText: false,
+
+  // Closable options
+  persistent: false,
+  notClosable: false,
+  customHeader: false,
 });
 
 // Toast
@@ -857,20 +1139,23 @@ function viewCard(item: any): void {
   showToast(`Viewing: ${item.title}`);
 }
 
-function openModal(variant: string): void {
-  modals[variant as keyof typeof modals] = true;
+function openDialog(variant: string): void {
+  dialogs[variant as keyof typeof dialogs] = true;
+
+  // Auto-close the noButtons dialog after 3 seconds
+  if (variant === 'noButtons') {
+    setTimeout(() => {
+      dialogs.noButtons = false;
+      showToast('Dialog auto-closed after 3 seconds');
+    }, 3000);
+  }
 }
 
-function openFrictionModal(friction: string): void {
-  const modalKey = `${friction}Friction` as keyof typeof modals;
-  modals[modalKey] = true;
-}
-
-function handleModalAction(message: string): void {
+function handleDialogAction(message: string): void {
   showToast(message);
-  // Close all modals
-  Object.keys(modals).forEach((key) => {
-    modals[key as keyof typeof modals] = false;
+  // Close all dialogs
+  Object.keys(dialogs).forEach((key) => {
+    dialogs[key as keyof typeof dialogs] = false;
   });
 }
 
@@ -908,5 +1193,10 @@ function resetSettings(): void {
 
 function saveSettings(): void {
   showToast('Settings saved successfully!');
+}
+
+function handleFormDialogSubmit(): void {
+  showToast('Form submitted successfully!');
+  dialogs.form = false;
 }
 </script>
