@@ -19,6 +19,7 @@
       :loading="disabled"
       :aria-label="ariaLabel"
       :aria-describedby="ariaDescribedBy"
+      data-testid="music-style-multiselect"
     >
       <!-- Custom option template -->
       <template #option="{ option }">

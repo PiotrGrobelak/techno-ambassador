@@ -1,9 +1,13 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div
+    class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+    data-testid="dj-search-widget"
+  >
     <!-- Results summary -->
     <div
       v-if="!djListStore.isLoading || djListStore.djList.length > 0"
       class="mb-6"
+      data-testid="search-results-summary"
     >
       <div class="flex items-center justify-between">
         <div class="text-sm text-gray-600">

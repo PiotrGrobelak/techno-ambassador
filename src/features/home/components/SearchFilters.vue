@@ -1,5 +1,8 @@
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+  <div
+    class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8"
+    data-testid="search-filters-container"
+  >
     <div class="space-y-4">
       <!-- Search input -->
       <div>
@@ -29,7 +32,7 @@
       <div
         class="flex justify-between items-center pt-4 border-t border-gray-200"
       >
-        <div class="text-sm text-gray-500">
+        <div class="text-sm text-gray-500" data-testid="active-filters-text">
           <span v-if="hasActiveFilters">
             {{ activeFiltersText }}
           </span>
@@ -43,6 +46,7 @@
           text
           size="small"
           class="text-sm"
+          data-testid="clear-filters-button"
         >
           <svg
             class="w-4 h-4 mr-1"

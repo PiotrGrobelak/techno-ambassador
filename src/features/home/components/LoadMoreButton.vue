@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center mt-8">
+  <div class="flex justify-center mt-8" data-testid="load-more-section">
     <Button
       v-if="showButton"
       @click="handleLoadMore"
@@ -8,6 +8,7 @@
       class="px-8 py-3 text-lg"
       severity="secondary"
       outlined
+      data-testid="load-more-button"
     >
       <template v-if="!isLoading">
         {{ buttonText }}
@@ -19,6 +20,7 @@
     <div
       v-else-if="!hasMore && totalResults > 0"
       class="text-gray-500 text-center py-4"
+      data-testid="no-more-results-message"
     >
       You've reached the end of the results
     </div>

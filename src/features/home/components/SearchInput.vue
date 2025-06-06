@@ -3,6 +3,7 @@
     <InputText
       v-model="searchValue"
       :placeholder="placeholder"
+      data-testid="dj-search-input"
       class="w-full pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       :class="{ 'border-red-500': hasError }"
     />
@@ -30,6 +31,7 @@
     <button
       v-if="searchValue && !disabled"
       @click="clearInput"
+      data-testid="clear-search-button"
       class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
       type="button"
     >

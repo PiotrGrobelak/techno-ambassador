@@ -1,24 +1,33 @@
 <template>
   <div
     class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 overflow-hidden h-full flex flex-col"
+    data-testid="dj-card"
+    :data-dj-id="dj.id"
+    :data-dj-name="dj.artist_name"
   >
     <div class="p-6 flex-1 flex flex-col">
       <!-- Artist name with fixed height -->
       <div class="h-8 mb-3">
-        <h3 class="text-xl font-bold text-gray-900 line-clamp-1 leading-8">
+        <h3
+          class="text-xl font-bold text-gray-900 line-clamp-1 leading-8"
+          data-testid="dj-artist-name"
+        >
           {{ dj.artist_name }}
         </h3>
       </div>
 
       <!-- Biography with fixed height -->
       <div class="h-16 mb-4">
-        <p class="text-gray-600 text-sm line-clamp-3 leading-5">
+        <p
+          class="text-gray-600 text-sm line-clamp-3 leading-5"
+          data-testid="dj-biography"
+        >
           {{ truncatedBiography }}
         </p>
       </div>
 
       <!-- Music styles with fixed height -->
-      <div class="h-12 mb-4 flex-shrink-0">
+      <div class="h-12 mb-4 flex-shrink-0" data-testid="dj-music-styles">
         <div class="flex flex-wrap gap-2 overflow-hidden">
           <Tag
             v-for="style in displayedStyles"
@@ -35,7 +44,7 @@
 
       <!-- Footer with events count and profile link -->
       <div class="flex items-center justify-between mt-auto">
-        <div class="text-sm text-gray-500">
+        <div class="text-sm text-gray-500" data-testid="dj-events-count">
           <span class="flex items-center">
             <svg
               class="w-4 h-4 mr-1 flex-shrink-0"
@@ -59,6 +68,7 @@
           size="small"
           severity="primary"
           outlined
+          data-testid="view-profile-button"
           class="text-sm flex-shrink-0"
         >
           View Profile

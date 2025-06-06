@@ -1,18 +1,27 @@
 <template>
-  <div>
+  <div data-testid="dj-list-container">
     <!-- Loading state -->
-    <LoadingSkeletons v-if="isLoading && djList.length === 0" :count="8" />
+    <LoadingSkeletons
+      v-if="isLoading && djList.length === 0"
+      :count="8"
+      data-testid="dj-list-loading"
+    />
 
     <!-- Results grid -->
     <div
       v-else-if="djList.length > 0"
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+      data-testid="dj-results-grid"
     >
       <DJCard v-for="dj in djList" :key="dj.id" :dj="dj" />
     </div>
 
     <!-- Empty state -->
-    <div v-else-if="isEmpty" class="text-center py-12">
+    <div
+      v-else-if="isEmpty"
+      class="text-center py-12"
+      data-testid="dj-list-empty-state"
+    >
       <div class="max-w-md mx-auto">
         <!-- Empty state icon -->
         <div class="mb-4">

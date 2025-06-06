@@ -1,11 +1,13 @@
 <template>
   <div
     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+    data-testid="loading-skeletons-container"
   >
     <div
       v-for="index in count"
       :key="index"
       class="bg-white rounded-lg shadow-md p-6 border border-gray-200"
+      data-testid="dj-card-skeleton"
     >
       <!-- Artist name skeleton -->
       <Skeleton height="1.5rem" class="mb-3" />
