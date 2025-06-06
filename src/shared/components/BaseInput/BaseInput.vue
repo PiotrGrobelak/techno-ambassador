@@ -45,7 +45,6 @@
               : undefined
         "
         :aria-invalid="hasError"
-        v-bind="$attrs"
         @blur="handleBlur"
         @focus="handleFocus"
         @input="handleInput"

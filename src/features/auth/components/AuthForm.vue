@@ -12,6 +12,7 @@
       required
       @blur="validateField('email')"
       class="animate-fade-in"
+      data-testid="auth-email-input"
     />
 
     <!-- Password field (login, register, update-password) -->
@@ -30,6 +31,7 @@
       required
       @blur="validateField('password')"
       class="animate-fade-in"
+      data-testid="auth-password-input"
     />
 
     <!-- Password confirmation (register, update-password) -->
@@ -57,6 +59,7 @@
       :pulse="isFormValid && !isLoading"
       full-width
       class="animate-fade-in"
+      data-testid="auth-submit-button"
     />
 
     <!-- Error display -->

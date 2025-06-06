@@ -16,6 +16,7 @@
         size="medium"
         @click="navigateToPath('/auth/login')"
         class="hidden sm:inline-flex"
+        data-testid="nav-sign-in-button"
       />
       <BaseButton
         label="I'm a DJ"
