@@ -25,8 +25,8 @@ export class RegisterPage {
     this.passwordInput = page.locator('[data-testid="auth-password-input"] input');
     this.passwordConfirmationInput = page.locator('[data-testid="auth-password-confirmation-input"] input');
     this.submitButton = page.getByTestId('auth-submit-button');
-    this.errorMessage = page.locator('.bg-red-50');
-    this.successMessage = page.locator('.bg-green-50');
+    this.errorMessage = page.locator('.text-red-600');
+    this.successMessage = page.locator('.text-green-600');
     this.loginLink = page.getByTestId('register-to-login-link');
     this.homeLink = page.getByRole('link', { name: '← Back to home' });
     this.loadingSpinner = page.locator('[data-testid="loading-spinner"]');

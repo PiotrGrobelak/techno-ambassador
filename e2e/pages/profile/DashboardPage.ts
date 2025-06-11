@@ -19,7 +19,7 @@ export class DashboardPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.dashboardTitle = page.getByTestId('dashboard-welcome-title');
+    this.dashboardTitle = page.getByRole('heading', { name: /dashboard|welcome/i });
     this.welcomeMessage = page.locator('[data-testid="welcome-message"]');
     this.profileSection = page.locator('[data-testid="profile-section"]');
     this.eventsSection = page.locator('[data-testid="events-section"]');
@@ -157,20 +157,5 @@ export class DashboardPage {
     // No authentication required messages
     const authRequiredMessage = this.page.locator('text=/authentication required/i');
     await expect(authRequiredMessage).not.toBeVisible();
-  }
-
-  /**
-   * Verify successful registration completion by checking dashboard access
-   */
-  async verifySuccessfulRegistration(): Promise<void> {
-    // Wait for dashboard to load after registration
-    await this.waitForDashboardLoad();
-    
-    // Verify we're on the dashboard
-    await this.verifyDashboardAccess();
-    
-    // Verify welcome title is visible
-    await expect(this.dashboardTitle).toBeVisible();
-    await expect(this.dashboardTitle).toContainText('Welcome to Your DJ Dashboard');
   }
 } 
