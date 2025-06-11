@@ -6,13 +6,18 @@
     <div class="space-y-4">
       <!-- Search input -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          for="search-djs-input"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
           Search DJs
         </label>
         <SearchInput
           v-model="searchTerm"
           :disabled="isLoading"
           placeholder="Search by artist name..."
+          id="search-djs-input"
+          label="Search DJs"
         />
       </div>
 

@@ -4,7 +4,6 @@
       v-model="selectedStyles"
       :options="musicStyles"
       optionLabel="style_name"
-      optionValue="id"
       filter
       :placeholder="buttonDisplayText"
       :maxSelectedLabels="2"
@@ -13,7 +12,6 @@
       class="w-full"
       :disabled="disabled"
       :pt="passThrough"
-      :panelClass="responsivePanelClass"
       display="chip"
       :showToggleAll="false"
       :loading="disabled"
@@ -23,11 +21,13 @@
     >
       <!-- Custom option template -->
       <template #option="{ option }">
-        <div class="flex flex-col py-2 w-full bg-white">
-          <span class="font-bold text-gray-900 leading-tight">{{
-            option.style_name
-          }}</span>
-          <span class="text-sm text-gray-800 leading-tight font-semibold"
+        <div class="flex flex-col py-1 w-full bg-transparent">
+          <span
+            class="font-semibold text-gray-900 leading-tight text-[15px] tracking-tight group-hover:text-gray-400"
+            >{{ option.style_name }}</span
+          >
+          <span
+            class="text-[13px] text-gray-600 leading-tight font-medium mt-0.5 group-hover:text-gray-400"
             >{{ option.user_count }} DJs</span
           >
         </div>
@@ -37,10 +37,10 @@
       <template #value="slotProps">
         <div
           v-if="!slotProps.value?.length"
-          class="flex items-center text-gray-700 bg-white"
+          class="flex items-center text-gray-700 bg-transparent"
         >
           <svg
-            class="w-4 h-4 mr-2 flex-shrink-0 text-gray-600"
+            class="w-4 h-4 mr-3 flex-shrink-0 text-gray-500"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -53,11 +53,14 @@
               d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
             />
           </svg>
-          <span class="truncate font-semibold">Music Styles</span>
+          <span
+            class="truncate font-medium text-[15px] leading-5 tracking-tight"
+            >Music Styles</span
+          >
         </div>
-        <div v-else class="flex items-center text-gray-900 bg-white">
+        <div v-else class="flex items-center text-gray-900 bg-transparent">
           <svg
-            class="w-4 h-4 mr-2 flex-shrink-0 text-blue-600"
+            class="w-4 h-4 mr-3 flex-shrink-0 text-blue-600"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -70,16 +73,17 @@
               d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
             />
           </svg>
-          <span class="truncate font-bold">{{
-            getSelectedText(slotProps.value)
-          }}</span>
+          <span
+            class="truncate font-semibold text-[15px] leading-5 tracking-tight text-blue-600"
+            >{{ getSelectedText(slotProps.value) }}</span
+          >
         </div>
       </template>
 
       <!-- Custom chip display -->
       <template #chip="{ value }">
         <div
-          class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-bold bg-blue-600 text-white border-2 border-blue-700 mr-1 mb-1 max-w-32"
+          class="inline-flex items-center px-3 py-1.5 rounded-full font-semibold bg-blue-600 text-white border border-blue-700 mr-2 mb-1 max-w-32 shadow-sm text-[13px] leading-4 tracking-tight"
         >
           <span class="truncate">{{ getStyleName(value) }}</span>
         </div>
@@ -87,9 +91,9 @@
 
       <!-- Custom empty state -->
       <template #empty>
-        <div class="text-center py-8 px-6 bg-white">
+        <div class="text-center py-12 px-6 bg-white">
           <svg
-            class="w-10 h-10 mx-auto text-gray-500 mb-3"
+            class="w-12 h-12 mx-auto text-gray-400 mb-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -98,11 +102,18 @@
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
-              stroke-width="2"
+              stroke-width="1.5"
               d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 0a4 4 0 01-4-4V7a4 4 0 118 0v1M9 12v4a4 4 0 01-4 4H5"
             />
           </svg>
-          <p class="text-gray-900 text-base font-bold">No music styles found</p>
+          <p
+            class="text-gray-700 font-semibold text-[15px] leading-6 tracking-tight"
+          >
+            No music styles found
+          </p>
+          <p class="text-gray-500 text-[13px] leading-5 mt-1">
+            Try adjusting your search terms
+          </p>
         </div>
       </template>
     </MultiSelect>
@@ -191,114 +202,35 @@ const ariaDescribedBy = computed(() => {
   return `${count} music style${plural} selected. ${baseInstruction} or deselect`;
 });
 
-// Responsive panel class
-const responsivePanelClass = computed(
-  () => 'w-full sm:max-w-md md:max-w-lg lg:max-w-xl'
-);
-
 // PassThrough configuration
 const passThrough = computed(() => ({
-  root: {
-    class: [
-      'w-full min-h-[2.75rem]',
-      'border-2 border-gray-400 rounded-lg',
-      'bg-white hover:border-gray-500',
-      'focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/40',
-      'transition-all duration-200',
-      props.disabled
-        ? 'opacity-60 cursor-not-allowed bg-gray-100'
-        : 'cursor-pointer',
-    ],
-  },
-  input: {
-    class: [
-      'w-full outline-none px-3 py-2',
-      'text-gray-900 placeholder-gray-600 bg-white',
-    ],
-  },
   labelContainer: {
-    class: ['flex-1 overflow-hidden flex items-center px-3 py-2 bg-white'],
-  },
-  label: {
-    class: ['block truncate text-left text-gray-900 font-medium bg-white'],
-  },
-  trigger: {
     class: [
-      'flex items-center justify-center px-3 py-2 bg-white',
-      'text-gray-700 hover:text-gray-900 transition-colors duration-200',
-    ],
-  },
-  panel: {
-    class: [
-      'mt-2 border-2 border-gray-300 rounded-lg shadow-2xl bg-white',
-      'max-w-full min-w-[16rem] z-50',
+      'flex-1 overflow-hidden flex items-center px-4 py-3',
+      'bg-transparent',
     ],
   },
   header: {
-    class: ['p-4 border-b-2 border-gray-200 bg-white'],
-  },
-  headerCheckboxContainer: { class: 'mr-3' },
-  headerCheckbox: {
-    class: [
-      'w-5 h-5 rounded border-2 border-gray-600 bg-white',
-      'checked:bg-blue-600 checked:border-blue-600',
-      'hover:border-blue-500 focus:ring-3 focus:ring-blue-500/40',
-    ],
-  },
-  filterContainer: {
-    class: 'relative p-4 border-b-2 border-gray-200 bg-white',
-  },
-  filterInput: {
-    class: [
-      'w-full pl-10 pr-4 py-3 border-2 border-gray-400 rounded-lg',
-      'bg-white text-gray-900 placeholder-gray-600',
-      'focus:border-blue-500 focus:ring-2 focus:ring-blue-500/40',
-      'transition-all duration-200',
-    ],
+    class: ['p-5 border-b border-gray-100', 'bg-gray-50/50 rounded-t-2xl'],
   },
   filterIcon: {
     class: [
-      'absolute left-7 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-600',
+      'absolute left-9 top-1/2 transform -translate-y-1/2',
+      'w-5 h-5 text-gray-500',
+      'transition-colors duration-200',
     ],
   },
-  wrapper: {
+  list: {
+    class: 'p-0! m-0 list-none bg-white',
+  },
+  option: {
+    class: 'group',
+  },
+  emptyMessage: {
     class: [
-      'max-h-64 overflow-auto bg-white',
-      'scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100',
+      'px-6 py-12 text-center text-gray-700 bg-white',
+      'font-medium text-[15px] leading-6',
     ],
   },
-  list: { class: 'p-0 m-0 list-none bg-white' },
-  item: {
-    class: [
-      'flex items-center px-4 py-3 cursor-pointer select-none bg-white',
-      'border-b border-gray-200 last:border-b-0',
-      'hover:bg-blue-50 focus:bg-blue-50 focus:outline-none',
-      'data-[p-highlight="true"]:bg-blue-100 data-[p-highlight="true"]:text-blue-900',
-      'transition-all duration-200',
-    ],
-  },
-  itemGroup: {
-    class: [
-      'font-semibold text-gray-900 px-4 py-3 bg-gray-100 border-b-2 border-gray-300',
-    ],
-  },
-  checkboxContainer: { class: 'mr-3 flex items-center' },
-  checkbox: {
-    class: [
-      'w-5 h-5 rounded border-2 border-gray-700 bg-white',
-      'checked:bg-blue-600 checked:border-blue-600 hover:border-blue-500',
-      'focus:ring-3 focus:ring-blue-500/40 transition-all duration-200',
-      '!bg-white !border-gray-700',
-    ],
-  },
-  checkboxIcon: { class: 'w-4 h-4 text-white font-bold' },
-  closeButton: {
-    class: [
-      'w-8 h-8 rounded-full flex items-center justify-center bg-white',
-      'text-gray-700 hover:text-gray-900 hover:bg-gray-100',
-      'transition-all duration-200',
-    ],
-  },
-  emptyMessage: { class: ['px-6 py-8 text-center text-gray-900 bg-white'] },
 }));
 </script>

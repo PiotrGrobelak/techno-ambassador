@@ -4,8 +4,12 @@
       v-model="searchValue"
       :placeholder="placeholder"
       data-testid="dj-search-input"
-      class="w-full pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      :class="{ 'border-red-500': hasError }"
+      class="w-full"
+      :invalid="hasError"
+      :aria-describedby="`${id}-error`"
+      :aria-label="label"
+      :id="id"
+      size="large"
     />
 
     <!-- Search icon -->
@@ -64,6 +68,8 @@ import InputText from 'primevue/inputtext';
 interface Props {
   placeholder?: string;
   disabled?: boolean;
+  id: string;
+  label: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
