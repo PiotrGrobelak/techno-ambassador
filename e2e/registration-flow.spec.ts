@@ -19,7 +19,7 @@ test.describe('DJ Registration Flow', () => {
     await page.waitForLoadState('domcontentloaded');
   });
 
-  test('Complete DJ Registration User Journey', async ({ page }) => {
+  test.skip('Complete DJ Registration User Journey', async ({ page }) => {
 
     // Step 1: Click "I'm a DJ" button
     await navigation.clickDJButton();

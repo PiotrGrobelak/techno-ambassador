@@ -127,6 +127,7 @@ The platform addresses the lack of a centralized tool for DJs to showcase their 
 ## Available Scripts
 
 - `npm run dev` - Start the development server
+- `npm run dev:e2e` - Start the development server in e2e mode
 - `npm run build` - Build the project for production
 - `npm run preview` - Preview the production build locally
 - `npm run astro` - Run Astro CLI commands
