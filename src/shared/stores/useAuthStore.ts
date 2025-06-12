@@ -207,6 +207,92 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
+  const resetPassword = async (email: string): Promise<{ success: boolean; error?: string; message?: string }> => {
+    try {
+      const result = await errorHandling.executeWithErrorHandling(
+        async () => {
+          const response = await fetch('/api/auth/reset-password', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+          });
+
+          const responseData = await response.json();
+
+          if (!response.ok) {
+            throw new Error(responseData.error || 'Failed to send reset link');
+          }
+
+          return responseData;
+        },
+        'Password Reset',
+        { showToast: false } // Handle success/error messages manually
+      );
+
+      if (result) {
+        return { 
+          success: true, 
+          message: result.message || 'Password reset link sent to your email.' 
+        };
+      } else {
+        return { 
+          success: false, 
+          error: errorHandling.getDisplayError() || 'Failed to send reset link' 
+        };
+      }
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Network error occurred' 
+      };
+    }
+  };
+
+  const updatePassword = async (password: string): Promise<{ success: boolean; error?: string; message?: string }> => {
+    try {
+      const result = await errorHandling.executeWithErrorHandling(
+        async () => {
+          const response = await fetch('/api/auth/update-password', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ password }),
+          });
+
+          const responseData = await response.json();
+
+          if (!response.ok) {
+            throw new Error(responseData.error || 'Failed to update password');
+          }
+
+          return responseData;
+        },
+        'Password Update',
+        { showToast: false } // Handle success/error messages manually
+      );
+
+      if (result) {
+        return { 
+          success: true, 
+          message: result.message || 'Password updated successfully! You can now sign in with your new password.' 
+        };
+      } else {
+        return { 
+          success: false, 
+          error: errorHandling.getDisplayError() || 'Failed to update password' 
+        };
+      }
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Network error occurred' 
+      };
+    }
+  };
+
   // Return reactive state and actions
   return {
     // Readonly state to prevent direct mutation outside store
@@ -233,6 +319,8 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     login,
     register,
+    resetPassword,
+    updatePassword,
 
     // Error handling actions
     clearError: errorHandling.clearError,

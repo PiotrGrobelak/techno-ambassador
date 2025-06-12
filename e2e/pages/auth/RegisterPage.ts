@@ -21,7 +21,7 @@ export class RegisterPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.emailInput = page.locator('[data-testid="auth-email-input"] input');
+    this.emailInput = page.locator('[data-testid="auth-email-input"]');
     this.passwordInput = page.locator('[data-testid="auth-password-input"] input');
     this.passwordConfirmationInput = page.locator('[data-testid="auth-password-confirmation-input"] input');
     this.submitButton = page.getByTestId('auth-submit-button');

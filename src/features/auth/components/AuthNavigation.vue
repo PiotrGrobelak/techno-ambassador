@@ -58,6 +58,7 @@
           variant="ghost"
           size="medium"
           @click="navigateToPath('/dj/dashboard')"
+          data-testid="dashboard-button"
         />
 
         <!-- Logout button -->
@@ -68,6 +69,7 @@
           @click="handleLogout"
           :loading="logoutLoading"
           :disabled="logoutLoading"
+          data-testid="sign-out-button"
         />
       </div>
 
@@ -78,6 +80,7 @@
           size="medium"
           @click="isMobileMenuOpen = !isMobileMenuOpen"
           :aria-label="isMobileMenuOpen ? 'Close menu' : 'Open menu'"
+          data-testid="mobile-menu-button"
         >
           <template #icon-leading>
             <svg
@@ -117,6 +120,7 @@
     <div
       v-if="authStore.isAuthenticated && isMobileMenuOpen"
       class="absolute top-16 right-4 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50 sm:hidden animate-fade-in"
+      data-testid="user-menu"
     >
       <!-- User info -->
       <div class="px-4 py-3 border-b border-gray-100">
@@ -144,12 +148,14 @@
         <button
           @click="handleMobileNavigation('/dj/dashboard')"
           class="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
+          data-testid="mobile-dashboard-button"
         >
           <BaseTypography variant="body">Dashboard</BaseTypography>
         </button>
         <button
           @click="handleMobileNavigation('/dj/profile')"
           class="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
+          data-testid="mobile-profile-button"
         >
           <BaseTypography variant="body">Profile Settings</BaseTypography>
         </button>
@@ -158,6 +164,7 @@
           @click="handleLogout"
           class="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
           :disabled="logoutLoading"
+          data-testid="mobile-sign-out-button"
         >
           <BaseTypography
             variant="body"

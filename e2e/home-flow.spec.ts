@@ -5,7 +5,7 @@ import { HomePage, DJSearchPage } from './pages/home';
  * DJ Search Functionality Tests
  * Tests the complete user journey from homepage to DJ search results
  */
-test.describe('Home Page Functionality', () => {
+test.describe('Home Page flow', () => {
   let homePage: HomePage;
   let djSearchPage: DJSearchPage;
 
@@ -19,7 +19,7 @@ test.describe('Home Page Functionality', () => {
     await homePage.waitForPageLoad();
   });
 
-  test('Complete DJ search user journey', async () => {
+  test('should complete DJ search user journey', async () => {
     // Step 1: Click "Start Exploring" button
     await test.step('Click "Start Exploring" button', async () => {
       await homePage.verifyHeroContent();
@@ -53,7 +53,7 @@ test.describe('Home Page Functionality', () => {
     });
   });
 
-  test('Search with empty results', async () => {
+  test('should show empty state when searching for non-existent DJ', async () => {
     await homePage.clickStartExploring();
     await djSearchPage.waitForSearchWidgetReady();
     
@@ -65,7 +65,7 @@ test.describe('Home Page Functionality', () => {
     await djSearchPage.djList.verifyEmptyState('No DJs found');
   });
 
-  test('Clear search filters', async () => {
+  test('should clear search filters', async () => {
     await homePage.clickStartExploring();
     await djSearchPage.waitForSearchWidgetReady();
     
@@ -78,7 +78,7 @@ test.describe('Home Page Functionality', () => {
     await djSearchPage.searchFilters.verifyNoActiveFilters();
   });
 
-  test('Music style filter functionality', async () => {
+  test('should apply music style filter', async () => {  
     await homePage.clickStartExploring();
     await djSearchPage.waitForSearchWidgetReady();
     
@@ -96,7 +96,7 @@ test.describe('Home Page Functionality', () => {
     expect(await djSearchPage.hasSearchResults()).toBe(true);
   });
 
-  test('Load more results pagination', async () => {
+  test('should load more results', async () => {
     await homePage.clickStartExploring();
     await djSearchPage.waitForSearchWidgetReady();
     
@@ -113,7 +113,7 @@ test.describe('Home Page Functionality', () => {
     }
   });
 
-  test('Error handling and retry', async () => {
+  test('should retry search when error occurs', async () => {
     await homePage.clickStartExploring();
     await djSearchPage.waitForSearchWidgetReady();
     

@@ -18,7 +18,7 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.emailInput = page.locator('[data-testid="auth-email-input"] input');
+    this.emailInput = page.locator('[data-testid="auth-email-input"]');
     this.passwordInput = page.locator('[data-testid="auth-password-input"] input');
     this.submitButton = page.getByTestId('auth-submit-button');
     this.errorMessage = page.locator('.bg-red-50');

@@ -23,7 +23,7 @@ test.describe('Authentication Flow', () => {
     await page.waitForLoadState('domcontentloaded');
   });
 
-  test('Complete Login User Journey', async ({ page }) => {
+  test('should complete login user journey', async ({ page }) => {
     // Step 1: Click "Sign In" button from navigation
     await test.step('Navigate to login page', async () => {
       await navigation.verifyUnauthenticatedState();
@@ -65,7 +65,7 @@ test.describe('Authentication Flow', () => {
     });
   });
 
-  test('Login with Invalid Credentials', async ({ page }) => {
+  test('should show error message when login with invalid credentials', async ({ page }) => {
     // Navigate to login page
     await navigation.clickSignIn();
     await loginPage.waitForFormReady();
@@ -83,7 +83,7 @@ test.describe('Authentication Flow', () => {
     await loginPage.waitForFormReady();
   });
 
-  test('Login Form Validation', async ({ page }) => {
+  test('should disable submit button when email is invalid', async ({ page }) => {
     // Navigate to login page
     await navigation.clickSignIn();
     await loginPage.waitForFormReady();
@@ -92,7 +92,7 @@ test.describe('Authentication Flow', () => {
     await loginPage.verifyFormValidation();
   });
 
-  test('Direct Dashboard Access Without Authentication', async ({ page }) => {
+  test('should redirect to login page when accessing dashboard directly without authentication', async ({ page }) => {
     // Try to access dashboard directly without login
     await dashboardPage.goto();
 
@@ -104,7 +104,7 @@ test.describe('Authentication Flow', () => {
     await loginPage.waitForFormReady();
   });
 
-  test('Navigation Between Auth Pages', async ({ page }) => {
+  test('should navigate to login page from register page', async ({ page }) => {
     // Navigate to login page
     await navigation.clickSignIn();
     await loginPage.waitForFormReady();

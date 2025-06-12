@@ -15,10 +15,10 @@ export class NavigationComponent {
   constructor(page: Page) {
     this.page = page;
     this.signInButton = page.getByTestId('nav-sign-in-button');
-    this.djButton = page.getByRole('button', { name: "I'm a DJ" });
+    this.djButton = page.getByTestId('nav-dj-register-button');
     this.userMenu = page.locator('[data-testid="user-menu"]');
-    this.dashboardButton = page.getByRole('button', { name: 'Dashboard' });
-    this.signOutButton = page.getByRole('button', { name: 'Sign Out' });
+    this.dashboardButton = page.getByTestId('nav-dashboard-button');
+    this.signOutButton = page.getByTestId('nav-sign-out-button');
   }
 
   /**

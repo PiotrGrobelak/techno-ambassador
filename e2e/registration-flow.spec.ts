@@ -19,7 +19,7 @@ test.describe('DJ Registration Flow', () => {
     await page.waitForLoadState('domcontentloaded');
   });
 
-  test.skip('Complete DJ Registration User Journey', async ({ page }) => {
+  test.skip('should complete DJ Registration User Journey', async ({ page }) => {
 
     // Step 1: Click "I'm a DJ" button
     await navigation.clickDJButton();
@@ -47,7 +47,7 @@ test.describe('DJ Registration Flow', () => {
     await expect(page.getByTestId('dashboard-welcome-title')).toContainText('Welcome to Your DJ Dashboard');
   });
 
-  test('DJ Registration Form Validation', async () => {
+  test('should disable submit button when passwords do not match', async () => {
     // Navigate to registration page
     await navigation.clickDJButton();
     await registerPage.waitForFormReady();
@@ -56,7 +56,7 @@ test.describe('DJ Registration Flow', () => {
     await registerPage.verifyFormValidation();
   });
 
-  test('Registration Error Handling', async () => {
+  test('should show error message when password is too weak', async () => {
     const invalidEmail = 'invalid@email.com';
     const weakPassword = '123ds';
 
@@ -68,7 +68,6 @@ test.describe('DJ Registration Flow', () => {
     await registerPage.fillEmail(invalidEmail);
     await registerPage.fillPassword(weakPassword);
     await registerPage.fillPasswordConfirmation(weakPassword);
-    // await registerPage.submitForm();
 
     // Wait for error and verify error message
     await registerPage.waitForRegistrationError();
@@ -78,7 +77,7 @@ test.describe('DJ Registration Flow', () => {
     expect(errorMessage.toLowerCase()).toContain('must be at least 8 characters');
   });
 
-  test('Navigation Between Authentication Pages', async () => {
+  test('should navigate to login page from registration page', async () => {
     // Start registration process
     await navigation.clickDJButton();
     await registerPage.waitForFormReady();
