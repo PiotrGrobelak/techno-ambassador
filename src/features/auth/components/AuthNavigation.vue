@@ -60,6 +60,13 @@
           @click="navigateToPath('/dj/dashboard')"
           data-testid="dashboard-button"
         />
+        <BaseButton
+          label="Events Management"
+          variant="ghost"
+          size="medium"
+          @click="navigateToPath('/dashboard/events')"
+          data-testid="events-button"
+        />
 
         <!-- Logout button -->
         <BaseButton
@@ -151,6 +158,13 @@
           data-testid="mobile-dashboard-button"
         >
           <BaseTypography variant="body">Dashboard</BaseTypography>
+        </button>
+        <button
+          @click="handleMobileNavigation('/dashboard/events')"
+          class="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
+          data-testid="mobile-events-button"
+        >
+          <BaseTypography variant="body">Events Management</BaseTypography>
         </button>
         <button
           @click="handleMobileNavigation('/dj/profile')"

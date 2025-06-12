@@ -32,6 +32,7 @@ export const useAuthStore = defineStore('auth', () => {
   // Actions - functions for state management
   const setUser = (newUser: User | null) => {
     user.value = newUser;
+    console.log('User set:', newUser);
   };
 
   const setSession = (newSession: Session | null) => {
@@ -71,6 +72,7 @@ export const useAuthStore = defineStore('auth', () => {
               role: 'authenticated',
             };
             setUser(authUser as User);
+            console.log('User set:', authUser);
           }
         }
         

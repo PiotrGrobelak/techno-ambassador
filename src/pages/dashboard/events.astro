@@ -1,0 +1,21 @@
+---
+// Events management page for DJs - CRUD operations on events
+// Requires authentication (middleware will handle redirect if not logged in)
+
+import Layout from '@/layouts/Layout.astro';
+import EventsManagementView from '@/features/events/components/EventsManagementView.vue';
+
+// Page metadata
+const title = 'Events Management - Techno Ambassador';
+const description =
+  'Manage your techno events - create, edit, and organize your performance schedule';
+---
+
+<Layout title={title}>
+  <main class="min-h-screen bg-gray-50">
+    <!-- Page Content -->
+    <section aria-label="Events management">
+      <EventsManagementView client:load />
+    </section>
+  </main>
+</Layout>

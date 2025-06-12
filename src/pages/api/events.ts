@@ -5,7 +5,7 @@ import {
   handleApiError, 
   parseJsonBody, 
   handleServiceError,
-  // verifyAuthentication,
+    verifyAuthentication,
   ApiErrors 
 } from '@/middleware/error-handler';
 import { ErrorLogService } from '@/services/error-log.service';
@@ -31,16 +31,13 @@ export const prerender = false
  */
 export async function POST(context: APIContext): Promise<Response> {
   const { request, locals } = context;
-  // let user: any;
+  let user: any;
   let requestBody: any;
   
   try {
     // Step 1: Authentication verification - DISABLED FOR TESTING
-    // user = await verifyAuthentication(request, locals.supabase);
+    user = await verifyAuthentication(request, locals.supabase);
     
-    // Use default user ID for testing (replace with actual user UUID from your database)
-    const defaultUserId = DEFAULT_USER_ID;
-
     // Step 2: Parse and validate request body
     requestBody = await parseJsonBody(request);
     
@@ -61,7 +58,7 @@ export async function POST(context: APIContext): Promise<Response> {
     const eventService = new EventService(locals.supabase);
     
     try {
-      const eventResponse: EventResponseDto = await eventService.createEvent(command, defaultUserId);
+      const eventResponse: EventResponseDto = await eventService.createEvent(command, user.id);
 
       // Step 4: Success response
       return new Response(JSON.stringify(eventResponse), {
@@ -72,7 +69,7 @@ export async function POST(context: APIContext): Promise<Response> {
     } catch (serviceError: any) {
       // Step 5: Handle business logic errors using centralized error handler
       const errorLogService = new ErrorLogService(locals.supabase);
-      const errorContext = ErrorLogService.createContextFromRequest(request, defaultUserId);
+      const errorContext = ErrorLogService.createContextFromRequest(request, user.id);
       const contextWithBody = ErrorLogService.addRequestBodyToContext(errorContext, requestBody);
       
       const apiError = await handleServiceError(serviceError, contextWithBody, errorLogService);
@@ -81,7 +78,7 @@ export async function POST(context: APIContext): Promise<Response> {
 
   } catch (error: any) {
     // Step 6: Centralized error handling with logging
-    return await handleApiError(error, context, "00000000-0000-0000-0000-000000000001", requestBody);
+    return await handleApiError(error, context, user.id, requestBody);
   }
 }
 
