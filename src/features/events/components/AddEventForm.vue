@@ -1,6 +1,6 @@
 <template>
   <EventFormContainer title="Add New Event">
-    <form @submit="onSubmit" class="space-y-6">
+    <form @submit.prevent="onSubmit" class="space-y-6">
       <!-- Event Name -->
       <div class="animate-fade-in">
         <label

@@ -185,7 +185,6 @@ const dismissBanner = () => {
 
 // Check if banner was previously dismissed
 onMounted(() => {
-  console.log('ProfileCompletionBanner mounted', profileStore.needsCompletion);
   const wasDismissed = localStorage.getItem(
     'profile-completion-banner-dismissed'
   );

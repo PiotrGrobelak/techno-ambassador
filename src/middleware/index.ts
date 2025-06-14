@@ -26,6 +26,7 @@ const GUEST_ONLY_PATHS = [
 
 // Protected paths - require authentication
 const PROTECTED_PATHS = [
+  '/dashboard', // Dashboard pages including events management
   '/dj/dashboard',
   '/dj/profile',
   '/auth/update-password',

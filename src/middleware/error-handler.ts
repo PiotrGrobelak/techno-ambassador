@@ -221,15 +221,41 @@ export function withErrorHandling(
 }
 
 /**
- * Helper function to safely parse JSON request body with error handling
+ * Helper function to parse JSON body with better error messages
  * @param request - The incoming request
- * @returns Parsed JSON body or throws ApiError
+ * @returns Parsed JSON object or throws ApiError
  */
 export async function parseJsonBody(request: Request): Promise<any> {
   try {
-    return await request.json();
+    const contentType = request.headers.get('content-type');
+    
+    // Check if content type is JSON
+    if (!contentType || !contentType.includes('application/json')) {
+      throw ApiErrors.invalidJson(`Expected JSON content type, received: ${contentType || 'none'}`);
+    }
+    
+    const text = await request.text();
+    
+    // Check if the body looks like HTML (common issue when forms submit as HTML)
+    if (text.trim().startsWith('<')) {
+      throw ApiErrors.invalidJson('Received HTML content instead of JSON. Make sure to send JSON data with proper Content-Type header.');
+    }
+    
+    // Check if body is empty
+    if (!text.trim()) {
+      throw ApiErrors.invalidJson('Request body is empty. JSON data is required.');
+    }
+    
+    return JSON.parse(text);
   } catch (parseError) {
-    throw ApiErrors.invalidJson();
+    // If it's already an ApiError, re-throw it
+    if (parseError instanceof ApiError) {
+      throw parseError;
+    }
+    
+    // Handle JSON parsing errors
+    const errorMessage = parseError instanceof Error ? parseError.message : 'Unknown parsing error';
+    throw ApiErrors.invalidJson(`Invalid JSON format: ${errorMessage}`);
   }
 }
 

@@ -279,7 +279,6 @@ export const useProfileFormStore = defineStore('profileForm', () => {
 
         setNewProfile(false)
         isDirty.value = false
-        console.log('Profile loaded successfully')
         
         return profile
       },
@@ -289,7 +288,6 @@ export const useProfileFormStore = defineStore('profileForm', () => {
 
     // Handle 404 specifically for profile loading
     if (!result && errorHandling.error.value?.includes('404')) {
-      console.log('No existing profile found, assuming new user')
       setNewProfile(true)
       errorHandling.clearError()
     }

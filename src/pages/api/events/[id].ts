@@ -73,25 +73,26 @@ export async function GET(context: APIContext): Promise<Response> {
 }
 
 /**
- * PUT /api/events/{id} - Update event (NO AUTH REQUIRED - FOR TESTING)
+ * PUT /api/events/{id} - Update event
  * 
- * Allows updating any event. Authentication and ownership verification disabled
- * for testing purposes. Handles complete event updates with validation.
+ * Allows updating events with proper authentication and ownership verification.
+ * Uses session-based authentication from middleware.
  * 
  * @param context - Astro API context with request, params, and locals
  * @returns Response with updated event data or error
  */
 export async function PUT(context: APIContext): Promise<Response> {
   const { request, params, locals } = context;
-  // let user: any;
+  let user: any;
   let requestBody: any;
   
   try {
-    // Step 1: Authentication verification - DISABLED FOR TESTING
-    // user = await verifyAuthentication(request, locals.supabase);
+    // Step 1: Authentication verification using middleware-provided user
+    user = locals.user;
     
-    // Use default user ID for testing
-    const defaultUserId = "00000000-0000-0000-0000-000000000001";
+    if (!user) {
+      throw ApiErrors.unauthorized('Authentication required. Please log in to update events.');
+    }
 
     // Step 2: Validate path parameters
     const paramValidation = eventIdParamSchema.safeParse(params);
@@ -127,9 +128,10 @@ export async function PUT(context: APIContext): Promise<Response> {
     const eventService = new EventService(locals.supabase);
     
     try {
-      const eventResponse: EventResponseDto = await eventService.updateEventNoAuth(
+      const eventResponse: EventResponseDto = await eventService.updateEvent(
         eventId, 
-        command
+        command,
+        user.id
       );
 
       // Step 5: Success response
@@ -141,7 +143,7 @@ export async function PUT(context: APIContext): Promise<Response> {
     } catch (serviceError: any) {
       // Step 6: Handle business logic errors
       const errorLogService = new ErrorLogService(locals.supabase);
-      const errorContext = ErrorLogService.createContextFromRequest(request, defaultUserId);
+      const errorContext = ErrorLogService.createContextFromRequest(request, user.id);
       const contextWithBody = ErrorLogService.addRequestBodyToContext(errorContext, requestBody);
       
       const apiError = await handleServiceError(serviceError, contextWithBody, errorLogService);
@@ -150,29 +152,30 @@ export async function PUT(context: APIContext): Promise<Response> {
 
   } catch (error: any) {
     // Step 7: Centralized error handling with logging
-    return await handleApiError(error, context, "00000000-0000-0000-0000-000000000001", requestBody);
+    return await handleApiError(error, context, user?.id, requestBody);
   }
 }
 
 /**
- * DELETE /api/events/{id} - Delete event (NO AUTH REQUIRED - FOR TESTING)
+ * DELETE /api/events/{id} - Delete event
  * 
- * Allows deleting any event. Authentication and ownership verification disabled
- * for testing purposes. Maintains basic validation for event existence.
+ * Allows deleting events with proper authentication and ownership verification.
+ * Uses session-based authentication from middleware.
  * 
  * @param context - Astro API context with request, params, and locals
  * @returns Response with success message or error
  */
 export async function DELETE(context: APIContext): Promise<Response> {
   const { request, params, locals } = context;
-  // let user: any;
+  let user: any;
   
   try {
-    // Step 1: Authentication verification - DISABLED FOR TESTING
-    // user = await verifyAuthentication(request, locals.supabase);
+    // Step 1: Authentication verification using middleware-provided user
+    user = locals.user;
     
-    // Use default user ID for testing
-    const defaultUserId = "00000000-0000-0000-0000-000000000001";
+    if (!user) {
+      throw ApiErrors.unauthorized('Authentication required. Please log in to delete events.');
+    }
 
     // Step 2: Validate path parameters
     const paramValidation = eventIdParamSchema.safeParse(params);
@@ -192,7 +195,7 @@ export async function DELETE(context: APIContext): Promise<Response> {
     const eventService = new EventService(locals.supabase);
     
     try {
-      await eventService.deleteEventNoAuth(eventId);
+      await eventService.deleteEvent(eventId, user.id);
 
       // Step 4: Success response
       return new Response(JSON.stringify({ message: 'Event successfully deleted' }), {
@@ -203,7 +206,7 @@ export async function DELETE(context: APIContext): Promise<Response> {
     } catch (serviceError: any) {
       // Step 5: Handle business logic errors
       const errorLogService = new ErrorLogService(locals.supabase);
-      const errorContext = ErrorLogService.createContextFromRequest(request, defaultUserId);
+      const errorContext = ErrorLogService.createContextFromRequest(request, user.id);
       
       const apiError = await handleServiceError(serviceError, errorContext, errorLogService);
       throw apiError;
@@ -211,6 +214,6 @@ export async function DELETE(context: APIContext): Promise<Response> {
 
   } catch (error: any) {
     // Step 6: Centralized error handling with logging
-    return await handleApiError(error, context, "00000000-0000-0000-0000-000000000001");
+    return await handleApiError(error, context, user?.id);
   }
 } 

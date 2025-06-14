@@ -5,7 +5,6 @@ import {
   handleApiError, 
   parseJsonBody, 
   handleServiceError,
-    verifyAuthentication,
   ApiErrors 
 } from '@/middleware/error-handler';
 import { ErrorLogService } from '@/services/error-log.service';
@@ -20,11 +19,10 @@ import { DEFAULT_USER_ID } from '@/db/supabase.client';
 export const prerender = false
 
 /**
- * POST /api/events - Create a new event (NO AUTH REQUIRED - FOR TESTING)
+ * POST /api/events - Create a new event
  * 
  * Creates a new event with complete event information including location, timing,
- * and proper date validation. Authentication disabled for testing purposes.
- * Uses a default user ID for all events.
+ * and proper date validation. Uses session-based authentication from middleware.
  * 
  * @param context - Astro API context with request and locals
  * @returns Response with created event data or error
@@ -35,8 +33,12 @@ export async function POST(context: APIContext): Promise<Response> {
   let requestBody: any;
   
   try {
-    // Step 1: Authentication verification - DISABLED FOR TESTING
-    user = await verifyAuthentication(request, locals.supabase);
+    // Step 1: Authentication verification using middleware-provided user
+    user = locals.user;
+    
+    if (!user) {
+      throw ApiErrors.unauthorized('Authentication required. Please log in to create events.');
+    }
     
     // Step 2: Parse and validate request body
     requestBody = await parseJsonBody(request);
@@ -78,7 +80,7 @@ export async function POST(context: APIContext): Promise<Response> {
 
   } catch (error: any) {
     // Step 6: Centralized error handling with logging
-    return await handleApiError(error, context, user.id, requestBody);
+    return await handleApiError(error, context, user?.id, requestBody);
   }
 }
 
