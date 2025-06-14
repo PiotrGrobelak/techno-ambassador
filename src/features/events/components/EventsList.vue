@@ -13,19 +13,9 @@
       class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6"
     >
       <div class="flex items-start">
-        <svg
-          class="h-5 w-5 text-red-400 mt-0.5 mr-3"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
-          />
-        </svg>
+        <i
+          class="pi pi-exclamation-triangle h-5 w-5 text-red-400 mt-0.5 mr-3"
+        ></i>
         <div>
           <p class="text-sm text-red-700">{{ eventsStore.error }}</p>
           <button
@@ -41,19 +31,9 @@
 
     <!-- Empty State -->
     <div v-else-if="eventsStore.events.length === 0" class="text-center py-12">
-      <svg
-        class="mx-auto h-12 w-12 text-gray-400"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4v10h8V11m-8 0h8m-8 0H6a2 2 0 00-2 2v6a2 2 0 002 2h2m8-10V9a2 2 0 00-2-2H10a2 2 0 00-2 2v2m8 0h2a2 2 0 012 2v6a2 2 0 01-2 2h-2"
-        />
-      </svg>
+      <i
+        class="pi pi-calendar mx-auto h-12 w-12 text-gray-400 text-6xl block"
+      ></i>
       <h3 class="mt-2 text-sm font-medium text-gray-900">No events</h3>
       <p class="mt-1 text-sm text-gray-500">
         Get started by creating your first event.
@@ -61,6 +41,7 @@
       <div class="mt-6">
         <Button
           label="Add Event"
+          icon="pi pi-plus"
           @click="eventsStore.toggleAddForm()"
           data-testid="empty-state-add-event"
         />
@@ -108,25 +89,7 @@
 
                   <!-- Location -->
                   <div class="flex items-center text-sm text-gray-600">
-                    <svg
-                      class="h-4 w-4 mr-2 text-gray-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
+                    <i class="pi pi-map-marker h-4 w-4 mr-2 text-gray-400"></i>
                     <div>
                       <div class="font-medium">{{ event.venue_name }}</div>
                       <div class="text-gray-500">
@@ -137,19 +100,7 @@
 
                   <!-- Date and Time -->
                   <div class="flex items-center text-sm text-gray-600">
-                    <svg
-                      class="h-4 w-4 mr-2 text-gray-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4v10h8V11m-8 0h8m-8 0H6a2 2 0 00-2 2v6a2 2 0 002 2h2m8-10V9a2 2 0 00-2-2H10a2 2 0 00-2 2v2m8 0h2a2 2 0 012 2v6a2 2 0 01-2 2h-2"
-                      />
-                    </svg>
+                    <i class="pi pi-calendar h-4 w-4 mr-2 text-gray-400"></i>
                     <div>
                       <div class="font-medium">
                         {{ event.formattedDate }}
@@ -183,24 +134,24 @@
                     <!-- Edit Button (only for events user can edit) -->
                     <Button
                       v-if="!event.isPast"
+                      label="Edit"
+                      icon="pi pi-pencil"
                       severity="secondary"
                       :disabled="eventsStore.loading"
                       @click="handleEdit(event)"
                       data-testid="edit-event-button"
-                    >
-                      Edit</Button
-                    >
+                    />
 
                     <!-- Delete Button (only for events user can edit) -->
                     <Button
                       v-if="!event.isPast"
+                      label="Delete"
+                      icon="pi pi-trash"
                       severity="danger"
                       :disabled="eventsStore.loading"
                       @click="handleDelete(event)"
                       data-testid="delete-event-button"
-                    >
-                      Delete
-                    </Button>
+                    />
                   </div>
                 </div>
               </div>

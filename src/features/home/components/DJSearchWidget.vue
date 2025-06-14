@@ -23,25 +23,10 @@
           v-if="djListStore.isLoading && djListStore.djList.length > 0"
           class="flex items-center text-sm text-gray-500"
         >
-          <svg
-            class="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-500"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
+          <i
+            class="pi pi-spinner pi-spin text-gray-500 text-sm -ml-1 mr-2"
+            aria-hidden="true"
+          ></i>
           Updating results...
         </div>
       </div>
@@ -76,19 +61,10 @@
     <div v-if="djListStore.error && !djListStore.isLoading" class="mt-8">
       <div class="bg-red-50 border border-red-200 rounded-lg p-4">
         <div class="flex">
-          <svg
-            class="h-5 w-5 text-red-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+          <i
+            class="pi pi-exclamation-circle text-red-400 text-lg flex-shrink-0"
+            aria-hidden="true"
+          ></i>
           <div class="ml-3">
             <h3 class="text-sm font-medium text-red-800">Error loading DJs</h3>
             <p class="mt-1 text-sm text-red-700">

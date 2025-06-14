@@ -14,6 +14,10 @@
     <span class="flex items-center justify-center">
       <!-- Leading icon -->
       <slot name="icon-leading" v-if="$slots['icon-leading']" />
+      <i
+        v-else-if="iconLeading && typeof iconLeading === 'string'"
+        :class="`pi ${iconLeading} ${iconLeadingClasses}`"
+      />
       <component
         v-else-if="iconLeading"
         :is="iconLeading"
@@ -28,6 +32,10 @@
 
       <!-- Trailing icon -->
       <slot name="icon-trailing" v-if="$slots['icon-trailing']" />
+      <i
+        v-else-if="iconTrailing && typeof iconTrailing === 'string'"
+        :class="`pi ${iconTrailing} ${iconTrailingClasses}`"
+      />
       <component
         v-else-if="iconTrailing"
         :is="iconTrailing"
@@ -40,6 +48,7 @@
 <script setup lang="ts">
 import { computed, useSlots } from 'vue';
 import Button from 'primevue/button';
+import type { PrimeIcon } from '@/shared/components/types';
 
 type ButtonVariant = 'primary' | 'secondary' | 'destructive' | 'ghost' | 'link';
 type ButtonSize = 'small' | 'medium' | 'large';
@@ -50,8 +59,8 @@ interface Props {
   size?: ButtonSize;
   disabled?: boolean;
   loading?: boolean;
-  iconLeading?: any;
-  iconTrailing?: any;
+  iconLeading?: PrimeIcon | any; // PrimeIcons class name (e.g., 'pi-check') or Vue component
+  iconTrailing?: PrimeIcon | any; // PrimeIcons class name (e.g., 'pi-arrow-right') or Vue component
   fullWidth?: boolean;
   ariaLabel?: string;
   pulse?: boolean; // Apple HIG: pulsing buttons for most likely choice

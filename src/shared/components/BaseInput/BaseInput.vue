@@ -16,8 +16,12 @@
         :class="iconLeadingContainerClasses"
       >
         <slot name="icon-leading">
+          <i
+            v-if="iconLeading && typeof iconLeading === 'string'"
+            :class="`pi ${iconLeading} ${iconClasses}`"
+          />
           <component
-            v-if="iconLeading"
+            v-else-if="iconLeading"
             :is="iconLeading"
             :class="iconClasses"
           />
@@ -66,14 +70,12 @@
             :class="clearButtonClasses"
             :aria-label="clearAriaLabel"
           >
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                clip-rule="evenodd"
-              />
-            </svg>
+            <i class="pi pi-times w-4 h-4"></i>
           </button>
+          <i
+            v-else-if="iconTrailing && typeof iconTrailing === 'string'"
+            :class="`pi ${iconTrailing} ${iconClasses}`"
+          />
           <component
             v-else-if="iconTrailing"
             :is="iconTrailing"
@@ -100,6 +102,7 @@ import { computed, ref, useId } from 'vue';
 import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 import Password from 'primevue/password';
+import type { PrimeIcon } from '@/shared/components/types';
 
 type InputVariant =
   | 'default'
@@ -125,8 +128,8 @@ interface Props {
   clearable?: boolean;
   multiline?: boolean;
   rows?: number;
-  iconLeading?: any;
-  iconTrailing?: any;
+  iconLeading?: PrimeIcon | any; // PrimeIcons class name (e.g., 'pi-user') or Vue component
+  iconTrailing?: PrimeIcon | any; // PrimeIcons class name (e.g., 'pi-search') or Vue component
   ariaLabel?: string;
   clearAriaLabel?: string;
 }

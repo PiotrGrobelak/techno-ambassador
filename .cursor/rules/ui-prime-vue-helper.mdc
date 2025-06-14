@@ -24,6 +24,251 @@ import Column from "primevue/column";
 </script>
 ```
 
+## PrimeIcons Usage
+
+PrimeIcons is the official icon library for PrimeVue components. It provides over 250+ icons that integrate seamlessly with PrimeVue components.
+
+### Basic Icon Usage
+
+Use icons with the `pi` class prefix followed by the icon name:
+
+```vue
+<template>
+  <!-- Basic icon usage -->
+  <i class="pi pi-check"></i>
+  <i class="pi pi-times"></i>
+  <i class="pi pi-user"></i>
+  <i class="pi pi-home"></i>
+  
+  <!-- Icons with custom styling -->
+  <i class="pi pi-star text-yellow-500 text-2xl"></i>
+  <i class="pi pi-heart text-red-500"></i>
+</template>
+```
+
+### Icons in PrimeVue Components
+
+PrimeVue components have built-in support for PrimeIcons:
+
+```vue
+<template>
+  <!-- Button with icons -->
+  <Button label="Save" icon="pi pi-check" />
+  <Button label="Delete" icon="pi pi-trash" severity="danger" />
+  <Button icon="pi pi-search" aria-label="Search" />
+  
+  <!-- Input with icons -->
+  <InputGroup>
+    <InputGroupAddon>
+      <i class="pi pi-user"></i>
+    </InputGroupAddon>
+    <InputText placeholder="Username" />
+  </InputGroup>
+  
+  <!-- Menu items with icons -->
+  <Menu :model="items" />
+</template>
+
+<script setup>
+const items = ref([
+  {
+    label: 'New',
+    icon: 'pi pi-plus',
+    command: () => { /* action */ }
+  },
+  {
+    label: 'Open',
+    icon: 'pi pi-folder-open',
+    command: () => { /* action */ }
+  },
+  {
+    label: 'Save',
+    icon: 'pi pi-save',
+    command: () => { /* action */ }
+  }
+]);
+</script>
+```
+
+### Icon Categories and Examples
+
+#### Navigation Icons
+```vue
+<template>
+  <i class="pi pi-home"></i>          <!-- Home -->
+  <i class="pi pi-arrow-left"></i>    <!-- Back -->
+  <i class="pi pi-arrow-right"></i>   <!-- Forward -->
+  <i class="pi pi-chevron-up"></i>    <!-- Up -->
+  <i class="pi pi-chevron-down"></i>  <!-- Down -->
+  <i class="pi pi-bars"></i>          <!-- Menu -->
+</template>
+```
+
+#### Action Icons
+```vue
+<template>
+  <i class="pi pi-plus"></i>          <!-- Add -->
+  <i class="pi pi-minus"></i>         <!-- Remove -->
+  <i class="pi pi-pencil"></i>        <!-- Edit -->
+  <i class="pi pi-trash"></i>         <!-- Delete -->
+  <i class="pi pi-save"></i>          <!-- Save -->
+  <i class="pi pi-copy"></i>          <!-- Copy -->
+  <i class="pi pi-download"></i>      <!-- Download -->
+  <i class="pi pi-upload"></i>        <!-- Upload -->
+</template>
+```
+
+#### Status Icons
+```vue
+<template>
+  <i class="pi pi-check"></i>         <!-- Success -->
+  <i class="pi pi-times"></i>         <!-- Error -->
+  <i class="pi pi-exclamation-triangle"></i> <!-- Warning -->
+  <i class="pi pi-info-circle"></i>   <!-- Info -->
+  <i class="pi pi-spinner pi-spin"></i> <!-- Loading -->
+</template>
+```
+
+#### User Interface Icons
+```vue
+<template>
+  <i class="pi pi-user"></i>          <!-- User -->
+  <i class="pi pi-users"></i>         <!-- Users -->
+  <i class="pi pi-cog"></i>           <!-- Settings -->
+  <i class="pi pi-search"></i>        <!-- Search -->
+  <i class="pi pi-filter"></i>        <!-- Filter -->
+  <i class="pi pi-sort"></i>          <!-- Sort -->
+  <i class="pi pi-calendar"></i>      <!-- Calendar -->
+  <i class="pi pi-clock"></i>         <!-- Time -->
+</template>
+```
+
+#### Communication Icons
+```vue
+<template>
+  <i class="pi pi-envelope"></i>      <!-- Email -->
+  <i class="pi pi-phone"></i>         <!-- Phone -->
+  <i class="pi pi-comment"></i>       <!-- Comment -->
+  <i class="pi pi-comments"></i>      <!-- Comments -->
+  <i class="pi pi-bell"></i>          <!-- Notification -->
+</template>
+```
+
+### Icon Sizing and Styling
+
+Icons can be styled using CSS classes or inline styles:
+
+```vue
+<template>
+  <!-- Size variations -->
+  <i class="pi pi-star text-xs"></i>    <!-- Extra small -->
+  <i class="pi pi-star text-sm"></i>    <!-- Small -->
+  <i class="pi pi-star text-base"></i>  <!-- Base -->
+  <i class="pi pi-star text-lg"></i>    <!-- Large -->
+  <i class="pi pi-star text-xl"></i>    <!-- Extra large -->
+  <i class="pi pi-star text-2xl"></i>   <!-- 2x large -->
+  <i class="pi pi-star text-3xl"></i>   <!-- 3x large -->
+  
+  <!-- Color variations -->
+  <i class="pi pi-heart text-red-500"></i>
+  <i class="pi pi-check text-green-500"></i>
+  <i class="pi pi-info text-blue-500"></i>
+  <i class="pi pi-exclamation-triangle text-yellow-500"></i>
+  
+  <!-- Custom styling -->
+  <i class="pi pi-star" style="font-size: 2rem; color: gold;"></i>
+</template>
+```
+
+
+### Icon Buttons and Interactive Elements
+
+Create icon-only buttons and interactive elements:
+
+```vue
+<template>
+  <!-- Icon-only buttons -->
+  <Button icon="pi pi-check" aria-label="Confirm" />
+  <Button icon="pi pi-times" severity="danger" aria-label="Cancel" />
+  <Button icon="pi pi-cog" severity="secondary" aria-label="Settings" />
+  
+  <!-- Toggle buttons with icons -->
+  <ToggleButton 
+    v-model="checked" 
+    onIcon="pi pi-check" 
+    offIcon="pi pi-times" 
+  />
+  
+  <!-- Speed dial with icons -->
+  <SpeedDial 
+    :model="speedDialItems" 
+    direction="up" 
+    :transitionDelay="80"
+    showIcon="pi pi-bars" 
+    hideIcon="pi pi-times" 
+  />
+</template>
+
+<script setup>
+const checked = ref(false);
+const speedDialItems = ref([
+  {
+    label: 'Add',
+    icon: 'pi pi-plus',
+    command: () => { /* action */ }
+  },
+  {
+    label: 'Update',
+    icon: 'pi pi-refresh',
+    command: () => { /* action */ }
+  },
+  {
+    label: 'Delete',
+    icon: 'pi pi-trash',
+    command: () => { /* action */ }
+  }
+]);
+</script>
+```
+
+### Accessibility with Icons
+
+Always provide proper accessibility attributes when using icons:
+
+```vue
+<template>
+  <!-- Icon with aria-label -->
+  <Button icon="pi pi-save" aria-label="Save document" />
+  
+  <!-- Icon with screen reader text -->
+  <button>
+    <i class="pi pi-download" aria-hidden="true"></i>
+    <span class="sr-only">Download file</span>
+  </button>
+  
+  <!-- Decorative icons -->
+  <i class="pi pi-star" aria-hidden="true"></i>
+  <span>Featured content</span>
+</template>
+```
+
+### Complete Icon List
+
+PrimeIcons includes 250+ icons. Some popular categories include:
+
+- **Arrows**: pi-arrow-up, pi-arrow-down, pi-arrow-left, pi-arrow-right, pi-chevron-*
+- **Actions**: pi-plus, pi-minus, pi-times, pi-check, pi-pencil, pi-trash, pi-save
+- **Navigation**: pi-home, pi-bars, pi-th-large, pi-list, pi-search
+- **Media**: pi-play, pi-pause, pi-stop, pi-volume-up, pi-volume-down
+- **Files**: pi-file, pi-folder, pi-download, pi-upload, pi-copy
+- **Communication**: pi-envelope, pi-phone, pi-comment, pi-share-alt
+- **Status**: pi-info-circle, pi-exclamation-triangle, pi-check-circle, pi-times-circle
+- **User**: pi-user, pi-users, pi-user-plus, pi-user-minus
+- **Commerce**: pi-shopping-cart, pi-credit-card, pi-money-bill
+- **Technology**: pi-wifi, pi-mobile, pi-desktop, pi-tablet
+
+For a complete list of available icons, visit the [PrimeIcons documentation](mdc:https:/primevue.org/icons).
+
 ## Example Component Usage
 
 ### Basic Form Components

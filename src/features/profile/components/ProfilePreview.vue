@@ -19,15 +19,7 @@
           <div
             class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center"
           >
-            <svg
-              class="w-10 h-10 text-white"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"
-              />
-            </svg>
+            <i class="pi pi-star w-10 h-10 text-white"></i>
           </div>
 
           <!-- Profile Info -->
@@ -82,11 +74,7 @@
               rel="noopener noreferrer"
               class="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium text-pink-600 bg-pink-50 hover:bg-pink-100 transition-colors"
             >
-              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.621 5.367 11.988 11.988 11.988s11.987-5.367 11.987-11.988C24.004 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.348-1.051-2.348-2.348s1.051-2.348 2.348-2.348 2.348 1.051 2.348 2.348-1.051 2.348-2.348 2.348zm7.718 0c-1.297 0-2.348-1.051-2.348-2.348s1.051-2.348 2.348-2.348 2.348 1.051 2.348 2.348-1.051 2.348-2.348 2.348z"
-                />
-              </svg>
+              <i class="pi pi-instagram w-4 h-4 mr-2"></i>
               Instagram
             </a>
 
@@ -98,11 +86,7 @@
               rel="noopener noreferrer"
               class="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors"
             >
-              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-                />
-              </svg>
+              <i class="pi pi-facebook w-4 h-4 mr-2"></i>
               Facebook
             </a>
           </div>
@@ -127,19 +111,7 @@
           <div
             class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center"
           >
-            <svg
-              class="w-8 h-8 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-              />
-            </svg>
+            <i class="pi pi-user w-8 h-8 text-gray-400"></i>
           </div>
           <h3 class="text-sm font-medium text-gray-900 mb-1">
             Complete your profile
@@ -188,19 +160,7 @@
       class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4"
     >
       <div class="flex items-start">
-        <svg
-          class="h-5 w-5 text-blue-400 mt-0.5 mr-3"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189 6.01 6.01 0 011.041-.297 5.84 5.84 0 00.446-.297M12 12.75V8.25m0 4.5c-.518.518-1.143.75-1.875.75a3.181 3.181 0 01-1.875-.75M12 12.75V8.25M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-          />
-        </svg>
+        <i class="pi pi-info-circle h-5 w-5 text-blue-400 mt-0.5 mr-3"></i>
         <div>
           <h4 class="text-sm font-medium text-blue-800 mb-1">Profile Tips</h4>
           <ul class="text-sm text-blue-700 space-y-1">

@@ -1,5 +1,8 @@
 // Apple Human Interface Guidelines Component Types
 
+// Icon Types
+export type PrimeIcon = string; // PrimeIcons class name (e.g., 'pi-check', 'pi-times', 'pi-user')
+
 // Button Types
 export type ButtonVariant = 'primary' | 'secondary' | 'destructive' | 'ghost' | 'link';
 export type ButtonSize = 'small' | 'medium' | 'large';

@@ -182,19 +182,9 @@
             class="bg-red-50 border border-red-200 rounded-lg p-4"
           >
             <div class="flex items-start">
-              <svg
-                class="h-5 w-5 text-red-400 mt-0.5 mr-3"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
-                />
-              </svg>
+              <i
+                class="pi pi-exclamation-circle h-5 w-5 text-red-400 mt-0.5 mr-3"
+              ></i>
               <div>
                 <h3 class="text-sm font-medium text-red-800">
                   Error saving profile
@@ -273,19 +263,7 @@
       class="fixed bottom-4 right-4 bg-green-50 border border-green-200 rounded-lg p-4 shadow-lg transition-all duration-300 z-50"
     >
       <div class="flex items-center">
-        <svg
-          class="h-5 w-5 text-green-400 mr-3"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
+        <i class="pi pi-check-circle h-5 w-5 text-green-400 mr-3"></i>
         <p class="text-sm font-medium text-green-800">
           {{ successMessage }}
         </p>

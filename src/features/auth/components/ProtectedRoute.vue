@@ -2,9 +2,7 @@
   <div>
     <!-- Loading state -->
     <div v-if="isLoading" class="min-h-screen flex items-center justify-center">
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"
-      ></div>
+      <i class="pi pi-spinner pi-spin text-4xl text-purple-600"></i>
     </div>
 
     <!-- Content for authenticated users -->
@@ -21,17 +19,7 @@
         <div
           class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"
         >
-          <svg
-            class="w-8 h-8 text-red-600"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <i class="pi pi-lock text-2xl text-red-600"></i>
         </div>
 
         <BaseTypography variant="h4" weight="semibold" class="mb-2">
@@ -165,16 +153,3 @@ onMounted(() => {
   checkAuthenticationStatus();
 });
 </script>
-
-<style scoped>
-/* Loading spinner animation */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-</style>
