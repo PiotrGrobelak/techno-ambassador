@@ -76,6 +76,7 @@
               v-for="event in slotProps.items"
               :key="event.id"
               class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
+              :data-testid="`event-item-${event.id}`"
             >
               <div
                 class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
@@ -83,7 +84,10 @@
                 <!-- Event Info -->
                 <div class="flex-1 space-y-2">
                   <!-- Event Name -->
-                  <h3 class="text-lg font-semibold text-gray-900">
+                  <h3
+                    class="text-lg font-semibold text-gray-900"
+                    :data-testid="`event-name-${event.id}`"
+                  >
                     {{ event.event_name }}
                   </h3>
 

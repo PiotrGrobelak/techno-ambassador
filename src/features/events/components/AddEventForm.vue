@@ -1,6 +1,10 @@
 <template>
   <EventFormContainer title="Add New Event">
-    <form @submit.prevent="form.onSubmit" class="space-y-6">
+    <form
+      @submit.prevent="form.onSubmit"
+      class="space-y-6"
+      data-testid="add-event-form"
+    >
       <!-- Form Fields -->
       <EventFormFields
         v-model:event-name="form.fields.event_name.value"
