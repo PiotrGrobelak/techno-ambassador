@@ -17,7 +17,10 @@ export function useRegisterForm() {
       const result = await authStore.register(data.email, data.password);
       
       if (result.success) {
-        success.value = 'Account created successfully! Please check your email for verification.';
+        success.value = 'Account created successfully! Redirecting...';
+        setTimeout(() => {
+          window.location.href = '/dj/dashboard';
+        }, 1000);
       } else {
         error.value = result.error || 'Registration failed';
       }

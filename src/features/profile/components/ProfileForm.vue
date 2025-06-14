@@ -1,13 +1,7 @@
 <template>
   <div class="profile-form">
     <!-- Completion Banner -->
-    <ProfileCompletionBanner
-      :mode="profileFormStore.formMode"
-      :is-complete="isProfileComplete"
-      :completion-percentage="profileFormStore.completionPercentage"
-      :missing-fields="profileFormStore.missingFields"
-      @dismiss="dismissBanner"
-    />
+    <ProfileCompletionBanner @dismiss="dismissBanner" />
 
     <!-- Main Content - Two Column Layout -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -336,6 +330,12 @@ const successMessage = computed(() => {
 });
 
 const isProfileComplete = computed(() => {
+  console.log(
+    'isProfileComplete',
+    profileFormStore.isFormValid,
+    profileFormStore.formData.instagram_url.length,
+    profileFormStore.formData.facebook_url.length
+  );
   return (
     profileFormStore.isFormValid &&
     profileFormStore.formData.instagram_url.length > 0 &&

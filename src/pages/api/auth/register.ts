@@ -68,7 +68,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
           id: authData.user.id,
           artist_name: '', // Will be filled when user completes profile
           biography: '', // Will be filled when user completes profile
-          user_type: 'dj', // Default user type
+          user_type: 'artist', // Default user type
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         });
@@ -89,7 +89,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         id: authData.user.id,
         email: authData.user.email,
       },
-      message: 'Registration successful. Please check your email for verification.',
+      message: 'Registration successful.',
       needsEmailVerification: !authData.user.email_confirmed_at,
     };
 

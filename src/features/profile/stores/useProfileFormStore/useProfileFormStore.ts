@@ -58,7 +58,7 @@ export interface ProfileFormErrors {
   general?: string
 }
 
-export type ProfileFormMode = 'create' | 'edit' | 'complete'
+export type ProfileFormMode =  'edit' | 'complete'
 
 export interface SaveProfileResponse {
   success: boolean
@@ -104,12 +104,10 @@ export const useProfileFormStore = defineStore('profileForm', () => {
   const formMode: ComputedRef<ProfileFormMode> = computed(() => {
     // Check if we're in a browser environment
     if (typeof window === 'undefined') {
-      return isNewProfile.value ? 'create' : 'edit'
+      return 'edit'
     }
     
-    const urlParams = new URLSearchParams(window.location.search)
-    if (urlParams.get('mode') === 'complete') return 'complete'
-    return isNewProfile.value ? 'create' : 'edit'
+    return isNewProfile.value ? 'edit' : 'complete'
   })
 
   const isFormValid: ComputedRef<boolean> = computed(() => {
