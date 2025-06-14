@@ -61,17 +61,16 @@
       <div class="mt-6">
         <Button
           label="Add Event"
-          icon="pi pi-plus"
           @click="eventsStore.toggleAddForm()"
           data-testid="empty-state-add-event"
         />
       </div>
     </div>
 
-    <!-- Events Table -->
-    <div v-else class="events-table">
-      <DataTable
-        :value="tableEvents"
+    <!-- Events DataView -->
+    <div v-else class="events-dataview">
+      <DataView
+        :value="eventsWithComputedData"
         :paginator="true"
         :rows="eventsStore.pagination.limit"
         :total-records="eventsStore.pagination.total"
@@ -80,130 +79,148 @@
         :rows-per-page-options="[5, 10, 25, 50]"
         current-page-report-template="Showing {first} to {last} of {totalRecords} events"
         :loading="eventsStore.loading"
-        responsive-layout="scroll"
-        striped-rows
-        class="p-datatable-sm"
-        data-testid="events-datatable"
+        class="events-dataview-container"
+        data-testid="events-dataview"
         @page="onPageChange"
-        @sort="onSort"
       >
         <template #empty>
-          <div class="text-center py-4">
+          <div class="text-center py-8">
             <p class="text-gray-500">No events found.</p>
           </div>
         </template>
 
-        <template #loading>
-          <div class="flex justify-center py-4">
+        <template #list="slotProps">
+          <div class="grid grid-cols-1 gap-4">
             <div
-              class="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"
-            ></div>
+              v-for="event in slotProps.items"
+              :key="event.id"
+              class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div
+                class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+              >
+                <!-- Event Info -->
+                <div class="flex-1 space-y-2">
+                  <!-- Event Name -->
+                  <h3 class="text-lg font-semibold text-gray-900">
+                    {{ event.event_name }}
+                  </h3>
+
+                  <!-- Location -->
+                  <div class="flex items-center text-sm text-gray-600">
+                    <svg
+                      class="h-4 w-4 mr-2 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    <div>
+                      <div class="font-medium">{{ event.venue_name }}</div>
+                      <div class="text-gray-500">
+                        {{ event.city }}, {{ event.country }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Date and Time -->
+                  <div class="flex items-center text-sm text-gray-600">
+                    <svg
+                      class="h-4 w-4 mr-2 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4v10h8V11m-8 0h8m-8 0H6a2 2 0 00-2 2v6a2 2 0 002 2h2m8-10V9a2 2 0 00-2-2H10a2 2 0 00-2 2v2m8 0h2a2 2 0 012 2v6a2 2 0 01-2 2h-2"
+                      />
+                    </svg>
+                    <div>
+                      <div class="font-medium">
+                        {{ event.formattedDate }}
+                      </div>
+                      <div v-if="event.event_time" class="text-gray-500">
+                        {{ event.event_time }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Status and Actions -->
+                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                  <!-- Status Tag -->
+                  <div class="flex justify-start md:justify-center">
+                    <Tag
+                      :value="event.statusValue"
+                      :severity="event.statusSeverity"
+                      class="text-xs"
+                    />
+                    <div
+                      v-if="event.isPast"
+                      class="text-xs text-gray-500 ml-2 self-center"
+                    >
+                      {{ event.viewOnlyText }}
+                    </div>
+                  </div>
+
+                  <!-- Actions -->
+                  <div class="flex gap-2">
+                    <!-- Edit Button (only for events user can edit) -->
+                    <Button
+                      v-if="!event.isPast"
+                      severity="secondary"
+                      :disabled="eventsStore.loading"
+                      @click="handleEdit(event)"
+                      data-testid="edit-event-button"
+                    >
+                      Edit</Button
+                    >
+
+                    <!-- Delete Button (only for events user can edit) -->
+                    <Button
+                      v-if="!event.isPast"
+                      severity="danger"
+                      :disabled="eventsStore.loading"
+                      @click="handleDelete(event)"
+                      data-testid="delete-event-button"
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </template>
-
-        <!-- Event Name Column -->
-        <Column field="event_name" header="Event" sortable class="min-w-48">
-          <template #body="{ data }">
-            <div class="font-medium text-gray-900">{{ data.event_name }}</div>
-          </template>
-        </Column>
-
-        <!-- Location Column -->
-        <Column header="Location" class="min-w-48">
-          <template #body="{ data }">
-            <div class="text-sm">
-              <div class="font-medium text-gray-900">{{ data.venue_name }}</div>
-              <div class="text-gray-500">
-                {{ data.city }}, {{ data.country }}
-              </div>
-            </div>
-          </template>
-        </Column>
-
-        <!-- Date Column -->
-        <Column field="event_date" header="Date" sortable class="min-w-32">
-          <template #body="{ data }">
-            <div class="text-sm">
-              <div class="font-medium text-gray-900">
-                {{ formatDate(data.event_date) }}
-              </div>
-              <div v-if="data.event_time" class="text-gray-500">
-                {{ data.event_time }}
-              </div>
-              <div
-                v-if="isPastEvent(data.event_date)"
-                class="text-xs text-gray-500 mt-1"
-              >
-                Past event
-              </div>
-            </div>
-          </template>
-        </Column>
-
-        <!-- Status Column -->
-        <Column header="Status" class="min-w-28">
-          <template #body="{ data }">
-            <Tag
-              :value="isPastEvent(data.event_date) ? 'Past' : 'Upcoming'"
-              :severity="isPastEvent(data.event_date) ? 'secondary' : 'success'"
-              class="text-xs"
-            />
-          </template>
-        </Column>
-
-        <!-- Actions Column -->
-        <Column header="Actions" class="min-w-32">
-          <template #body="{ data }">
-            <div class="flex gap-2">
-              <!-- Edit Button (only for future events) -->
-              <Button
-                v-if="!isPastEvent(data.event_date)"
-                icon="pi pi-pencil"
-                severity="secondary"
-                text
-                rounded
-                size="small"
-                :disabled="eventsStore.loading"
-                @click="handleEdit(data)"
-                v-tooltip.top="'Edit event'"
-                data-testid="edit-event-button"
-              />
-
-              <!-- Delete Button (only for future events) -->
-              <Button
-                v-if="!isPastEvent(data.event_date)"
-                icon="pi pi-trash"
-                severity="danger"
-                text
-                rounded
-                size="small"
-                :disabled="eventsStore.loading"
-                @click="handleDelete(data)"
-                v-tooltip.top="'Delete event'"
-                data-testid="delete-event-button"
-              />
-
-              <!-- View Only for Past Events -->
-              <span
-                v-if="isPastEvent(data.event_date)"
-                class="text-xs text-gray-400 px-2"
-              >
-                View only
-              </span>
-            </div>
-          </template>
-        </Column>
-      </DataTable>
+      </DataView>
     </div>
+
+    <!-- PrimeVue ConfirmDialog - Required for useConfirm to work -->
+    <ConfirmDialog />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
+import DataView from 'primevue/dataview';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
+import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from 'primevue/useconfirm';
 import { useEventsManagementStore } from '../stores/useEventsManagementStore';
 import type { EventListItemDto } from '../../../types';
@@ -211,8 +228,24 @@ import type { EventListItemDto } from '../../../types';
 // Stores
 const eventsStore = useEventsManagementStore();
 
-// Create mutable array copy for DataTable (cast to any[] to satisfy DataTable type)
-const tableEvents = computed<any[]>(() => eventsStore.events.slice() as any[]);
+// Computed properties for each event with all necessary calculations
+const eventsWithComputedData = computed(() => {
+  return eventsStore.events.map((event) => ({
+    ...event,
+    formattedDate: formatDate(event.event_date),
+    isPast: eventsStore.isPastEvent(event.event_date),
+    canEdit: eventsStore.canEditEvent(event),
+    statusValue: eventsStore.isPastEvent(event.event_date)
+      ? 'Past'
+      : 'Upcoming',
+    statusSeverity: eventsStore.isPastEvent(event.event_date)
+      ? 'secondary'
+      : 'success',
+    viewOnlyText: eventsStore.isPastEvent(event.event_date)
+      ? 'Past event'
+      : 'View only',
+  }));
+});
 
 // PrimeVue confirm dialog
 const confirm = useConfirm();
@@ -227,26 +260,11 @@ const formatDate = (dateString: string): string => {
   });
 };
 
-// Check if event is in the past
-const isPastEvent = (dateString: string): boolean => {
-  return eventsStore.isPastEvent(dateString);
-};
-
 // Handle pagination
 const onPageChange = async (event: any): Promise<void> => {
   const page = event.page + 1; // PrimeVue uses 0-based indexing
   const limit = event.rows;
   await eventsStore.loadEvents(page, limit);
-};
-
-// Handle sorting
-const onSort = async (event: any): Promise<void> => {
-  // For now, we'll reload with current pagination
-  // In future, we can add sorting support to the API
-  await eventsStore.loadEvents(
-    eventsStore.pagination.page,
-    eventsStore.pagination.limit
-  );
 };
 
 // Handle edit event
@@ -271,14 +289,18 @@ const handleDelete = (event: EventListItemDto): void => {
   });
 };
 </script>
-
+<!-- 
 <style scoped>
 .events-list {
   @apply w-full;
 }
 
-.events-table {
+.events-dataview {
   @apply bg-white rounded-lg shadow-sm border border-gray-200;
+}
+
+.events-dataview-container {
+  @apply w-full;
 }
 
 /* Custom loading spinner animation */
@@ -291,4 +313,4 @@ const handleDelete = (event: EventListItemDto): void => {
 .animate-spin {
   animation: spin 1s linear infinite;
 }
-</style>
+</style> -->

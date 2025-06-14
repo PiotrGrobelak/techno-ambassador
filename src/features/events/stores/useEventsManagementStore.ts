@@ -13,7 +13,6 @@ import type {
   SuccessMessageDto
 } from '@/types'
 import type { 
-  EventsManagementState,
   CreateEventFormData,
   UpdateEventFormData
 } from '../types'
@@ -49,7 +48,6 @@ export const useEventsManagementStore = defineStore('eventsManagement', () => {
 
   // Getters
   const isAuthenticated: ComputedRef<boolean> = computed(() => {
-    console.log('isAuthenticated', authStore.isAuthenticated)
     return authStore.isAuthenticated
   })
   const userId: ComputedRef<string | undefined> = computed(() => authStore.userId)

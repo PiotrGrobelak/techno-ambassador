@@ -64,7 +64,7 @@
           label="Events Management"
           variant="ghost"
           size="medium"
-          @click="navigateToPath('/dashboard/events')"
+          @click="navigateToPath('/dj/events')"
           data-testid="events-button"
         />
 
@@ -160,7 +160,7 @@
           <BaseTypography variant="body">Dashboard</BaseTypography>
         </button>
         <button
-          @click="handleMobileNavigation('/dashboard/events')"
+          @click="handleMobileNavigation('/dj/events')"
           class="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
           data-testid="mobile-events-button"
         >

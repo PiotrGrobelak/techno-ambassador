@@ -1,5 +1,5 @@
 <template>
-  <div class="events-management-view">
+  <div class="p-8">
     <!-- Page Header -->
     <div class="page-header mb-8">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -124,7 +124,7 @@
           </div>
         </div>
 
-        <!-- <EventsList /> -->
+        <EventsList />
       </div>
     </div>
   </div>
@@ -137,6 +137,7 @@ import { useEventsManagementStore } from '../stores/useEventsManagementStore';
 import AddEventForm from './AddEventForm.vue';
 import EditEventForm from './EditEventForm.vue';
 import { useAuthStore } from '@/shared/stores/useAuthStore';
+import EventsList from './EventsList.vue';
 
 // Stores
 const authStore = useAuthStore();

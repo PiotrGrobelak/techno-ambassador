@@ -254,7 +254,7 @@ const parseDate = (dateString: string): Date => {
 };
 
 // Initialize form with event data
-const initializeForm = (): void => {
+const setFormValues = (): void => {
   setFieldValue('event_name', props.event.event_name);
   setFieldValue('country', props.event.country);
   setFieldValue('city', props.event.city);
@@ -318,8 +318,16 @@ watch(
 
 // Initialize form when component mounts
 onMounted(() => {
-  initializeForm();
+  setFormValues();
 });
+
+// Watch for props.event changes
+watch(
+  () => props.event,
+  () => {
+    setFormValues();
+  }
+);
 </script>
 
 <style scoped>
