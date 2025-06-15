@@ -23,13 +23,13 @@ test.describe('Add Event Flow', () => {
     addEventForm = new AddEventFormComponent(page);
     eventsList = new EventsListComponent(page);
 
-    // Login user before each test
-    await loginPage.goto();
-    await loginPage.login(
-      process.env.USER_LOGIN!,
-      process.env.USER_PASSWORD!
-    );
-    await loginPage.waitForSuccessfulLogin();
+    // Navigate to dashboard first to ensure authenticated navigation is available
+    // The user is already authenticated via the setup project
+    await page.goto('/dj/dashboard');
+    await page.waitForLoadState('domcontentloaded');
+    
+    // Wait for navigation to be ready
+    await page.waitForTimeout(1000); // Give time for Vue components to mount
   });
 
   test('should complete add event flow - happy path', async ({ page }) => {
@@ -94,7 +94,7 @@ test.describe('Add Event Flow', () => {
   });
 
   test('should validate add event form', async ({ page }) => {
-    // Navigate to form (user is already logged in from beforeEach)
+    // Navigate to Events Management and open form
     await eventsNavigation.goToEventsManagement();
     await eventsManagementPage.clickAddEvent();
     await addEventForm.waitForFormReady();
@@ -115,7 +115,7 @@ test.describe('Add Event Flow', () => {
   });
 
   test('should cancel add event flow', async ({ page }) => {
-    // Navigate to form (user is already logged in from beforeEach)
+    // Navigate to Events Management and open form
     await eventsNavigation.goToEventsManagement();
     await eventsManagementPage.clickAddEvent();
     await addEventForm.waitForFormReady();
@@ -133,7 +133,7 @@ test.describe('Add Event Flow', () => {
   });
 
   test('should add event from empty state', async ({ page }) => {
-    // Navigate to events management (user is already logged in from beforeEach)
+    // Navigate to events management
     await eventsNavigation.goToEventsManagement();
     await eventsManagementPage.waitForPageLoad();
 
@@ -167,7 +167,7 @@ test.describe('Add Event Flow', () => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
     
-    // User is already logged in from beforeEach, just navigate using mobile menu
+    // Navigate using mobile menu
     await test.step('Navigate using mobile menu', async () => {
       await eventsNavigation.goToEventsManagementMobile();
       await eventsManagementPage.verifyPageReady();

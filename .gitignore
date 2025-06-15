@@ -30,6 +30,7 @@ coverage/
 # playwright
 playwright-report/
 html
+playwright/.auth/
 
 test-results/
 

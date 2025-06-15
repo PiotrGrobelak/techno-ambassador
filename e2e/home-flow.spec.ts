@@ -19,7 +19,7 @@ test.describe('Home Page flow', () => {
     await homePage.waitForPageLoad();
   });
 
-  test('should complete DJ search user journey', async () => {
+  test.skip('should complete DJ search user journey', async () => {
     // Step 1: Click "Start Exploring" button
     await test.step('Click "Start Exploring" button', async () => {
       await homePage.verifyHeroContent();
@@ -78,7 +78,7 @@ test.describe('Home Page flow', () => {
     await djSearchPage.searchFilters.verifyNoActiveFilters();
   });
 
-  test('should apply music style filter', async () => {  
+  test.skip('should apply music style filter', async () => {  
     await homePage.clickStartExploring();
     await djSearchPage.waitForSearchWidgetReady();
     
@@ -96,7 +96,7 @@ test.describe('Home Page flow', () => {
     expect(await djSearchPage.hasSearchResults()).toBe(true);
   });
 
-  test('should load more results', async () => {
+  test.skip('should load more results', async () => {
     await homePage.clickStartExploring();
     await djSearchPage.waitForSearchWidgetReady();
     

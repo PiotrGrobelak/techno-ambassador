@@ -47,13 +47,41 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    // Setup project for authentication
     {
-      name: 'chromium',
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
+    
+    // Authenticated tests
+    {
+      name: 'chromium-authenticated',
+      testMatch: /.*\.spec\.ts/,
       use: { 
         ...devices['Desktop Chrome'],
-        // Enable visual comparisons
+        // Use saved authentication state
+        storageState: 'playwright/.auth/user.json',
         screenshot: 'only-on-failure',
       },
+      dependencies: ['setup'],
+      testIgnore: [
+        '**/auth-flow.spec.ts', // Skip auth flow tests for authenticated project
+        '**/registration-flow.spec.ts', // Skip registration tests for authenticated project
+        '**/*.setup.ts', // Skip setup files
+      ],
+    },
+    
+    // Unauthenticated tests (for auth and registration flows)
+    {
+      name: 'chromium-unauthenticated',
+      use: { 
+        ...devices['Desktop Chrome'],
+        screenshot: 'only-on-failure',
+      },
+      testMatch: [
+        '**/auth-flow.spec.ts',
+        '**/registration-flow.spec.ts',
+      ],
     },
   ],
 
