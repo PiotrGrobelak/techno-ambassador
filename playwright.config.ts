@@ -11,17 +11,17 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env.e2e') });
 export default defineConfig({
   testDir: './e2e',
   
-  /* Run tests in files in parallel */
+  /* Run tests in files in parallel but limit workers to avoid race conditions */
   fullyParallel: true,
   
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 1,
   
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Limit workers to reduce race conditions with authentication */
+  workers: process.env.CI ? 1 : 2,
   
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
@@ -51,6 +51,8 @@ export default defineConfig({
     {
       name: 'setup',
       testMatch: /.*\.setup\.ts/,
+      /* Use single worker for setup to avoid conflicts */
+      fullyParallel: false,
     },
     
     // Authenticated tests
@@ -82,6 +84,8 @@ export default defineConfig({
         '**/auth-flow.spec.ts',
         '**/registration-flow.spec.ts',
       ],
+      /* Run unauthenticated tests sequentially to avoid conflicts */
+      fullyParallel: false,
     },
   ],
 

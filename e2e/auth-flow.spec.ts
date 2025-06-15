@@ -52,7 +52,7 @@ test.describe('Authentication Flow', () => {
     await test.step('Verify successful login and dashboard access', async () => {
       await dashboardPage.waitForDashboardLoad();
       await dashboardPage.verifyDashboardAccess();
-      await dashboardPage.verifyAuthenticatedState();
+      await navigation.verifyAuthenticatedState();
     });
 
     // Additional verification: Check navigation reflects authenticated state

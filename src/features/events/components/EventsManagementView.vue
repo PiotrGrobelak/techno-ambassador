@@ -122,9 +122,7 @@ onMounted(async () => {
   // Initialize authentication before loading events
   await authStore.initializeAuth();
   // Load events when component mounts
-
   console.log('eventsStore.isAuthenticated', eventsStore.isAuthenticated);
-  console.log('eventsStore.canCreateEvents', eventsStore.canCreateEvents);
 
   if (eventsStore.isAuthenticated) {
     await eventsStore.loadEvents();

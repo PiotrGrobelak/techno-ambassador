@@ -140,22 +140,4 @@ export class DashboardPage {
     await expect(this.dashboardTitle).toBeVisible();
     return await this.dashboardTitle.textContent() || '';
   }
-
-  /**
-   * Verify user authentication status on dashboard
-   */
-  async verifyAuthenticatedState(): Promise<void> {
-    // Should be on dashboard URL
-    expect(this.page.url()).toContain('/dj/dashboard');
-    
-    // Should not be redirected to login
-    expect(this.page.url()).not.toContain('/auth/login');
-    
-    // Dashboard content should be visible
-    await expect(this.dashboardTitle).toBeVisible();
-    
-    // No authentication required messages
-    const authRequiredMessage = this.page.locator('text=/authentication required/i');
-    await expect(authRequiredMessage).not.toBeVisible();
-  }
 } 

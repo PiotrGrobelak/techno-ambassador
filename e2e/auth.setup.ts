@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { LoginPage } from './pages/auth';
 import { DashboardPage } from './pages/profile';
+import { NavigationComponent } from './pages/shared/NavigationComponent';
 
 // Get current directory in ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -15,6 +16,7 @@ setup('authenticate', async ({ page }) => {
   // Initialize page objects
   const loginPage = new LoginPage(page);
   const dashboardPage = new DashboardPage(page);
+  const navigation = new NavigationComponent(page);
 
   // Navigate to login page
   await loginPage.goto();
@@ -40,7 +42,7 @@ setup('authenticate', async ({ page }) => {
   ]);
 
   // Verify we're successfully authenticated
-  await dashboardPage.verifyAuthenticatedState();
+  await navigation.verifyAuthenticatedState();
 
   // Save the authentication state to file
   await page.context().storageState({ path: authFile });
