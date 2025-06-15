@@ -11,6 +11,7 @@ export class NavigationComponent {
   readonly userMenu: Locator;
   readonly dashboardButton: Locator;
   readonly signOutButton: Locator;
+  readonly eventsButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -19,6 +20,7 @@ export class NavigationComponent {
     this.userMenu = page.locator('[data-testid="user-menu"]');
     this.dashboardButton = page.getByTestId('nav-dashboard-button');
     this.signOutButton = page.getByTestId('nav-sign-out-button');
+    this.eventsButton = page.getByTestId('nav-events-button');
   }
 
   /**
@@ -61,6 +63,20 @@ export class NavigationComponent {
     
     // Wait for navigation to dashboard
     await this.page.waitForURL('**/dj/dashboard**');
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  /**
+   * Click the Events button and wait for navigation to events management page
+   */
+  async clickEventsManagement(): Promise<void> {
+    await expect(this.eventsButton).toBeVisible();
+    await expect(this.eventsButton).toBeEnabled();
+    
+    await this.eventsButton.click();
+    
+    // Wait for navigation to events management page
+    await this.page.waitForURL('**/dj/events**');
     await this.page.waitForLoadState('domcontentloaded');
   }
 

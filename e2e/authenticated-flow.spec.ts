@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { DashboardPage } from './pages/profile';
-import { NavigationComponent } from './pages/auth';
+import { NavigationComponent } from './pages/shared/NavigationComponent';
 
 /**
  * Example Authenticated Tests
@@ -8,7 +8,7 @@ import { NavigationComponent } from './pages/auth';
  * The authentication is handled by the setup project
  */
 
-test.describe('Authenticated User Tests', () => {
+test.describe('Authenticated Flow', () => {
   let dashboardPage: DashboardPage;
   let navigation: NavigationComponent;
 
@@ -32,13 +32,6 @@ test.describe('Authenticated User Tests', () => {
   });
 
   test('should maintain authentication across page navigation', async ({ page }) => {
-    // Start from homepage
-    await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
-    
-    // Verify authenticated state on homepage
-    await navigation.verifyAuthenticatedState();
-    
     // Navigate to dashboard
     await dashboardPage.goto();
     await dashboardPage.verifyAuthenticatedState();

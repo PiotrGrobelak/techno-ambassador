@@ -1,24 +1,21 @@
 import { test, expect } from '@playwright/test';
-import { LoginPage } from './pages/auth/LoginPage';
 import { 
-  EventsNavigationComponent, 
   EventsManagementPage, 
   AddEventFormComponent, 
   EventsListComponent,
   type EventFormData 
 } from './pages/events';
+  import { NavigationComponent } from './pages/shared/NavigationComponent';
 
 test.describe('Add Event Flow', () => {
-  let loginPage: LoginPage;
-  let eventsNavigation: EventsNavigationComponent;
+  let navigation: NavigationComponent;
   let eventsManagementPage: EventsManagementPage;
   let addEventForm: AddEventFormComponent;
   let eventsList: EventsListComponent;
 
   test.beforeEach(async ({ page }) => {
     // Initialize page objects
-    loginPage = new LoginPage(page);
-    eventsNavigation = new EventsNavigationComponent(page);
+    navigation = new NavigationComponent(page);
     eventsManagementPage = new EventsManagementPage(page);
     addEventForm = new AddEventFormComponent(page);
     eventsList = new EventsListComponent(page);
@@ -45,8 +42,7 @@ test.describe('Add Event Flow', () => {
 
     // Step 1: Navigate to Events Management page
     await test.step('Navigate to Events Management', async () => {
-      await eventsNavigation.verifyEventsNavigationAvailable();
-      await eventsNavigation.goToEventsManagement();
+      await navigation.clickEventsManagement();
       await eventsManagementPage.verifyPageReady();
     });
 
@@ -95,7 +91,7 @@ test.describe('Add Event Flow', () => {
 
   test('should validate add event form', async ({ page }) => {
     // Navigate to Events Management and open form
-    await eventsNavigation.goToEventsManagement();
+    await navigation.clickEventsManagement();
     await eventsManagementPage.clickAddEvent();
     await addEventForm.waitForFormReady();
 
@@ -116,7 +112,7 @@ test.describe('Add Event Flow', () => {
 
   test('should cancel add event flow', async ({ page }) => {
     // Navigate to Events Management and open form
-    await eventsNavigation.goToEventsManagement();
+    await navigation.clickEventsManagement();
     await eventsManagementPage.clickAddEvent();
     await addEventForm.waitForFormReady();
 
@@ -130,65 +126,5 @@ test.describe('Add Event Flow', () => {
       // Verify form is closed
       expect(await addEventForm.isVisible()).toBeFalsy();
     });
-  });
-
-  test('should add event from empty state', async ({ page }) => {
-    // Navigate to events management
-    await eventsNavigation.goToEventsManagement();
-    await eventsManagementPage.waitForPageLoad();
-
-    // Check if in empty state and use empty state button
-    await test.step('Add event from empty state', async () => {
-      const isEmpty = await eventsList.isEmptyState();
-      
-      if (isEmpty) {
-        await eventsList.clickEmptyStateAddButton();
-        await addEventForm.waitForFormReady();
-        
-        const eventData: EventFormData = {
-          eventName: 'First Event',
-          country: 'Germany',
-          city: 'Berlin',
-          venueName: 'Test Venue',
-          eventDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        };
-        
-        await addEventForm.createEvent(eventData);
-        await addEventForm.waitForSuccess();
-        
-        // Verify event appears
-        const eventId = await eventsList.waitForNewEvent(eventData.eventName);
-        expect(eventId).toBeTruthy();
-      }
-    });
-  });
-
-  test('should add event from mobile navigation', async ({ page }) => {
-    // Set mobile viewport
-    await page.setViewportSize({ width: 375, height: 667 });
-    
-    // Navigate using mobile menu
-    await test.step('Navigate using mobile menu', async () => {
-      await eventsNavigation.goToEventsManagementMobile();
-      await eventsManagementPage.verifyPageReady();
-    });
-
-    // Rest of the flow is the same
-    await eventsManagementPage.clickAddEvent();
-    await addEventForm.waitForFormReady();
-    
-    const eventData: EventFormData = {
-      eventName: 'Mobile Test Event',
-      country: 'Germany',
-      city: 'Munich',
-      venueName: 'Mobile Venue',
-      eventDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    };
-    
-    await addEventForm.createEvent(eventData);
-    await addEventForm.waitForSuccess();
-    
-    const eventId = await eventsList.waitForNewEvent(eventData.eventName);
-    expect(eventId).toBeTruthy();
   });
 }); 

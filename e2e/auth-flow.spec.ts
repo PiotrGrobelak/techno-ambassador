@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { NavigationComponent, LoginPage } from './pages/auth';
+import { NavigationComponent } from './pages/shared/NavigationComponent';
+import { LoginPage } from './pages/auth/LoginPage';
 import { DashboardPage } from './pages/profile';
 
 /**

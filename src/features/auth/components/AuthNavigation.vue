@@ -58,14 +58,14 @@
           variant="ghost"
           size="medium"
           @click="navigateToPath('/dj/dashboard')"
-          data-testid="dashboard-button"
+          data-testid="nav-dashboard-button"
         />
         <BaseButton
           label="Events Management"
           variant="ghost"
           size="medium"
           @click="navigateToPath('/dj/events')"
-          data-testid="events-button"
+          data-testid="nav-events-button"
         />
 
         <!-- Logout button -->
@@ -76,7 +76,7 @@
           @click="handleLogout"
           :loading="logoutLoading"
           :disabled="logoutLoading"
-          data-testid="sign-out-button"
+          data-testid="nav-sign-out-button"
         />
       </div>
 
