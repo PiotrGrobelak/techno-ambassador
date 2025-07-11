@@ -15,7 +15,7 @@ export function useLoginForm() {
 
     try {
       const result = await authStore.login(data.email, data.password);
-      
+
       if (result.success) {
         success.value = 'Login successful! Redirecting...';
         // Redirect will be handled by middleware after successful login
@@ -43,4 +43,4 @@ export function useLoginForm() {
     success,
     clearMessages,
   };
-} 
+}

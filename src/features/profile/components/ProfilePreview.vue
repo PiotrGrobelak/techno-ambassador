@@ -63,7 +63,7 @@
         </div>
 
         <!-- Social Media Links -->
-        <div class="mb-6" v-if="hasSocialMedia">
+        <div v-if="hasSocialMedia" class="mb-6">
           <h4 class="text-sm font-medium text-gray-900 mb-3">Social Media</h4>
           <div class="flex space-x-4">
             <!-- Instagram -->
@@ -187,10 +187,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import Button from 'primevue/button';
 import type { ProfileFormData } from '@/features/profile/types';
-import type { MusicStyleDto, UserMusicStyleDto } from '@/types';
+import type { MusicStyleDto } from '@/types';
 
 interface Props {
   profileData: ProfileFormData;

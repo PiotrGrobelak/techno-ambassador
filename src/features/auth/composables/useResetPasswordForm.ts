@@ -15,9 +15,10 @@ export function useResetPasswordForm() {
 
     try {
       const result = await authStore.resetPassword(data.email);
-      
+
       if (result.success) {
-        success.value = result.message || 'Password reset link sent to your email.';
+        success.value =
+          result.message || 'Password reset link sent to your email.';
       } else {
         error.value = result.error || 'Failed to send reset link';
       }
@@ -39,4 +40,4 @@ export function useResetPasswordForm() {
     success,
     clearMessages,
   };
-} 
+}

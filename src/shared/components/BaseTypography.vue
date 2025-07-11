@@ -50,6 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
   weight: 'regular',
   align: 'left',
   color: 'primary',
+  tag: undefined,
   truncate: false,
   noWrap: false,
   italic: false,

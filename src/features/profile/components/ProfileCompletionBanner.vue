@@ -85,17 +85,17 @@
             label="Remind Me Later"
             variant="ghost"
             size="medium"
-            @click="dismissBanner"
             class="text-orange-700 hover:bg-orange-100"
+            @click="dismissBanner"
           />
         </div>
       </div>
 
       <!-- Dismiss button -->
       <button
-        @click="dismissBanner"
         class="flex-shrink-0 p-1 text-orange-400 hover:text-orange-600 transition-colors"
         aria-label="Dismiss banner"
+        @click="dismissBanner"
       >
         <i class="pi pi-times w-5 h-5"></i>
       </button>

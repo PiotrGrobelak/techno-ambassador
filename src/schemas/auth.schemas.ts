@@ -5,7 +5,7 @@ const emailSchema = z
   .string()
   .min(1, 'Email address is required')
   .email('Please enter a valid email address')
-  .transform(email => email.toLowerCase().trim());
+  .transform((email) => email.toLowerCase().trim());
 
 // Base password validation schema
 const passwordSchema = z
@@ -34,16 +34,17 @@ export const ResetPasswordRequestSchema = z.object({
 });
 
 // Password update request schema
-export const UpdatePasswordRequestSchema = z.object({
-  password: passwordSchema,
-  passwordConfirmation: z.string().min(1, 'Password confirmation is required'),
-}).refine(
-  (data) => data.password === data.passwordConfirmation,
-  {
+export const UpdatePasswordRequestSchema = z
+  .object({
+    password: passwordSchema,
+    passwordConfirmation: z
+      .string()
+      .min(1, 'Password confirmation is required'),
+  })
+  .refine((data) => data.password === data.passwordConfirmation, {
     message: 'Passwords do not match',
     path: ['passwordConfirmation'],
-  }
-);
+  });
 
 // Response schemas for type safety
 export const AuthUserSchema = z.object({
@@ -79,4 +80,6 @@ export type AuthUser = z.infer<typeof AuthUserSchema>;
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 export type RegisterResponse = z.infer<typeof RegisterResponseSchema>;
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
-export type SuccessMessageResponse = z.infer<typeof SuccessMessageResponseSchema>; 
+export type SuccessMessageResponse = z.infer<
+  typeof SuccessMessageResponseSchema
+>;

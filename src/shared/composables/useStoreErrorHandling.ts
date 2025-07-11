@@ -1,24 +1,28 @@
-import { ref, computed, readonly, type Ref } from 'vue'
-import { useErrorHandler, ClientErrorType, type ClientError } from '@/shared/composables/useErrorHandler'
+import { ref, computed, readonly, type Ref } from 'vue';
+import {
+  useErrorHandler,
+  ClientErrorType,
+  type ClientError,
+} from '@/shared/composables/useErrorHandler';
 
 /**
  * Standard error state interface for stores
  */
 export interface StoreErrorState {
-  error: string | null
-  hasError: boolean
-  errorType: ClientErrorType | null
-  errorDetails: any
+  error: string | null;
+  hasError: boolean;
+  errorType: ClientErrorType | null;
+  errorDetails: Record<string, unknown> | null;
 }
 
 /**
  * Options for store error handling
  */
 export interface StoreErrorOptions {
-  showToast?: boolean
-  logError?: boolean
-  setLoadingState?: boolean
-  context?: string
+  showToast?: boolean;
+  logError?: boolean;
+  setLoadingState?: boolean;
+  context?: string;
 }
 
 /**
@@ -26,31 +30,36 @@ export interface StoreErrorOptions {
  * Provides standardized error management, loading states, and user feedback
  */
 export function useStoreErrorHandling(defaultContext?: string) {
-  const errorHandler = useErrorHandler()
+  const errorHandler = useErrorHandler();
 
   // Error state
-  const error: Ref<string | null> = ref(null)
-  const errorType: Ref<ClientErrorType | null> = ref(null)
-  const errorDetails: Ref<any> = ref(null)
-  const isLoading: Ref<boolean> = ref(false)
+  const error: Ref<string | null> = ref(null);
+  const errorType: Ref<ClientErrorType | null> = ref(null);
+  const errorDetails: Ref<Record<string, unknown> | null> = ref(null);
+  const isLoading: Ref<boolean> = ref(false);
 
   // Computed getters
-  const hasError = computed(() => !!error.value)
-  const isNetworkError = computed(() => errorType.value === ClientErrorType.NETWORK_ERROR)
-  const isAuthError = computed(() => 
-    errorType.value === ClientErrorType.AUTHENTICATION_ERROR ||
-    errorType.value === ClientErrorType.AUTHORIZATION_ERROR
-  )
-  const isValidationError = computed(() => errorType.value === ClientErrorType.VALIDATION_ERROR)
+  const hasError = computed(() => !!error.value);
+  const isNetworkError = computed(
+    () => errorType.value === ClientErrorType.NETWORK_ERROR
+  );
+  const isAuthError = computed(
+    () =>
+      errorType.value === ClientErrorType.AUTHENTICATION_ERROR ||
+      errorType.value === ClientErrorType.AUTHORIZATION_ERROR
+  );
+  const isValidationError = computed(
+    () => errorType.value === ClientErrorType.VALIDATION_ERROR
+  );
 
   /**
    * Set loading state
    */
   function setLoading(loading: boolean): void {
-    isLoading.value = loading
+    isLoading.value = loading;
     // Clear errors when starting new operation
     if (loading) {
-      clearError()
+      clearError();
     }
   }
 
@@ -58,22 +67,22 @@ export function useStoreErrorHandling(defaultContext?: string) {
    * Clear error state
    */
   function clearError(): void {
-    error.value = null
-    errorType.value = null
-    errorDetails.value = null
+    error.value = null;
+    errorType.value = null;
+    errorDetails.value = null;
   }
 
   /**
    * Set error state manually
    */
   function setError(
-    message: string, 
+    message: string,
     type: ClientErrorType = ClientErrorType.UNKNOWN_ERROR,
-    details?: any
+    details?: Record<string, unknown> | null
   ): void {
-    error.value = message
-    errorType.value = type
-    errorDetails.value = details
+    error.value = message;
+    errorType.value = type;
+    errorDetails.value = details || null;
   }
 
   /**
@@ -86,37 +95,44 @@ export function useStoreErrorHandling(defaultContext?: string) {
   ): Promise<ClientError> {
     const {
       showToast = true,
-      logError = true,
       setLoadingState = true,
-      context = defaultContext
-    } = options
+      context = defaultContext,
+    } = options;
 
     // Clear loading if requested
     if (setLoadingState) {
-      isLoading.value = false
+      isLoading.value = false;
     }
 
-    const operationContext = context 
-      ? (operation ? `${context} - ${operation}` : context)
-      : operation
+    const operationContext = context
+      ? operation
+        ? `${context} - ${operation}`
+        : context
+      : operation;
 
     // Process error using error handler
-    const clientError = await errorHandler.handleStoreError(err, operationContext || 'Store Operation', {
-      showToast,
-      setErrorState: (errorMessage: string) => {
-        error.value = errorMessage
-      },
-      setLoadingState: setLoadingState ? (loading: boolean) => { 
-        isLoading.value = loading 
-      } : undefined
-    })
+    const clientError = await errorHandler.handleStoreError(
+      err,
+      operationContext || 'Store Operation',
+      {
+        showToast,
+        setErrorState: (errorMessage: string) => {
+          error.value = errorMessage;
+        },
+        setLoadingState: setLoadingState
+          ? (loading: boolean) => {
+              isLoading.value = loading;
+            }
+          : undefined,
+      }
+    );
 
     // Set error state after clientError is fully available
-    error.value = clientError.message
-    errorType.value = clientError.type
-    errorDetails.value = clientError.details
+    error.value = clientError.message;
+    errorType.value = clientError.type;
+    errorDetails.value = clientError.details || null;
 
-    return clientError
+    return clientError;
   }
 
   /**
@@ -127,23 +143,23 @@ export function useStoreErrorHandling(defaultContext?: string) {
     operationName?: string,
     options: StoreErrorOptions = {}
   ): Promise<T | null> {
-    const { setLoadingState = true } = options
+    const { setLoadingState = true } = options;
 
     try {
       if (setLoadingState) {
-        setLoading(true)
+        setLoading(true);
       }
 
-      const result = await operation()
-      
+      const result = await operation();
+
       if (setLoadingState) {
-        setLoading(false)
+        setLoading(false);
       }
 
-      return result
+      return result;
     } catch (err) {
-      await handleError(err, operationName, options)
-      return null
+      await handleError(err, operationName, options);
+      return null;
     }
   }
 
@@ -151,31 +167,33 @@ export function useStoreErrorHandling(defaultContext?: string) {
    * Check if error is recoverable (user can retry)
    */
   function isRecoverableError(): boolean {
-    return errorType.value === ClientErrorType.NETWORK_ERROR ||
-           errorType.value === ClientErrorType.UNKNOWN_ERROR
+    return (
+      errorType.value === ClientErrorType.NETWORK_ERROR ||
+      errorType.value === ClientErrorType.UNKNOWN_ERROR
+    );
   }
 
   /**
    * Get user-friendly error message for display
    */
   function getDisplayError(): string {
-    if (!error.value) return ''
-    
+    if (!error.value) return '';
+
     switch (errorType.value) {
       case ClientErrorType.NETWORK_ERROR:
-        return 'Connection problem. Please check your internet and try again.'
+        return 'Connection problem. Please check your internet and try again.';
       case ClientErrorType.AUTHENTICATION_ERROR:
-        return 'Please log in to continue.'
+        return 'Please log in to continue.';
       case ClientErrorType.AUTHORIZATION_ERROR:
-        return 'You don\'t have permission for this action.'
+        return "You don't have permission for this action.";
       case ClientErrorType.VALIDATION_ERROR:
-        return error.value // Show specific validation message
+        return error.value; // Show specific validation message
       case ClientErrorType.NOT_FOUND_ERROR:
-        return 'The requested item was not found.'
+        return 'The requested item was not found.';
       case ClientErrorType.CONFLICT_ERROR:
-        return error.value // Show specific conflict message
+        return error.value; // Show specific conflict message
       default:
-        return error.value || 'An unexpected error occurred.'
+        return error.value || 'An unexpected error occurred.';
     }
   }
 
@@ -183,10 +201,10 @@ export function useStoreErrorHandling(defaultContext?: string) {
    * Reset all state (useful for store $reset methods)
    */
   function resetErrorState(): void {
-    error.value = null
-    errorType.value = null
-    errorDetails.value = null
-    isLoading.value = false
+    error.value = null;
+    errorType.value = null;
+    errorDetails.value = null;
+    isLoading.value = false;
   }
 
   return {
@@ -213,6 +231,6 @@ export function useStoreErrorHandling(defaultContext?: string) {
     resetErrorState,
 
     // Error types for convenience
-    ClientErrorType
-  }
-} 
+    ClientErrorType,
+  };
+}

@@ -88,6 +88,8 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  title: undefined,
+  subtitle: undefined,
   variant: 'elevated',
   size: 'medium',
   interactive: false,

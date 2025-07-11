@@ -1,16 +1,15 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/db/database.types';
-import type { 
-  CreateEventCommand, 
+import type {
+  CreateEventCommand,
   UpdateEventCommand,
-  EventResponseDto, 
+  EventResponseDto,
   EventsListResponseDto,
   EventListItemDto,
   EventUserDto,
   EventsQueryParams,
-  PaginationDto,
   EventInsert,
-  EventUpdate
+  EventUpdate,
 } from '@/types';
 
 /**
@@ -26,7 +25,10 @@ export class EventService {
    * @param userId - Authenticated user ID
    * @returns Promise<EventResponseDto> - Created event data
    */
-  async createEvent(command: CreateEventCommand, userId: string): Promise<EventResponseDto> {
+  async createEvent(
+    command: CreateEventCommand,
+    userId: string
+  ): Promise<EventResponseDto> {
     // Validate event date is not in the past
     await this.validateEventDate(command.event_date);
 
@@ -38,7 +40,7 @@ export class EventService {
       venue_name: command.venue_name,
       event_date: command.event_date,
       event_time: command.event_time || null,
-      user_id: userId
+      user_id: userId,
     };
 
     // Insert event into database
@@ -62,8 +64,8 @@ export class EventService {
         event_date: event.event_date,
         event_time: event.event_time,
         user_id: event.user_id,
-        created_at: event.created_at
-      }
+        created_at: event.created_at,
+      },
     };
   }
 
@@ -72,16 +74,17 @@ export class EventService {
    * @param queryParams - Query parameters for filtering and pagination
    * @returns Promise<EventsListResponseDto> - Paginated list of events
    */
-  async getEvents(queryParams: EventsQueryParams): Promise<EventsListResponseDto> {
+  async getEvents(
+    queryParams: EventsQueryParams
+  ): Promise<EventsListResponseDto> {
     // Set default pagination values
     const page = queryParams.page || 1;
     const limit = queryParams.limit || 20;
     const offset = (page - 1) * limit;
 
     // Build base query with user information
-    let query = this.supabase
-      .from('events')
-      .select(`
+    let query = this.supabase.from('events').select(
+      `
         id,
         event_name,
         country,
@@ -94,7 +97,9 @@ export class EventService {
           id,
           artist_name
         )
-      `, { count: 'exact' });
+      `,
+      { count: 'exact' }
+    );
 
     // Apply filters
     if (queryParams.user_id) {
@@ -139,20 +144,22 @@ export class EventService {
     }
 
     // Transform data
-    const transformedEvents: EventListItemDto[] = (events || []).map((event: any) => ({
-      id: event.id,
-      event_name: event.event_name,
-      country: event.country,
-      city: event.city,
-      venue_name: event.venue_name,
-      event_date: event.event_date,
-      event_time: event.event_time,
-      user: {
-        id: event.users.id,
-        artist_name: event.users.artist_name
-      } as EventUserDto,
-      created_at: event.created_at
-    }));
+    const transformedEvents: EventListItemDto[] = (events || []).map(
+      (event) => ({
+        id: event.id,
+        event_name: event.event_name,
+        country: event.country,
+        city: event.city,
+        venue_name: event.venue_name,
+        event_date: event.event_date,
+        event_time: event.event_time,
+        user: {
+          id: event.users.id,
+          artist_name: event.users.artist_name,
+        } as EventUserDto,
+        created_at: event.created_at,
+      })
+    );
 
     // Calculate pagination metadata
     const total = count || 0;
@@ -166,8 +173,8 @@ export class EventService {
         total,
         total_pages: totalPages,
         has_next: page < totalPages,
-        has_prev: page > 1
-      }
+        has_prev: page > 1,
+      },
     };
   }
 
@@ -185,7 +192,8 @@ export class EventService {
     // Fetch event data with user information
     const { data: event, error } = await this.supabase
       .from('events')
-      .select(`
+      .select(
+        `
         id,
         event_name,
         country,
@@ -198,7 +206,8 @@ export class EventService {
           id,
           artist_name
         )
-      `)
+      `
+      )
       .eq('id', eventId)
       .single();
 
@@ -218,10 +227,10 @@ export class EventService {
       event_date: event.event_date,
       event_time: event.event_time,
       user: {
-        id: (event as any).users.id,
-        artist_name: (event as any).users.artist_name
+        id: event.users.id,
+        artist_name: event.users.artist_name,
       } as EventUserDto,
-      created_at: event.created_at
+      created_at: event.created_at,
     };
   }
 
@@ -259,7 +268,7 @@ export class EventService {
       venue_name: command.venue_name,
       event_date: command.event_date,
       event_time: command.event_time || null,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     // Update event in database
@@ -286,8 +295,8 @@ export class EventService {
         event_time: event.event_time,
         user_id: event.user_id,
         created_at: event.created_at,
-        updated_at: event.updated_at
-      }
+        updated_at: event.updated_at,
+      },
     };
   }
 
@@ -307,7 +316,7 @@ export class EventService {
     }
 
     // Check if event exists
-    const { data: existingEvent, error: checkError } = await this.supabase
+    const { error: checkError } = await this.supabase
       .from('events')
       .select('id')
       .eq('id', eventId)
@@ -328,7 +337,7 @@ export class EventService {
       venue_name: command.venue_name,
       event_date: command.event_date,
       event_time: command.event_time || null,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     // Update event in database without ownership check
@@ -354,8 +363,8 @@ export class EventService {
         event_time: event.event_time,
         user_id: event.user_id,
         created_at: event.created_at,
-        updated_at: event.updated_at
-      }
+        updated_at: event.updated_at,
+      },
     };
   }
 
@@ -365,7 +374,10 @@ export class EventService {
    * @param authenticatedUserId - ID of authenticated user
    * @returns Promise<void>
    */
-  async deleteEvent(eventId: string, authenticatedUserId: string): Promise<void> {
+  async deleteEvent(
+    eventId: string,
+    authenticatedUserId: string
+  ): Promise<void> {
     // Validate UUID format
     if (!this.isValidUUID(eventId)) {
       throw new Error('Invalid event ID format');
@@ -399,7 +411,7 @@ export class EventService {
     }
 
     // Check if event exists
-    const { data: existingEvent, error: checkError } = await this.supabase
+    const { error: checkError } = await this.supabase
       .from('events')
       .select('id')
       .eq('id', eventId)
@@ -453,7 +465,10 @@ export class EventService {
    * @param authenticatedUserId - ID of authenticated user
    * @returns Promise<void>
    */
-  async verifyEventOwnership(eventId: string, authenticatedUserId: string): Promise<void> {
+  async verifyEventOwnership(
+    eventId: string,
+    authenticatedUserId: string
+  ): Promise<void> {
     const { data: event, error } = await this.supabase
       .from('events')
       .select('user_id')
@@ -468,7 +483,7 @@ export class EventService {
     }
 
     if (event.user_id !== authenticatedUserId) {
-      throw new Error('Cannot modify other user\'s events');
+      throw new Error("Cannot modify other user's events");
     }
   }
 
@@ -506,7 +521,8 @@ export class EventService {
    * @returns boolean - True if valid UUID
    */
   private isValidUUID(uuid: string): boolean {
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     return uuidRegex.test(uuid);
   }
-} 
+}

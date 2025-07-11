@@ -1,14 +1,18 @@
 import type { APIRoute } from 'astro';
 import { createSupabaseServerInstance } from '@/db/supabase.client.ts';
-import { LoginRequestSchema, type LoginResponse, type ErrorResponse } from '@/schemas/auth.schemas.ts';
+import {
+  LoginRequestSchema,
+  type LoginResponse,
+  type ErrorResponse,
+} from '@/schemas/auth.schemas.ts';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     // Parse and validate request body with Zod
     const body = await request.json().catch(() => null);
-    
+
     const validationResult = LoginRequestSchema.safeParse(body);
-    
+
     if (!validationResult.success) {
       const firstError = validationResult.error.issues[0];
       return new Response(
@@ -33,7 +37,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     if (error) {
       console.error('Login error:', error.message);
-      
+
       // Return user-friendly error messages
       let errorMessage = 'Login failed';
       if (error.message.includes('Invalid login credentials')) {
@@ -66,19 +70,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       message: 'Login successful',
     };
 
-    return new Response(
-      JSON.stringify(response),
-      { 
-        status: 200, 
-        headers: { 'Content-Type': 'application/json' } 
-      }
-    );
-
+    return new Response(JSON.stringify(response), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     console.error('Unexpected login error:', error);
     return new Response(
-      JSON.stringify({ error: 'An unexpected error occurred. Please try again.' } satisfies ErrorResponse),
+      JSON.stringify({
+        error: 'An unexpected error occurred. Please try again.',
+      } satisfies ErrorResponse),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
-}; 
+};

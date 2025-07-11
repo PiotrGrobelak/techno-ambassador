@@ -11,12 +11,17 @@ export const GET: APIRoute = async ({ request, cookies }) => {
     });
 
     // Get current user session
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
     if (error) {
       console.error('Auth check error:', error.message);
       return new Response(
-        JSON.stringify({ error: 'Authentication check failed' } satisfies ErrorResponse),
+        JSON.stringify({
+          error: 'Authentication check failed',
+        } satisfies ErrorResponse),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -34,19 +39,17 @@ export const GET: APIRoute = async ({ request, cookies }) => {
       email: user.email,
     };
 
-    return new Response(
-      JSON.stringify({ user: authUser }),
-      { 
-        status: 200, 
-        headers: { 'Content-Type': 'application/json' } 
-      }
-    );
-
+    return new Response(JSON.stringify({ user: authUser }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     console.error('Unexpected auth check error:', error);
     return new Response(
-      JSON.stringify({ error: 'An unexpected error occurred' } satisfies ErrorResponse),
+      JSON.stringify({
+        error: 'An unexpected error occurred',
+      } satisfies ErrorResponse),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
-}; 
+};

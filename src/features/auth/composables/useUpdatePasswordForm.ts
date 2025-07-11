@@ -15,9 +15,11 @@ export function useUpdatePasswordForm() {
 
     try {
       const result = await authStore.updatePassword(data.password);
-      
+
       if (result.success) {
-        success.value = result.message || 'Password updated successfully! You can now sign in with your new password.';
+        success.value =
+          result.message ||
+          'Password updated successfully! You can now sign in with your new password.';
         // Redirect to login after successful password update
         setTimeout(() => {
           window.location.href = '/auth/login';
@@ -43,4 +45,4 @@ export function useUpdatePasswordForm() {
     success,
     clearMessages,
   };
-} 
+}

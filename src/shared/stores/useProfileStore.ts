@@ -9,24 +9,28 @@ interface ProfileStatus {
 }
 
 export const useProfileStore = defineStore('profile', () => {
-  const errorHandling = useStoreErrorHandling('Profile Status')
+  const errorHandling = useStoreErrorHandling('Profile Status');
 
   // State
   const profileStatus = ref<ProfileStatus | null>(null);
   const initialized = ref(false);
 
   // Getters
-  const isProfileComplete = computed(() => profileStatus.value?.isComplete ?? false);
-  const missingFields = computed(() => profileStatus.value?.missingFields ?? []);
+  const isProfileComplete = computed(
+    () => profileStatus.value?.isComplete ?? false
+  );
+  const missingFields = computed(
+    () => profileStatus.value?.missingFields ?? []
+  );
   const needsCompletion = computed(() => {
     return profileStatus.value !== null && !profileStatus.value.isComplete;
   });
 
   // Re-export error handling state
-  const loading = errorHandling.isLoading
-  const error = errorHandling.error
-  const hasError = errorHandling.hasError
-  const isNetworkError = errorHandling.isNetworkError
+  const loading = errorHandling.isLoading;
+  const error = errorHandling.error;
+  const hasError = errorHandling.hasError;
+  const isNetworkError = errorHandling.isNetworkError;
 
   // Actions
   const setProfileStatus = (status: ProfileStatus) => {
@@ -37,24 +41,21 @@ export const useProfileStore = defineStore('profile', () => {
    * Check profile completion status from API
    */
   const checkProfileStatus = async (): Promise<void> => {
-    const result = await errorHandling.executeWithErrorHandling(
-      async () => {
-        const response = await fetch('/api/auth/profile-status', {
-          method: 'GET',
-          credentials: 'include',
-        });
+    const result = await errorHandling.executeWithErrorHandling(async () => {
+      const response = await fetch('/api/auth/profile-status', {
+        method: 'GET',
+        credentials: 'include',
+      });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to check profile status');
-        }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to check profile status');
+      }
 
-        const data = await response.json();
-        setProfileStatus(data.data);
-        return data;
-      },
-      'Check profile status'
-    );
+      const data = await response.json();
+      setProfileStatus(data.data);
+      return data;
+    }, 'Check profile status');
 
     if (result) {
       initialized.value = true;
@@ -101,11 +102,11 @@ export const useProfileStore = defineStore('profile', () => {
    */
   const getCompletionProgress = computed(() => {
     if (!profileStatus.value) return 0;
-    
+
     const totalRequiredFields = 3; // artist_name, biography, music_styles
     const missingCount = profileStatus.value.missingFields.length;
     const completedCount = totalRequiredFields - missingCount;
-    
+
     return Math.round((completedCount / totalRequiredFields) * 100);
   });
 
@@ -119,9 +120,8 @@ export const useProfileStore = defineStore('profile', () => {
       music_styles: 'Music Styles',
     };
 
-    return missingFields.value.map(field => fieldLabels[field] || field);
+    return missingFields.value.map((field) => fieldLabels[field] || field);
   });
-
 
   return {
     // Readonly state
@@ -152,6 +152,6 @@ export const useProfileStore = defineStore('profile', () => {
     // Error handling actions
     clearError: errorHandling.clearError,
     isRecoverableError: errorHandling.isRecoverableError,
-    getDisplayError: errorHandling.getDisplayError
+    getDisplayError: errorHandling.getDisplayError,
   };
-}); 
+});

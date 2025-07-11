@@ -95,6 +95,7 @@ vi.mock('primevue/password', () => ({
 }));
 
 describe('BaseInput', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
@@ -219,7 +220,7 @@ describe('BaseInput', () => {
       ['default', 'text'],
     ])('maps variant "%s" to input type "%s"', (variant, expectedType) => {
       wrapper = mountComponent(BaseInput, {
-        props: { variant: variant as any },
+        props: { variant: variant },
       });
 
       const input = wrapper.find('input');
@@ -313,16 +314,19 @@ describe('BaseInput', () => {
       ['small', 'px-2.5', 'py-1.5', 'text-sm'],
       ['medium', 'px-3', 'py-2', 'text-sm'],
       ['large', 'px-4', 'py-3', 'text-lg'],
-    ])('applies correct classes for %s size', (size, paddingX, paddingY, textSize) => {
-      wrapper = mountComponent(BaseInput, {
-        props: { size: size as any },
-      });
+    ])(
+      'applies correct classes for %s size',
+      (size, paddingX, paddingY, textSize) => {
+        wrapper = mountComponent(BaseInput, {
+          props: { size: size },
+        });
 
-      const input = wrapper.find('input');
-      expect(input.classes()).toContain(paddingX);
-      expect(input.classes()).toContain(paddingY);
-      expect(input.classes()).toContain(textSize);
-    });
+        const input = wrapper.find('input');
+        expect(input.classes()).toContain(paddingX);
+        expect(input.classes()).toContain(paddingY);
+        expect(input.classes()).toContain(textSize);
+      }
+    );
   });
 
   describe('State Handling', () => {
@@ -555,9 +559,9 @@ describe('BaseInput', () => {
 
       // Test error message (should override helper)
       wrapper = mountComponent(BaseInput, {
-        props: { 
+        props: {
           helperText: 'Helpful information',
-          errorMessage: 'Error message' 
+          errorMessage: 'Error message',
         },
       });
 
@@ -572,7 +576,7 @@ describe('BaseInput', () => {
       [{}, 'false'],
     ])('sets aria-invalid correctly', (props, expectedValue) => {
       wrapper = mountComponent(BaseInput, { props });
-      
+
       const input = wrapper.find('input');
       expect(input.attributes('aria-invalid')).toBe(expectedValue);
     });

@@ -83,8 +83,8 @@
         variant="primary"
         size="medium"
         class="w-full"
-        @click="handleProfileAction"
         :disabled="profileStore.loading"
+        @click="handleProfileAction"
       />
     </div>
   </div>

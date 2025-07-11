@@ -21,12 +21,17 @@ export const GET: APIRoute = async ({ request, cookies }) => {
     });
 
     // Get current user session
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError) {
       console.error('Auth check error:', authError.message);
       return new Response(
-        JSON.stringify({ error: 'Authentication check failed' } satisfies ErrorResponse),
+        JSON.stringify({
+          error: 'Authentication check failed',
+        } satisfies ErrorResponse),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -49,7 +54,9 @@ export const GET: APIRoute = async ({ request, cookies }) => {
       // PGRST116 is "not found" error, which is expected for incomplete profiles
       console.error('Profile check error:', profileError.message);
       return new Response(
-        JSON.stringify({ error: 'Profile check failed' } satisfies ErrorResponse),
+        JSON.stringify({
+          error: 'Profile check failed',
+        } satisfies ErrorResponse),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -82,7 +89,9 @@ export const GET: APIRoute = async ({ request, cookies }) => {
       if (styleError) {
         console.error('Music style check error:', styleError.message);
         return new Response(
-          JSON.stringify({ error: 'Profile check failed' } satisfies ErrorResponse),
+          JSON.stringify({
+            error: 'Profile check failed',
+          } satisfies ErrorResponse),
           { status: 500, headers: { 'Content-Type': 'application/json' } }
         );
       }
@@ -101,17 +110,18 @@ export const GET: APIRoute = async ({ request, cookies }) => {
 
     return new Response(
       JSON.stringify({ data: profileStatus } satisfies ProfileStatusResponse),
-      { 
-        status: 200, 
-        headers: { 'Content-Type': 'application/json' } 
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
       }
     );
-
   } catch (error) {
     console.error('Unexpected profile status check error:', error);
     return new Response(
-      JSON.stringify({ error: 'An unexpected error occurred' } satisfies ErrorResponse),
+      JSON.stringify({
+        error: 'An unexpected error occurred',
+      } satisfies ErrorResponse),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
-}; 
+};

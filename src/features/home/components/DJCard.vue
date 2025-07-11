@@ -55,12 +55,12 @@
         </div>
 
         <Button
-          @click="navigateToProfile"
           size="small"
           severity="primary"
           outlined
           data-testid="view-profile-button"
           class="text-sm flex-shrink-0"
+          @click="navigateToProfile"
         >
           View Profile
         </Button>

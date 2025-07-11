@@ -103,8 +103,8 @@
               variant="primary"
               size="large"
               class="w-full"
-              @click="redirectToProfileSetup"
               :loading="redirecting"
+              @click="redirectToProfileSetup"
             />
             <BaseButton
               label="Continue to Dashboard"

@@ -21,8 +21,8 @@
             :class="`pi ${iconLeading} ${iconClasses}`"
           />
           <component
-            v-else-if="iconLeading"
             :is="iconLeading"
+            v-else-if="iconLeading"
             :class="iconClasses"
           />
         </slot>
@@ -66,9 +66,9 @@
           <button
             v-if="clearable && modelValue && !disabled"
             type="button"
-            @click="clearInput"
             :class="clearButtonClasses"
             :aria-label="clearAriaLabel"
+            @click="clearInput"
           >
             <i class="pi pi-times w-4 h-4"></i>
           </button>
@@ -77,8 +77,8 @@
             :class="`pi ${iconTrailing} ${iconClasses}`"
           />
           <component
-            v-else-if="iconTrailing"
             :is="iconTrailing"
+            v-else-if="iconTrailing"
             :class="iconClasses"
           />
         </slot>
@@ -128,8 +128,8 @@ interface Props {
   clearable?: boolean;
   multiline?: boolean;
   rows?: number;
-  iconLeading?: PrimeIcon | any; // PrimeIcons class name (e.g., 'pi-user') or Vue component
-  iconTrailing?: PrimeIcon | any; // PrimeIcons class name (e.g., 'pi-search') or Vue component
+  iconLeading?: PrimeIcon | null; // PrimeIcons class name (e.g., 'pi-user') or Vue component
+  iconTrailing?: PrimeIcon | null; // PrimeIcons class name (e.g., 'pi-search') or Vue component
   ariaLabel?: string;
   clearAriaLabel?: string;
 }
@@ -144,6 +144,10 @@ interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
+  label: '',
+  placeholder: '',
+  helperText: '',
+  errorMessage: '',
   variant: 'default',
   size: 'medium',
   disabled: false,
@@ -152,6 +156,9 @@ const props = withDefaults(defineProps<Props>(), {
   clearable: false,
   multiline: false,
   rows: 3,
+  iconLeading: null,
+  iconTrailing: null,
+  ariaLabel: '',
   clearAriaLabel: 'Clear input',
 });
 

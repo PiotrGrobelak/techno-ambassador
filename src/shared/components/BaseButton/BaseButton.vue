@@ -13,14 +13,14 @@
   >
     <span class="flex items-center justify-center">
       <!-- Leading icon -->
-      <slot name="icon-leading" v-if="$slots['icon-leading']" />
+      <slot v-if="$slots['icon-leading']" name="icon-leading" />
       <i
         v-else-if="iconLeading && typeof iconLeading === 'string'"
         :class="`pi ${iconLeading} ${iconLeadingClasses}`"
       />
       <component
-        v-else-if="iconLeading"
         :is="iconLeading"
+        v-else-if="iconLeading"
         :class="iconLeadingClasses"
       />
 
@@ -31,14 +31,14 @@
       <slot v-else />
 
       <!-- Trailing icon -->
-      <slot name="icon-trailing" v-if="$slots['icon-trailing']" />
+      <slot v-if="$slots['icon-trailing']" name="icon-trailing" />
       <i
         v-else-if="iconTrailing && typeof iconTrailing === 'string'"
         :class="`pi ${iconTrailing} ${iconTrailingClasses}`"
       />
       <component
-        v-else-if="iconTrailing"
         :is="iconTrailing"
+        v-else-if="iconTrailing"
         :class="iconTrailingClasses"
       />
     </span>
@@ -59,8 +59,8 @@ interface Props {
   size?: ButtonSize;
   disabled?: boolean;
   loading?: boolean;
-  iconLeading?: PrimeIcon | any; // PrimeIcons class name (e.g., 'pi-check') or Vue component
-  iconTrailing?: PrimeIcon | any; // PrimeIcons class name (e.g., 'pi-arrow-right') or Vue component
+  iconLeading?: PrimeIcon; // PrimeIcons class name (e.g., 'pi-check') or Vue component
+  iconTrailing?: PrimeIcon; // PrimeIcons class name (e.g., 'pi-arrow-right') or Vue component
   fullWidth?: boolean;
   ariaLabel?: string;
   pulse?: boolean; // Apple HIG: pulsing buttons for most likely choice
@@ -71,11 +71,15 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  label: undefined,
   variant: 'secondary',
   size: 'medium',
   disabled: false,
   loading: false,
+  iconLeading: undefined,
+  iconTrailing: undefined,
   fullWidth: false,
+  ariaLabel: undefined,
   pulse: false,
 });
 

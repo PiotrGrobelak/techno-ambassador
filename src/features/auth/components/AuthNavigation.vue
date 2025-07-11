@@ -14,17 +14,17 @@
         label="Sign In"
         variant="ghost"
         size="medium"
-        @click="navigateToPath('/auth/login')"
         class="hidden sm:inline-flex"
         data-testid="nav-sign-in-button"
+        @click="navigateToPath('/auth/login')"
       />
       <BaseButton
         label="I'm a DJ"
         variant="primary"
         size="medium"
-        @click="navigateToPath('/auth/register')"
         :pulse="true"
         data-testid="nav-dj-register-button"
+        @click="navigateToPath('/auth/register')"
       />
     </template>
 
@@ -57,15 +57,15 @@
           label="Dashboard"
           variant="ghost"
           size="medium"
-          @click="navigateToPath('/dj/dashboard')"
           data-testid="nav-dashboard-button"
+          @click="navigateToPath('/dj/dashboard')"
         />
         <BaseButton
           label="Events Management"
           variant="ghost"
           size="medium"
-          @click="navigateToPath('/dj/events')"
           data-testid="nav-events-button"
+          @click="navigateToPath('/dj/events')"
         />
 
         <!-- Logout button -->
@@ -73,10 +73,10 @@
           label="Sign Out"
           variant="ghost"
           size="medium"
-          @click="handleLogout"
           :loading="logoutLoading"
           :disabled="logoutLoading"
           data-testid="nav-sign-out-button"
+          @click="handleLogout"
         />
       </div>
 
@@ -85,9 +85,9 @@
         <BaseButton
           variant="ghost"
           size="medium"
-          @click="isMobileMenuOpen = !isMobileMenuOpen"
           :aria-label="isMobileMenuOpen ? 'Close menu' : 'Open menu'"
           data-testid="mobile-menu-button"
+          @click="isMobileMenuOpen = !isMobileMenuOpen"
         >
           <template #icon-leading>
             <i v-if="!isMobileMenuOpen" class="pi pi-bars w-5 h-5"></i>
@@ -127,32 +127,32 @@
       <!-- Menu items -->
       <div class="py-2">
         <button
-          @click="handleMobileNavigation('/dj/dashboard')"
           class="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
           data-testid="mobile-dashboard-button"
+          @click="handleMobileNavigation('/dj/dashboard')"
         >
           <BaseTypography variant="body">Dashboard</BaseTypography>
         </button>
         <button
-          @click="handleMobileNavigation('/dj/events')"
           class="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
           data-testid="mobile-events-button"
+          @click="handleMobileNavigation('/dj/events')"
         >
           <BaseTypography variant="body">Events Management</BaseTypography>
         </button>
         <button
-          @click="handleMobileNavigation('/dj/profile')"
           class="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
           data-testid="mobile-profile-button"
+          @click="handleMobileNavigation('/dj/profile')"
         >
           <BaseTypography variant="body">Profile Settings</BaseTypography>
         </button>
         <hr class="my-2 border-gray-100" />
         <button
-          @click="handleLogout"
           class="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
           :disabled="logoutLoading"
           data-testid="mobile-sign-out-button"
+          @click="handleLogout"
         >
           <BaseTypography
             variant="body"
@@ -175,8 +175,8 @@
           {{ logoutError }}
         </BaseTypography>
         <button
-          @click="logoutError = ''"
           class="ml-4 text-red-400 hover:text-red-600"
+          @click="logoutError = ''"
         >
           <i class="pi pi-times w-4 h-4"></i>
         </button>

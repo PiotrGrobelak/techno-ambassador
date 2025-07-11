@@ -33,7 +33,7 @@ interface Props {
 }
 
 // Props with defaults
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   testIdPrefix: 'event',
 });
 

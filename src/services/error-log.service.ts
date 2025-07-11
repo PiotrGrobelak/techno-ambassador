@@ -13,7 +13,7 @@ export enum ErrorType {
   EXTERNAL_API_ERROR = 'EXTERNAL_API_ERROR',
   INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
   NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',
-  CONFLICT_ERROR = 'CONFLICT_ERROR'
+  CONFLICT_ERROR = 'CONFLICT_ERROR',
 }
 
 /**
@@ -23,6 +23,7 @@ export interface ErrorContext {
   requestUrl?: string;
   userAgent?: string;
   userId?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   requestBody?: any;
   requestHeaders?: Record<string, string>;
   timestamp?: string;
@@ -52,7 +53,8 @@ export class ErrorLogService {
   ): Promise<void> {
     try {
       const errorMessage = error instanceof Error ? error.message : error;
-      const errorStack = stackTrace || (error instanceof Error ? error.stack : undefined);
+      const errorStack =
+        stackTrace || (error instanceof Error ? error.stack : undefined);
 
       const errorLogData = {
         error_message: errorMessage,
@@ -60,7 +62,7 @@ export class ErrorLogService {
         request_url: context.requestUrl || null,
         user_agent: context.userAgent || null,
         user_id: context.userId || null,
-        stack_trace: errorStack || null
+        stack_trace: errorStack || null,
       };
 
       const { error: logError } = await this.supabase
@@ -74,7 +76,7 @@ export class ErrorLogService {
           message: errorMessage,
           type: errorType,
           context,
-          stack: errorStack
+          stack: errorStack,
         });
       }
     } catch (loggingError) {
@@ -83,7 +85,7 @@ export class ErrorLogService {
       console.error('Original error details:', {
         message: error instanceof Error ? error.message : error,
         type: errorType,
-        context
+        context,
       });
     }
   }
@@ -97,16 +99,14 @@ export class ErrorLogService {
     validationErrors: Array<{ field: string; message: string }>,
     context: ErrorContext = {}
   ): Promise<void> {
-    const errorMessage = `Validation failed: ${validationErrors.map(e => `${e.field}: ${e.message}`).join(', ')}`;
-    
-    await this.logError(
-      errorMessage,
-      ErrorType.VALIDATION_ERROR,
-      {
-        ...context,
-        requestBody: context.requestBody ? JSON.stringify(context.requestBody) : undefined
-      }
-    );
+    const errorMessage = `Validation failed: ${validationErrors.map((e) => `${e.field}: ${e.message}`).join(', ')}`;
+
+    await this.logError(errorMessage, ErrorType.VALIDATION_ERROR, {
+      ...context,
+      requestBody: context.requestBody
+        ? JSON.stringify(context.requestBody)
+        : undefined,
+    });
   }
 
   /**
@@ -153,7 +153,7 @@ export class ErrorLogService {
     context: ErrorContext = {}
   ): Promise<void> {
     const errorMessage = `Database operation failed: ${operation} - ${error.message}`;
-    
+
     await this.logError(
       errorMessage,
       ErrorType.DATABASE_ERROR,
@@ -185,9 +185,12 @@ export class ErrorLogService {
    * @param userId - Optional authenticated user ID
    * @returns ErrorContext object with extracted information
    */
-  static createContextFromRequest(request: Request, userId?: string): ErrorContext {
+  static createContextFromRequest(
+    request: Request,
+    userId?: string
+  ): ErrorContext {
     const url = new URL(request.url);
-    
+
     return {
       requestUrl: url.pathname + url.search,
       userAgent: request.headers.get('user-agent') || undefined,
@@ -196,9 +199,10 @@ export class ErrorLogService {
       timestamp: new Date().toISOString(),
       // Note: IP address would require additional middleware to extract from headers
       requestHeaders: Object.fromEntries(
-        Array.from(request.headers.entries())
-          .filter(([key]) => !key.toLowerCase().includes('authorization')) // Don't log auth headers
-      )
+        Array.from(request.headers.entries()).filter(
+          ([key]) => !key.toLowerCase().includes('authorization')
+        ) // Don't log auth headers
+      ),
     };
   }
 
@@ -208,10 +212,14 @@ export class ErrorLogService {
    * @param requestBody - Parsed request body
    * @returns Updated context with request body
    */
-  static addRequestBodyToContext(context: ErrorContext, requestBody: any): ErrorContext {
+  static addRequestBodyToContext(
+    context: ErrorContext,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    requestBody: any
+  ): ErrorContext {
     return {
       ...context,
-      requestBody: requestBody
+      requestBody: requestBody,
     };
   }
-} 
+}

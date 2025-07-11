@@ -58,6 +58,7 @@ vi.mock('@/shared/components/BaseButton/BaseButton.vue', () => ({
 }));
 
 describe('BaseDialog', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
@@ -66,7 +67,7 @@ describe('BaseDialog', () => {
 
   describe('1. Basic Dialog Properties', () => {
     it('should render with default properties', () => {
-      wrapper = mountComponent(BaseDialog); 
+      wrapper = mountComponent(BaseDialog);
 
       // Check default computed values
       expect(wrapper.vm.showCancel).toBe(true);
@@ -78,7 +79,7 @@ describe('BaseDialog', () => {
 
     it('should apply custom header text', () => {
       wrapper = mountComponent(BaseDialog, {
-        props: { header: 'Custom Dialog Title' }
+        props: { header: 'Custom Dialog Title' },
       });
 
       expect(wrapper.props('header')).toBe('Custom Dialog Title');
@@ -88,15 +89,15 @@ describe('BaseDialog', () => {
       wrapper = mountComponent(BaseDialog, {
         props: {
           cancelText: 'Custom Cancel',
-          confirmText: 'Custom Confirm'
-        }
+          confirmText: 'Custom Confirm',
+        },
       });
 
       expect(wrapper.vm.cancelText).toBe('Custom Cancel');
       expect(wrapper.vm.confirmText).toBe('Custom Confirm');
-      
+
       const buttons = wrapper.findAllComponents({ name: 'BaseButton' });
-      const buttonLabels = buttons.map(btn => btn.props('label'));
+      const buttonLabels = buttons.map((btn) => btn.props('label'));
       expect(buttonLabels).toContain('Custom Cancel');
       expect(buttonLabels).toContain('Custom Confirm');
     });
@@ -128,7 +129,7 @@ describe('BaseDialog', () => {
 
       // Trigger handleClose method
       wrapper.vm.handleClose();
-      
+
       // Check that close event was emitted
       expect(wrapper.emitted('close')).toHaveLength(1);
     });
@@ -138,22 +139,24 @@ describe('BaseDialog', () => {
 
       // Trigger handleConfirm method
       wrapper.vm.handleConfirm();
-      
+
       // Check that confirm event was emitted
       expect(wrapper.emitted('confirm')).toHaveLength(1);
     });
 
     it('should call handleClose when cancel button is clicked', async () => {
       wrapper = mountComponent(BaseDialog, {
-        props: { 
-          showCancel: true 
-        }
+        props: {
+          showCancel: true,
+        },
       });
 
       // Find and click the cancel button
       const buttons = wrapper.findAllComponents({ name: 'BaseButton' });
-      const cancelButton = buttons.find(btn => btn.props('label') === 'Cancel');
-      
+      const cancelButton = buttons.find(
+        (btn) => btn.props('label') === 'Cancel'
+      );
+
       expect(cancelButton).toBeDefined();
       await cancelButton!.trigger('click');
 
@@ -162,15 +165,15 @@ describe('BaseDialog', () => {
 
     it('should call handleConfirm when confirm button is clicked', async () => {
       wrapper = mountComponent(BaseDialog, {
-        props: { 
-          showConfirm: true 
-        }
+        props: {
+          showConfirm: true,
+        },
       });
 
       // Find and click the confirm button
       const buttons = wrapper.findAllComponents({ name: 'BaseButton' });
-      const confirmButton = buttons.find(btn => btn.props('label') === 'OK');
-      
+      const confirmButton = buttons.find((btn) => btn.props('label') === 'OK');
+
       expect(confirmButton).toBeDefined();
       await confirmButton!.trigger('click');
 
@@ -184,21 +187,21 @@ describe('BaseDialog', () => {
 
       expect(wrapper.vm.showCancel).toBe(true);
       expect(wrapper.vm.showConfirm).toBe(true);
-      
+
       const buttons = wrapper.findAllComponents({ name: 'BaseButton' });
       expect(buttons).toHaveLength(2);
     });
 
     it('should hide cancel button when showCancel is false', () => {
-                wrapper = mountComponent(BaseDialog, {
-        props: { 
-          showCancel: false 
-        }
+      wrapper = mountComponent(BaseDialog, {
+        props: {
+          showCancel: false,
+        },
       });
 
       expect(wrapper.vm.showCancel).toBe(false);
       expect(wrapper.vm.showConfirm).toBe(true);
-      
+
       const buttons = wrapper.findAllComponents({ name: 'BaseButton' });
       expect(buttons).toHaveLength(1);
       expect(buttons[0].props('label')).toBe('OK');
@@ -206,14 +209,14 @@ describe('BaseDialog', () => {
 
     it('should hide confirm button when showConfirm is false', () => {
       wrapper = mountComponent(BaseDialog, {
-        props: { 
-          showConfirm: false 
-        }
+        props: {
+          showConfirm: false,
+        },
       });
 
       expect(wrapper.vm.showCancel).toBe(true);
       expect(wrapper.vm.showConfirm).toBe(false);
-      
+
       const buttons = wrapper.findAllComponents({ name: 'BaseButton' });
       expect(buttons).toHaveLength(1);
       expect(buttons[0].props('label')).toBe('Cancel');
@@ -221,15 +224,15 @@ describe('BaseDialog', () => {
 
     it('should show no buttons when both are disabled', () => {
       wrapper = mountComponent(BaseDialog, {
-        props: { 
+        props: {
           showCancel: false,
-          showConfirm: false
-        }
+          showConfirm: false,
+        },
       });
 
       expect(wrapper.vm.showCancel).toBe(false);
       expect(wrapper.vm.showConfirm).toBe(false);
-      
+
       const buttons = wrapper.findAllComponents({ name: 'BaseButton' });
       expect(buttons).toHaveLength(0);
     });
@@ -244,9 +247,9 @@ describe('BaseDialog', () => {
 
     it('should not be closable when persistent is true', () => {
       wrapper = mountComponent(BaseDialog, {
-        props: { 
-          persistent: true 
-        }
+        props: {
+          persistent: true,
+        },
       });
 
       expect(wrapper.vm.closable).toBe(false);
@@ -254,24 +257,24 @@ describe('BaseDialog', () => {
 
     it('should respect closable prop when not persistent', () => {
       wrapper = mountComponent(BaseDialog, {
-        props: { 
+        props: {
           closable: false,
-          persistent: false
-        }
+          persistent: false,
+        },
       });
 
       expect(wrapper.vm.closable).toBe(false);
     });
 
     it('should override closable when persistent takes precedence', () => {
-        wrapper = mountComponent(BaseDialog, {
-        props: { 
+      wrapper = mountComponent(BaseDialog, {
+        props: {
           closable: true,
-          persistent: true  // Should override closable
-        }
+          persistent: true, // Should override closable
+        },
       });
 
       expect(wrapper.vm.closable).toBe(false);
     });
   });
-}); 
+});

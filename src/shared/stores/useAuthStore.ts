@@ -3,15 +3,8 @@ import { ref, computed, readonly } from 'vue';
 import { useStoreErrorHandling } from '@/shared/composables/useStoreErrorHandling';
 import type { User, Session } from '@supabase/supabase-js';
 
-interface AuthState {
-  user: User | null;
-  session: Session | null;
-  loading: boolean;
-  initialized: boolean;
-}
-
 export const useAuthStore = defineStore('auth', () => {
-  const errorHandling = useStoreErrorHandling('Authentication')
+  const errorHandling = useStoreErrorHandling('Authentication');
 
   // State - reactive references
   const user = ref<User | null>(null);
@@ -24,10 +17,10 @@ export const useAuthStore = defineStore('auth', () => {
   const userId = computed(() => user.value?.id);
 
   // Re-export error handling state but keep original loading for compatibility
-  const loading = errorHandling.isLoading
-  const error = errorHandling.error
-  const hasError = errorHandling.hasError
-  const isNetworkError = errorHandling.isNetworkError
+  const loading = errorHandling.isLoading;
+  const error = errorHandling.error;
+  const hasError = errorHandling.hasError;
+  const isNetworkError = errorHandling.isNetworkError;
 
   // Actions - functions for state management
   const setUser = (newUser: User | null) => {
@@ -46,8 +39,8 @@ export const useAuthStore = defineStore('auth', () => {
   // Initialize store with server-side auth data
   const initializeAuth = async () => {
     if (initialized.value) return;
-    
-    const result = await errorHandling.executeWithErrorHandling(
+
+    await errorHandling.executeWithErrorHandling(
       async () => {
         // Check if we have auth data from server-side middleware
         // This will be available if user is logged in
@@ -73,7 +66,7 @@ export const useAuthStore = defineStore('auth', () => {
             setUser(authUser as User);
           }
         }
-        
+
         return { success: true };
       },
       'Initialize authentication',
@@ -101,20 +94,22 @@ export const useAuthStore = defineStore('auth', () => {
         // Clear auth state after successful logout
         user.value = null;
         session.value = null;
-        
+
         // Reset profile store state if it exists
         try {
-          const { useProfileStore } = await import('@/shared/stores/useProfileStore');
+          const { useProfileStore } = await import(
+            '@/shared/stores/useProfileStore'
+          );
           const profileStore = useProfileStore();
           profileStore.resetState();
-        } catch (error) {
+        } catch {
           // Profile store might not be initialized, which is fine
           console.debug('Profile store not initialized during logout');
         }
-        
+
         // Redirect to home page
         window.location.href = '/';
-        
+
         return { success: true };
       },
       'Logout',
@@ -126,7 +121,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       const result = await errorHandling.executeWithErrorHandling(
         async () => {
@@ -154,20 +152,24 @@ export const useAuthStore = defineStore('auth', () => {
       if (result) {
         return { success: true };
       } else {
-        return { 
-          success: false, 
-          error: errorHandling.getDisplayError() || 'Login failed' 
+        return {
+          success: false,
+          error: errorHandling.getDisplayError() || 'Login failed',
         };
       }
     } catch (error) {
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Network error occurred' 
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : 'Network error occurred',
       };
     }
   };
 
-  const register = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const register = async (
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       const result = await errorHandling.executeWithErrorHandling(
         async () => {
@@ -194,20 +196,23 @@ export const useAuthStore = defineStore('auth', () => {
       if (result) {
         return { success: true };
       } else {
-        return { 
-          success: false, 
-          error: errorHandling.getDisplayError() || 'Registration failed' 
+        return {
+          success: false,
+          error: errorHandling.getDisplayError() || 'Registration failed',
         };
       }
     } catch (error) {
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Network error occurred' 
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : 'Network error occurred',
       };
     }
   };
 
-  const resetPassword = async (email: string): Promise<{ success: boolean; error?: string; message?: string }> => {
+  const resetPassword = async (
+    email: string
+  ): Promise<{ success: boolean; error?: string; message?: string }> => {
     try {
       const result = await errorHandling.executeWithErrorHandling(
         async () => {
@@ -232,25 +237,28 @@ export const useAuthStore = defineStore('auth', () => {
       );
 
       if (result) {
-        return { 
-          success: true, 
-          message: result.message || 'Password reset link sent to your email.' 
+        return {
+          success: true,
+          message: result.message || 'Password reset link sent to your email.',
         };
       } else {
-        return { 
-          success: false, 
-          error: errorHandling.getDisplayError() || 'Failed to send reset link' 
+        return {
+          success: false,
+          error: errorHandling.getDisplayError() || 'Failed to send reset link',
         };
       }
     } catch (error) {
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Network error occurred' 
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : 'Network error occurred',
       };
     }
   };
 
-  const updatePassword = async (password: string): Promise<{ success: boolean; error?: string; message?: string }> => {
+  const updatePassword = async (
+    password: string
+  ): Promise<{ success: boolean; error?: string; message?: string }> => {
     try {
       const result = await errorHandling.executeWithErrorHandling(
         async () => {
@@ -275,20 +283,23 @@ export const useAuthStore = defineStore('auth', () => {
       );
 
       if (result) {
-        return { 
-          success: true, 
-          message: result.message || 'Password updated successfully! You can now sign in with your new password.' 
+        return {
+          success: true,
+          message:
+            result.message ||
+            'Password updated successfully! You can now sign in with your new password.',
         };
       } else {
-        return { 
-          success: false, 
-          error: errorHandling.getDisplayError() || 'Failed to update password' 
+        return {
+          success: false,
+          error: errorHandling.getDisplayError() || 'Failed to update password',
         };
       }
     } catch (error) {
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Network error occurred' 
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : 'Network error occurred',
       };
     }
   };
@@ -300,17 +311,17 @@ export const useAuthStore = defineStore('auth', () => {
     session: readonly(session),
     loading: readonly(loading),
     initialized: readonly(initialized),
-    
+
     // Error handling state (re-exported)
     error,
     hasError,
     isNetworkError,
-    
+
     // Computed getters
     isAuthenticated,
     userEmail,
     userId,
-    
+
     // Actions
     setUser,
     setSession,
@@ -325,6 +336,6 @@ export const useAuthStore = defineStore('auth', () => {
     // Error handling actions
     clearError: errorHandling.clearError,
     isRecoverableError: errorHandling.isRecoverableError,
-    getDisplayError: errorHandling.getDisplayError
+    getDisplayError: errorHandling.getDisplayError,
   };
-}); 
+});

@@ -5,11 +5,7 @@ import 'vitest/globals';
 
 declare global {
   // Extend Jest matchers if needed
-  namespace Vi {
-    interface Assertion<T = any> {
-      // Add custom matchers here if needed
-    }
-  }
+  namespace Vi {}
 
   // Global test utilities
   const describe: typeof import('vitest').describe;
@@ -24,12 +20,11 @@ declare global {
 }
 
 // Export types for test utilities
-export type MockedFunction<T extends (...args: any[]) => any> = ReturnType<
-  typeof vi.fn<T>
->;
+export type MockedFunction<T extends (...args: unknown[]) => unknown> =
+  ReturnType<typeof vi.fn<T>>;
 
 export type MockedObject<T> = {
-  [K in keyof T]: T[K] extends (...args: any[]) => any
+  [K in keyof T]: T[K] extends (...args: unknown[]) => unknown
     ? MockedFunction<T[K]>
     : T[K];
-}; 
+};

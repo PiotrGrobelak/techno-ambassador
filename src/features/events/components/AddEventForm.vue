@@ -1,9 +1,9 @@
 <template>
   <EventFormContainer title="Add New Event">
     <form
-      @submit.prevent="form.onSubmit"
       class="space-y-6"
       data-testid="add-event-form"
+      @submit.prevent="form.onSubmit"
     >
       <!-- Form Fields -->
       <EventFormFields

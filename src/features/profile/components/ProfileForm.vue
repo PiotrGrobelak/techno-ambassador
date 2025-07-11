@@ -8,7 +8,7 @@
       <!-- Left Column - Form -->
       <div class="space-y-6">
         <!-- Main Form -->
-        <form @submit.prevent="handleSubmit" class="space-y-6">
+        <form class="space-y-6" @submit.prevent="handleSubmit">
           <!-- Form Card -->
           <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div class="space-y-6">
@@ -305,20 +305,6 @@ const successMessage = computed(() => {
   return profileFormStore.isNewProfile
     ? 'Profile created successfully!'
     : 'Profile updated successfully!';
-});
-
-const isProfileComplete = computed(() => {
-  console.log(
-    'isProfileComplete',
-    profileFormStore.isFormValid,
-    profileFormStore.formData.instagram_url.length,
-    profileFormStore.formData.facebook_url.length
-  );
-  return (
-    profileFormStore.isFormValid &&
-    profileFormStore.formData.instagram_url.length > 0 &&
-    profileFormStore.formData.facebook_url.length > 0
-  );
 });
 
 // Methods

@@ -1,3 +1,5 @@
+import type { EventListItemDto } from '@/types';
+
 /**
  * Event form helper utilities
  * Centralizes date handling and common form utilities
@@ -50,7 +52,10 @@ export const useEventFormHelpers = () => {
   /**
    * Get initial form values based on mode and existing data
    */
-  const getInitialValues = (mode: 'create' | 'edit', existingData?: any) => {
+  const getInitialValues = (
+    mode: 'create' | 'edit',
+    existingData?: EventListItemDto
+  ) => {
     if (mode === 'create') {
       return {
         event_name: '',
@@ -68,7 +73,9 @@ export const useEventFormHelpers = () => {
       country: existingData?.country || '',
       city: existingData?.city || '',
       venue_name: existingData?.venue_name || '',
-      event_date: existingData?.event_date ? parseDate(existingData.event_date) : null,
+      event_date: existingData?.event_date
+        ? parseDate(existingData.event_date)
+        : null,
       event_time: existingData?.event_time || '',
     };
   };
@@ -81,4 +88,4 @@ export const useEventFormHelpers = () => {
     isPastDate,
     getInitialValues,
   };
-}; 
+};

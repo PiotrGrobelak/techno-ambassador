@@ -21,7 +21,13 @@ export interface EventFormOptions {
 /**
  * Form field names type
  */
-type FormFieldName = 'event_name' | 'country' | 'city' | 'venue_name' | 'event_date' | 'event_time';
+type FormFieldName =
+  | 'event_name'
+  | 'country'
+  | 'city'
+  | 'venue_name'
+  | 'event_date'
+  | 'event_time';
 
 /**
  * Main event form composable
@@ -29,14 +35,15 @@ type FormFieldName = 'event_name' | 'country' | 'city' | 'venue_name' | 'event_d
  */
 export const useEventForm = (options: EventFormOptions) => {
   const { mode, initialData, onSuccess, onCancel } = options;
-  
+
   // Dependencies
   const eventsStore = useEventsManagementStore();
   const helpers = useEventFormHelpers();
   const messages = useEventFormMessages();
 
   // Form setup with appropriate schema
-  const validationSchema = mode === 'create' ? createEventSchema : updateEventSchema;
+  const validationSchema =
+    mode === 'create' ? createEventSchema : updateEventSchema;
   const initialValues = helpers.getInitialValues(mode, initialData);
 
   const { handleSubmit, meta, resetForm, setFieldValue, validate } = useForm({
@@ -45,19 +52,28 @@ export const useEventForm = (options: EventFormOptions) => {
   });
 
   // Form fields with validation
-  const { value: event_name, errorMessage: event_nameError } = useField<string>('event_name');
-  const { value: country, errorMessage: countryError } = useField<string>('country');
+  const { value: event_name, errorMessage: event_nameError } =
+    useField<string>('event_name');
+  const { value: country, errorMessage: countryError } =
+    useField<string>('country');
   const { value: city, errorMessage: cityError } = useField<string>('city');
-  const { value: venue_name, errorMessage: venue_nameError } = useField<string>('venue_name');
-  const { value: event_date, errorMessage: event_dateError } = useField<Date>('event_date');
-  const { value: event_time, errorMessage: event_timeError } = useField<string>('event_time');
+  const { value: venue_name, errorMessage: venue_nameError } =
+    useField<string>('venue_name');
+  const { value: event_date, errorMessage: event_dateError } =
+    useField<Date>('event_date');
+  const { value: event_time, errorMessage: event_timeError } =
+    useField<string>('event_time');
 
   // Watch for field changes and trigger validation
   // This ensures form.meta.valid updates when users modify form fields
-  watch([event_name, country, city, venue_name, event_date, event_time], () => {
-    // Trigger validation when any field changes
-    validate();
-  }, { deep: true });
+  watch(
+    [event_name, country, city, venue_name, event_date, event_time],
+    () => {
+      // Trigger validation when any field changes
+      validate();
+    },
+    { deep: true }
+  );
 
   // Computed properties
   const isLoading = computed(() => eventsStore.loading);
@@ -82,20 +98,22 @@ export const useEventForm = (options: EventFormOptions) => {
       };
 
       // Call appropriate service method
-      const result = mode === 'create'
-        ? await EventFormService.createEvent(formData)
-        : await EventFormService.updateEvent(initialData!.id, formData);
+      const result =
+        mode === 'create'
+          ? await EventFormService.createEvent(formData)
+          : await EventFormService.updateEvent(initialData!.id, formData);
 
       if (result.success) {
-        const successMessage = mode === 'create' 
-          ? 'Event created successfully!' 
-          : 'Event updated successfully!';
-        
+        const successMessage =
+          mode === 'create'
+            ? 'Event created successfully!'
+            : 'Event updated successfully!';
+
         messages.setSuccess(successMessage);
-        
+
         // Refresh events list
         await eventsStore.loadEvents();
-        
+
         // Handle form state based on mode
         if (mode === 'create') {
           eventsStore.hideAddForm();
@@ -103,10 +121,10 @@ export const useEventForm = (options: EventFormOptions) => {
         } else {
           eventsStore.setEditingEvent(null);
         }
-        
+
         // Call success callback if provided
         if (onSuccess) onSuccess();
-        
+
         return true;
       } else {
         messages.setError(result.error || 'Operation failed');
@@ -127,9 +145,9 @@ export const useEventForm = (options: EventFormOptions) => {
     } else {
       eventsStore.setEditingEvent(null);
     }
-    
+
     messages.clearMessages();
-    
+
     // Call cancel callback if provided
     if (onCancel) onCancel();
   };
@@ -144,7 +162,6 @@ export const useEventForm = (options: EventFormOptions) => {
     }
   );
 
-  // For edit mode, watch for prop changes and update form
   if (mode === 'edit' && initialData) {
     watch(
       () => initialData,
@@ -152,8 +169,8 @@ export const useEventForm = (options: EventFormOptions) => {
         if (newData) {
           const newValues = helpers.getInitialValues('edit', newData);
           // Type-safe field value setting
-          (Object.entries(newValues) as [FormFieldName, any][]).forEach(([key, value]) => {
-            setFieldValue(key, value);
+          Object.entries(newValues).forEach(([key, value]) => {
+            setFieldValue(key as FormFieldName, value);
           });
         }
       },
@@ -161,13 +178,12 @@ export const useEventForm = (options: EventFormOptions) => {
     );
   }
 
-  // Return form interface
   return {
     // Form state
     meta,
     isLoading,
     isPastEvent,
-    
+
     // Form fields
     fields: {
       event_name,
@@ -177,7 +193,7 @@ export const useEventForm = (options: EventFormOptions) => {
       event_date,
       event_time,
     },
-    
+
     // Field errors
     errors: {
       event_name: event_nameError,
@@ -187,18 +203,18 @@ export const useEventForm = (options: EventFormOptions) => {
       event_date: event_dateError,
       event_time: event_timeError,
     },
-    
+
     // Messages
     errorMessage: messages.errorMessage,
     successMessage: messages.successMessage,
-    
+
     // Actions
     onSubmit,
     handleCancel,
     resetForm,
     setFieldValue,
-    
+
     // Helpers
     helpers,
   };
-}; 
+};

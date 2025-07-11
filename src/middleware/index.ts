@@ -1,22 +1,6 @@
 import { defineMiddleware } from 'astro:middleware';
 import { createSupabaseServerInstance } from '@/db/supabase.client.ts';
 
-// Public paths - accessible without authentication
-const PUBLIC_PATHS = [
-  // Server-Rendered Astro Pages (browsing DJs is public according to PRD)
-  '/',
-  '/dj', // List of all DJs - public browsing
-  // Auth pages - accessible to non-authenticated users
-  '/auth/login',
-  '/auth/register',
-  '/auth/reset-password',
-  // Auth API endpoints
-  '/api/auth/login',
-  '/api/auth/register',
-  '/api/auth/reset-password',
-  '/api/auth/logout',
-];
-
 // Guest-only paths - redirect authenticated users away
 const GUEST_ONLY_PATHS = [
   '/auth/login',
@@ -33,21 +17,13 @@ const PROTECTED_PATHS = [
   '/api/auth/update-password',
 ];
 
-function isPublicPath(pathname: string): boolean {
-  return PUBLIC_PATHS.some(path => 
-    pathname === path || 
-    pathname.startsWith(`${path}/`) ||
-    pathname.startsWith('/dj/') && pathname !== '/dj/dashboard' // DJ profile pages are public
-  );
-}
-
 function isGuestOnlyPath(pathname: string): boolean {
   return GUEST_ONLY_PATHS.includes(pathname);
 }
 
 function isProtectedPath(pathname: string): boolean {
-  return PROTECTED_PATHS.some(path => 
-    pathname === path || pathname.startsWith(`${path}/`)
+  return PROTECTED_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`)
   );
 }
 
@@ -96,5 +72,5 @@ export const onRequest = defineMiddleware(
 
     // For public paths or authenticated users on protected paths, continue
     return next();
-  },
-); 
+  }
+);

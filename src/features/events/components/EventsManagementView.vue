@@ -16,8 +16,8 @@
             label="Add Event"
             icon="pi pi-plus"
             :disabled="!eventsStore.canCreateEvents || eventsStore.loading"
-            @click="eventsStore.toggleAddForm()"
             data-testid="add-event-button"
+            @click="eventsStore.toggleAddForm()"
           />
         </div>
       </div>

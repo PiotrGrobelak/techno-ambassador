@@ -20,8 +20,8 @@
           <p class="text-sm text-red-700">{{ eventsStore.error }}</p>
           <button
             v-if="eventsStore.isNetworkError"
-            @click="eventsStore.loadEvents()"
             class="mt-2 text-sm text-red-600 hover:text-red-500 underline"
+            @click="eventsStore.loadEvents()"
           >
             Try again
           </button>
@@ -42,8 +42,8 @@
         <Button
           label="Add Event"
           icon="pi pi-plus"
-          @click="eventsStore.toggleAddForm()"
           data-testid="empty-state-add-event"
+          @click="eventsStore.toggleAddForm()"
         />
       </div>
     </div>
@@ -142,8 +142,8 @@
                       icon="pi pi-pencil"
                       severity="secondary"
                       :disabled="eventsStore.loading"
-                      @click="handleEdit(event)"
                       data-testid="edit-event-button"
+                      @click="handleEdit(event)"
                     />
 
                     <!-- Delete Button (only for events user can edit) -->
@@ -153,8 +153,8 @@
                       icon="pi pi-trash"
                       severity="danger"
                       :disabled="eventsStore.loading"
-                      @click="handleDelete(event)"
                       data-testid="delete-event-button"
+                      @click="handleDelete(event)"
                     />
                   </div>
                 </div>
@@ -216,7 +216,10 @@ const formatDate = (dateString: string): string => {
 };
 
 // Handle pagination
-const onPageChange = async (event: any): Promise<void> => {
+const onPageChange = async (event: {
+  page: number;
+  rows: number;
+}): Promise<void> => {
   const page = event.page + 1; // PrimeVue uses 0-based indexing
   const limit = event.rows;
   await eventsStore.loadEvents(page, limit);

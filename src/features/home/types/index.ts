@@ -1,19 +1,19 @@
-import type { MusicStyleDto, PaginationDto, UsersQueryParams, UserListItemDto } from '@/types'
+import type { MusicStyleDto } from '@/types';
 
 /**
  * Search state management for DJ search functionality
  */
 export interface SearchState {
   /** Current search text */
-  searchTerm: string
+  searchTerm: string;
   /** List of selected music style IDs */
-  selectedMusicStyles: string[]
+  selectedMusicStyles: string[];
   /** Results loading state */
-  isLoading: boolean
+  isLoading: boolean;
   /** Whether an error occurred */
-  hasError: boolean
+  hasError: boolean;
   /** Error message */
-  errorMessage: string
+  errorMessage: string;
 }
 
 /**
@@ -21,9 +21,9 @@ export interface SearchState {
  */
 export interface FilterOptions {
   /** Available music styles */
-  musicStyles: MusicStyleDto[]
+  musicStyles: MusicStyleDto[];
   /** Music styles loading state */
-  isLoadingMusicStyles: boolean
+  isLoadingMusicStyles: boolean;
 }
 
 /**
@@ -31,9 +31,9 @@ export interface FilterOptions {
  */
 export interface PaginationState {
   /** Current page */
-  currentPage: number
+  currentPage: number;
   /** Whether there are more pages */
-  hasMore: boolean
+  hasMore: boolean;
   /** Next page loading state */
-  isLoadingMore: boolean
-} 
+  isLoadingMore: boolean;
+}

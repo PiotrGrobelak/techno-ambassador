@@ -13,10 +13,10 @@
           Search DJs
         </label>
         <SearchInput
+          id="search-djs-input"
           v-model="searchTerm"
           :disabled="isLoading"
           placeholder="Search by artist name..."
-          id="search-djs-input"
           label="Search DJs"
         />
       </div>
@@ -27,8 +27,8 @@
           Music Styles
         </label>
         <MusicStyleFilter
-          :music-styles="musicStyles"
           v-model="selectedMusicStyles"
+          :music-styles="musicStyles"
           :disabled="isLoading || isLoadingMusicStyles"
         />
       </div>
@@ -45,13 +45,13 @@
         </div>
 
         <Button
-          @click="clearAllFilters"
           :disabled="!hasActiveFilters || isLoading"
           severity="secondary"
           text
           size="small"
           class="text-sm"
           data-testid="clear-filters-button"
+          @click="clearAllFilters"
         >
           <i class="pi pi-times text-sm mr-1" aria-hidden="true"></i>
           Clear filters
@@ -74,7 +74,7 @@ interface Props {
   isLoadingMusicStyles?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   isLoading: false,
   isLoadingMusicStyles: false,
 });

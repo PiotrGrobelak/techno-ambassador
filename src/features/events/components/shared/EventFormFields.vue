@@ -173,7 +173,7 @@ interface Props {
 }
 
 // Props with defaults
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   disabled: false,
   isPastEvent: false,
   fieldPrefix: 'event',

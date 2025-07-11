@@ -72,10 +72,10 @@
             </p>
             <div class="mt-3">
               <Button
-                @click="handleRetry"
                 size="small"
                 severity="danger"
                 outlined
+                @click="handleRetry"
               >
                 Try again
               </Button>
@@ -89,7 +89,6 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
-import { storeToRefs } from 'pinia';
 import Button from 'primevue/button';
 import SearchFilters from './SearchFilters.vue';
 import DJList from './DJList.vue';

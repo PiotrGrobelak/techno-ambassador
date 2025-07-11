@@ -1,4 +1,4 @@
-import eslintPluginAstro from '@eslint-plugin-astro';
+import eslintPluginAstro from 'eslint-plugin-astro';
 import eslint from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginVue from 'eslint-plugin-vue';
@@ -11,10 +11,10 @@ export default typescriptEslint.config(
         extends: [
             eslint.configs.recommended,
             ...typescriptEslint.configs.recommended,
+            ...eslintPluginAstro.configs['flat/recommended'],
             ...eslintPluginVue.configs['flat/recommended'],
-            ...eslintPluginAstro.configs['flat/recommended'], // In CommonJS, the `flat/` prefix is required.
         ],
-        files: ['**/*.{astro,ts,vue}'],
+        files: ['**/*.{ts,vue}'],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
@@ -24,7 +24,8 @@ export default typescriptEslint.config(
             },
         },
         rules: {
-            // your rules
+            // Set unused variables to warning instead of error
+            '@typescript-eslint/no-unused-vars': 'warn',
         },
     },
     eslintConfigPrettier

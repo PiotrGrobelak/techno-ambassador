@@ -1,6 +1,9 @@
 import type { APIRoute } from 'astro';
 import { createSupabaseServerInstance } from '@/db/supabase.client.ts';
-import { type SuccessMessageResponse, type ErrorResponse } from '@/schemas/auth.schemas.ts';
+import {
+  type SuccessMessageResponse,
+  type ErrorResponse,
+} from '@/schemas/auth.schemas.ts';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
@@ -26,19 +29,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       message: 'Logout successful',
     };
 
-    return new Response(
-      JSON.stringify(response),
-      { 
-        status: 200, 
-        headers: { 'Content-Type': 'application/json' } 
-      }
-    );
-
+    return new Response(JSON.stringify(response), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     console.error('Unexpected logout error:', error);
     return new Response(
-      JSON.stringify({ error: 'An unexpected error occurred during logout' } satisfies ErrorResponse),
+      JSON.stringify({
+        error: 'An unexpected error occurred during logout',
+      } satisfies ErrorResponse),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
-}; 
+};

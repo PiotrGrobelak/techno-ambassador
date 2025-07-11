@@ -18,7 +18,10 @@ export const dateParamSchema = z
  */
 export const timeParamSchema = z
   .string()
-  .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Time must be in HH:MM format (24-hour)')
+  .regex(
+    /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
+    'Time must be in HH:MM format (24-hour)'
+  )
   .optional();
 
 /**
@@ -31,27 +34,27 @@ export const createEventSchemaNoValidation = z.object({
     .min(1, 'Event name is required')
     .max(10000, 'Event name must be less than 10,000 characters')
     .trim(),
-  
+
   country: z
     .string()
     .min(1, 'Country is required')
     .max(100, 'Country must be less than 100 characters')
     .trim(),
-  
+
   city: z
     .string()
     .min(1, 'City is required')
     .max(100, 'City must be less than 100 characters')
     .trim(),
-  
+
   venue_name: z
     .string()
     .min(1, 'Venue name is required')
     .max(200, 'Venue name must be less than 200 characters')
     .trim(),
-  
+
   event_date: dateParamSchema, // Only validates format, no date restrictions
-  
+
   event_time: timeParamSchema,
 });
 
@@ -65,34 +68,34 @@ export const createEventSchemaRelaxed = z.object({
     .min(1, 'Event name is required')
     .max(10000, 'Event name must be less than 10,000 characters')
     .trim(),
-  
+
   country: z
     .string()
     .min(1, 'Country is required')
     .max(100, 'Country must be less than 100 characters')
     .trim(),
-  
+
   city: z
     .string()
     .min(1, 'City is required')
     .max(100, 'City must be less than 100 characters')
     .trim(),
-  
+
   venue_name: z
     .string()
     .min(1, 'Venue name is required')
     .max(200, 'Venue name must be less than 200 characters')
     .trim(),
-  
+
   event_date: dateParamSchema.refine((date) => {
     const eventDate = new Date(date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     // Event must be today or in the future (no past dates)
     return eventDate >= today;
   }, 'Event date must be today or in the future'),
-  
+
   event_time: timeParamSchema,
 });
 
@@ -106,34 +109,34 @@ export const updateEventSchema = z.object({
     .min(1, 'Event name is required')
     .max(10000, 'Event name must be less than 10,000 characters')
     .trim(),
-  
+
   country: z
     .string()
     .min(1, 'Country is required')
     .max(100, 'Country must be less than 100 characters')
     .trim(),
-  
+
   city: z
     .string()
     .min(1, 'City is required')
     .max(100, 'City must be less than 100 characters')
     .trim(),
-  
+
   venue_name: z
     .string()
     .min(1, 'Venue name is required')
     .max(200, 'Venue name must be less than 200 characters')
     .trim(),
-  
+
   event_date: dateParamSchema.refine((date) => {
     const eventDate = new Date(date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     // Event must be today or in the future
     return eventDate >= today;
   }, 'Event date must be today or in the future'),
-  
+
   event_time: timeParamSchema,
 });
 
@@ -149,64 +152,69 @@ export const eventIdParamSchema = z.object({
  * Validation schema for query parameters in GET /api/events
  * Includes filtering and pagination parameters
  */
-export const getEventsQuerySchema = z.object({
-  // User filtering
-  user_id: z
-    .string()
-    .uuid('Invalid user ID format')
-    .optional(),
-  
-  // Location filtering
-  country: z
-    .string()
-    .max(100, 'Country filter must be less than 100 characters')
-    .trim()
-    .optional(),
-  
-  city: z
-    .string()
-    .max(100, 'City filter must be less than 100 characters')
-    .trim()
-    .optional(),
-  
-  venue: z
-    .string()
-    .max(200, 'Venue filter must be less than 200 characters')
-    .trim()
-    .optional(),
-  
-  // Date filtering
-  date_from: dateParamSchema.optional(),
-  date_to: dateParamSchema.optional(),
-  
-  // Upcoming events filter
-  upcoming_only: z
-    .string()
-    .optional()
-    .transform((val) => {
-      if (!val) return false;
-      return val.toLowerCase() === 'true';
-    }),
-  
-  // Pagination
-  page: z
-    .string()
-    .optional()
-    .transform((val) => val ? parseInt(val, 10) : 1)
-    .refine((val) => val >= 1, 'Page must be a positive integer'),
-  
-  limit: z
-    .string()
-    .optional()
-    .transform((val) => val ? parseInt(val, 10) : 20)
-    .refine((val) => val >= 1 && val <= 100, 'Limit must be between 1 and 100'),
-}).refine((data) => {
-  // Validate date range if both dates are provided
-  if (data.date_from && data.date_to) {
-    return new Date(data.date_from) <= new Date(data.date_to);
-  }
-  return true;
-}, {
-  message: 'date_from must be before or equal to date_to',
-  path: ['date_from']
-}); 
+export const getEventsQuerySchema = z
+  .object({
+    // User filtering
+    user_id: z.string().uuid('Invalid user ID format').optional(),
+
+    // Location filtering
+    country: z
+      .string()
+      .max(100, 'Country filter must be less than 100 characters')
+      .trim()
+      .optional(),
+
+    city: z
+      .string()
+      .max(100, 'City filter must be less than 100 characters')
+      .trim()
+      .optional(),
+
+    venue: z
+      .string()
+      .max(200, 'Venue filter must be less than 200 characters')
+      .trim()
+      .optional(),
+
+    // Date filtering
+    date_from: dateParamSchema.optional(),
+    date_to: dateParamSchema.optional(),
+
+    // Upcoming events filter
+    upcoming_only: z
+      .string()
+      .optional()
+      .transform((val) => {
+        if (!val) return false;
+        return val.toLowerCase() === 'true';
+      }),
+
+    // Pagination
+    page: z
+      .string()
+      .optional()
+      .transform((val) => (val ? parseInt(val, 10) : 1))
+      .refine((val) => val >= 1, 'Page must be a positive integer'),
+
+    limit: z
+      .string()
+      .optional()
+      .transform((val) => (val ? parseInt(val, 10) : 20))
+      .refine(
+        (val) => val >= 1 && val <= 100,
+        'Limit must be between 1 and 100'
+      ),
+  })
+  .refine(
+    (data) => {
+      // Validate date range if both dates are provided
+      if (data.date_from && data.date_to) {
+        return new Date(data.date_from) <= new Date(data.date_to);
+      }
+      return true;
+    },
+    {
+      message: 'date_from must be before or equal to date_to',
+      path: ['date_from'],
+    }
+  );

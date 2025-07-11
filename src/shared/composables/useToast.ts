@@ -1,11 +1,11 @@
-import { useToast as usePrimeToast } from 'primevue/usetoast'
+import { useToast as usePrimeToast } from 'primevue/usetoast';
 
 /**
  * Toast notification management with PrimeVue integration
  * Provides standardized methods for user feedback and error display
  */
 export function useToast() {
-  const toast = usePrimeToast()
+  const toast = usePrimeToast();
 
   /**
    * Show success toast notification
@@ -17,8 +17,8 @@ export function useToast() {
       severity: 'success',
       summary: message,
       detail,
-      life: 3000
-    })
+      life: 3000,
+    });
   }
 
   /**
@@ -31,8 +31,8 @@ export function useToast() {
       severity: 'error',
       summary: message,
       detail,
-      life: 5000
-    })
+      life: 5000,
+    });
   }
 
   /**
@@ -45,8 +45,8 @@ export function useToast() {
       severity: 'warn',
       summary: message,
       detail,
-      life: 4000
-    })
+      life: 4000,
+    });
   }
 
   /**
@@ -59,14 +59,14 @@ export function useToast() {
       severity: 'info',
       summary: message,
       detail,
-      life: 3000
-    })
+      life: 3000,
+    });
   }
 
   return {
     showSuccess,
     showError,
     showWarning,
-    showInfo
-  }
-} 
+    showInfo,
+  };
+}

@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import BaseTypography from '@/shared/components/BaseTypography.vue';
 import BaseButton from '@/shared/components/BaseButton/BaseButton.vue';
 interface Props {
@@ -80,7 +80,9 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  requiredRole: '',
   redirectUrl: '/auth/login',
+  unauthorizedMessage: '',
   checkAuth: true,
 });
 
@@ -122,17 +124,6 @@ async function checkAuthenticationStatus(): Promise<void> {
     isLoading.value = false;
   }
 }
-
-// Check if user has required role
-const hasRequiredRole = computed(() => {
-  if (!props.requiredRole) return true;
-  return userRole.value === props.requiredRole;
-});
-
-// Final authentication state
-const finalAuthState = computed(() => {
-  return isAuthenticated.value && hasRequiredRole.value;
-});
 
 // Navigation functions
 function redirectToLogin(): void {

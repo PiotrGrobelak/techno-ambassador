@@ -7,9 +7,9 @@ import type { Component } from 'vue';
  */
 export function mountComponent(
   component: Component,
-  options: MountingOptions<any> = {}
-): VueWrapper<any> {
-  const defaultOptions: MountingOptions<any> = {
+  options: MountingOptions<unknown> = {}
+): VueWrapper<typeof component> {
+  const defaultOptions: MountingOptions<unknown> = {
     global: {
       stubs: {
         // Add common stubs here
@@ -30,7 +30,6 @@ export function mountComponent(
   });
 }
 
-
 /**
  * Mock API response helper
  */
@@ -47,13 +46,13 @@ export function createMockApiResponse<T>(data: T, success = true) {
  * Wait for DOM updates and next tick
  */
 export async function flushPromises() {
-  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise((resolve) => setTimeout(resolve, 0));
 }
 
 /**
  * Create a spy function with TypeScript support
  */
-export function createSpy<T extends (...args: any[]) => any>(
+export function createSpy<T extends (...args: unknown[]) => unknown>(
   implementation?: T
 ) {
   return vi.fn(implementation);
@@ -62,9 +61,11 @@ export function createSpy<T extends (...args: any[]) => any>(
 /**
  * Mock fetch with predefined responses
  */
-export function mockFetch(responses: Array<{ url: string; response: any }>) {
+export function mockFetch(
+  responses: Array<{ url: string; response: unknown }>
+) {
   const fetchMock = vi.fn();
-  
+
   responses.forEach(({ url, response }) => {
     fetchMock.mockImplementationOnce((requestUrl: string) => {
       if (requestUrl.includes(url)) {
@@ -86,25 +87,27 @@ export function mockFetch(responses: Array<{ url: string; response: any }>) {
  * Helper to wait for a component to emit an event
  */
 export async function waitForEmit(
-  wrapper: VueWrapper<any>,
+  wrapper: VueWrapper<unknown>,
   eventName: string,
   timeout = 1000
 ) {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
-      reject(new Error(`Event '${eventName}' was not emitted within ${timeout}ms`));
+      reject(
+        new Error(`Event '${eventName}' was not emitted within ${timeout}ms`)
+      );
     }, timeout);
 
     const unwatch = wrapper.vm.$watch(
       () => wrapper.emitted(eventName),
-      (newVal: any) => {
-        if (newVal && newVal.length > 0) {
+      (newVal: unknown) => {
+        if (newVal && (newVal as unknown[]).length > 0) {
           clearTimeout(timer);
           unwatch();
-          resolve(newVal[newVal.length - 1]);
+          resolve((newVal as unknown[])[(newVal as unknown[]).length - 1]);
         }
       },
       { immediate: true }
     );
   });
-} 
+}

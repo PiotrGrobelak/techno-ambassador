@@ -32,6 +32,7 @@ vi.mock('primevue/button', () => ({
 }));
 
 describe('BaseButton', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let wrapper: VueWrapper<any>;
 
   beforeEach(() => {
@@ -41,32 +42,32 @@ describe('BaseButton', () => {
   describe('Component Rendering', () => {
     it('renders with default props', () => {
       wrapper = mountComponent(BaseButton);
-      
+
       expect(wrapper.exists()).toBe(true);
       expect(wrapper.find('button').exists()).toBe(true);
     });
 
     it('renders label correctly', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { label: 'Test Button' }
+        props: { label: 'Test Button' },
       });
-      
+
       expect(wrapper.text()).toContain('Test Button');
     });
 
     it('renders slot content when no label provided', () => {
       wrapper = mountComponent(BaseButton, {
-        slots: { default: 'Slot Content' }
+        slots: { default: 'Slot Content' },
       });
-      
+
       expect(wrapper.text()).toContain('Slot Content');
     });
 
     it('applies full width class when fullWidth is true', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { fullWidth: true }
+        props: { fullWidth: true },
       });
-      
+
       const button = wrapper.find('button');
       expect(button.classes()).toContain('w-full');
     });
@@ -81,9 +82,9 @@ describe('BaseButton', () => {
       ['link', 'info'],
     ])('maps variant "%s" to severity "%s"', (variant, expectedSeverity) => {
       wrapper = mountComponent(BaseButton, {
-        props: { variant: variant as any }
+        props: { variant: variant },
       });
-      
+
       // Test the computed property directly through component instance
       expect(wrapper.vm.computedSeverity).toBe(expectedSeverity);
     });
@@ -96,15 +97,18 @@ describe('BaseButton', () => {
       ['link', false, true],
       ['primary', false, false],
       ['destructive', false, false],
-    ])('variant "%s" sets outlined=%s and text=%s', (variant, expectedOutlined, expectedText) => {
-      wrapper = mountComponent(BaseButton, {
-        props: { variant: variant as any }
-      });
-      
-      // Test computed properties directly
-      expect(wrapper.vm.computedOutlined).toBe(expectedOutlined);
-      expect(wrapper.vm.computedText).toBe(expectedText);
-    });
+    ])(
+      'variant "%s" sets outlined=%s and text=%s',
+      (variant, expectedOutlined, expectedText) => {
+        wrapper = mountComponent(BaseButton, {
+          props: { variant: variant },
+        });
+
+        // Test computed properties directly
+        expect(wrapper.vm.computedOutlined).toBe(expectedOutlined);
+        expect(wrapper.vm.computedText).toBe(expectedText);
+      }
+    );
   });
 
   describe('Button Classes Generation', () => {
@@ -117,9 +121,9 @@ describe('BaseButton', () => {
 
       sizeTests.forEach(([size, expectedClasses]) => {
         wrapper = mountComponent(BaseButton, {
-          props: { size: size as any }
+          props: { size: size },
         });
-        
+
         const button = wrapper.find('button');
         expectedClasses.forEach((cls: string) => {
           expect(button.classes()).toContain(cls);
@@ -129,18 +133,18 @@ describe('BaseButton', () => {
 
     it('applies pulse animation when pulse is true and not disabled', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { pulse: true, disabled: false }
+        props: { pulse: true, disabled: false },
       });
-      
+
       const button = wrapper.find('button');
       expect(button.classes()).toContain('animate-pulse');
     });
 
     it('does not apply pulse animation when disabled', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { pulse: true, disabled: true }
+        props: { pulse: true, disabled: true },
       });
-      
+
       const button = wrapper.find('button');
       expect(button.classes()).not.toContain('animate-pulse');
     });
@@ -156,9 +160,9 @@ describe('BaseButton', () => {
 
       variantTests.forEach(([variant, expectedClasses]) => {
         wrapper = mountComponent(BaseButton, {
-          props: { variant: variant as any }
+          props: { variant: variant },
         });
-        
+
         const button = wrapper.find('button');
         expectedClasses.forEach((cls: string) => {
           expect(button.classes()).toContain(cls);
@@ -172,10 +176,10 @@ describe('BaseButton', () => {
       wrapper = mountComponent(BaseButton, {
         props: { label: 'Button' },
         slots: {
-          'icon-leading': '<svg data-testid="leading-icon">icon</svg>'
-        }
+          'icon-leading': '<svg data-testid="leading-icon">icon</svg>',
+        },
       });
-      
+
       expect(wrapper.find('[data-testid="leading-icon"]').exists()).toBe(true);
     });
 
@@ -183,33 +187,33 @@ describe('BaseButton', () => {
       wrapper = mountComponent(BaseButton, {
         props: { label: 'Button' },
         slots: {
-          'icon-trailing': '<svg data-testid="trailing-icon">icon</svg>'
-        }
+          'icon-trailing': '<svg data-testid="trailing-icon">icon</svg>',
+        },
       });
-      
+
       expect(wrapper.find('[data-testid="trailing-icon"]').exists()).toBe(true);
     });
 
     it('applies correct label spacing with leading icon', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { 
+        props: {
           label: 'Button',
-          iconLeading: 'SomeIcon'
-        }
+          iconLeading: 'SomeIcon',
+        },
       });
-      
+
       const labelSpan = wrapper.find('span span');
       expect(labelSpan.classes()).toContain('ml-2');
     });
 
     it('applies correct label spacing with trailing icon', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { 
+        props: {
           label: 'Button',
-          iconTrailing: 'SomeIcon'
-        }
+          iconTrailing: 'SomeIcon',
+        },
       });
-      
+
       const labelSpan = wrapper.find('span span');
       expect(labelSpan.classes()).toContain('mr-2');
     });
@@ -223,13 +227,13 @@ describe('BaseButton', () => {
 
       sizeIconTests.forEach(([size, expectedSize]) => {
         wrapper = mountComponent(BaseButton, {
-          props: { 
-            size: size as any,
+          props: {
+            size: size,
             iconLeading: 'TestIcon',
-            label: 'Button'
-          }
+            label: 'Button',
+          },
         });
-        
+
         // Access component instance to check computed properties
         const vm = wrapper.vm;
         expect(vm.iconLeadingClasses).toContain(expectedSize);
@@ -239,13 +243,13 @@ describe('BaseButton', () => {
 
     it('does not add icon spacing when no label provided', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { 
+        props: {
           size: 'medium',
-          iconLeading: 'TestIcon'
+          iconLeading: 'TestIcon',
           // no label
-        }
+        },
       });
-      
+
       const vm = wrapper.vm;
       expect(vm.iconLeadingClasses).not.toContain('mr-2');
       expect(vm.iconLeadingClasses).toContain('w-5 h-5');
@@ -255,62 +259,62 @@ describe('BaseButton', () => {
   describe('Event Handling', () => {
     it('emits click event when clicked', async () => {
       wrapper = mountComponent(BaseButton, {
-        props: { label: 'Click me' }
+        props: { label: 'Click me' },
       });
-      
+
       await wrapper.find('button').trigger('click');
-      
+
       expect(wrapper.emitted('click')).toBeTruthy();
       expect(wrapper.emitted('click')).toHaveLength(1);
     });
 
     it('does not emit click when disabled', async () => {
       wrapper = mountComponent(BaseButton, {
-        props: { 
+        props: {
           label: 'Click me',
-          disabled: true
-        }
+          disabled: true,
+        },
       });
-      
+
       // Test the handleClick method directly
       const vm = wrapper.vm;
       const mockEvent = new Event('click');
-      
+
       vm.handleClick(mockEvent);
-      
+
       // Should not emit because disabled is true
       expect(wrapper.emitted('click')).toBeFalsy();
     });
 
     it('does not emit click when loading', async () => {
       wrapper = mountComponent(BaseButton, {
-        props: { 
+        props: {
           label: 'Click me',
-          loading: true
-        }
+          loading: true,
+        },
       });
-      
+
       const vm = wrapper.vm;
       const mockEvent = new Event('click');
-      
+
       vm.handleClick(mockEvent);
-      
+
       // Should not emit because loading is true
       expect(wrapper.emitted('click')).toBeFalsy();
     });
 
     it('emits click when neither disabled nor loading', async () => {
       wrapper = mountComponent(BaseButton, {
-        props: { 
+        props: {
           label: 'Click me',
           disabled: false,
-          loading: false
-        }
+          loading: false,
+        },
       });
-      
+
       // Instead of testing the internal method, test the actual click behavior
       await wrapper.find('button').trigger('click');
-      
+
       // Should emit the click event
       expect(wrapper.emitted('click')).toBeTruthy();
       expect(wrapper.emitted('click')).toHaveLength(1);
@@ -320,39 +324,39 @@ describe('BaseButton', () => {
   describe('Accessibility', () => {
     it('sets aria-label from label prop', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { label: 'Test Button' }
+        props: { label: 'Test Button' },
       });
-      
+
       const button = wrapper.find('button');
       expect(button.attributes('aria-label')).toBe('Test Button');
     });
 
     it('prefers explicit ariaLabel over label', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { 
+        props: {
           label: 'Test Button',
-          ariaLabel: 'Custom Aria Label'
-        }
+          ariaLabel: 'Custom Aria Label',
+        },
       });
-      
+
       const button = wrapper.find('button');
       expect(button.attributes('aria-label')).toBe('Custom Aria Label');
     });
 
     it('passes disabled state correctly', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { disabled: true }
+        props: { disabled: true },
       });
-      
+
       const button = wrapper.find('button');
       expect(button.attributes('disabled')).toBeDefined();
     });
 
     it('does not have disabled attribute when not disabled', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { disabled: false }
+        props: { disabled: false },
       });
-      
+
       const button = wrapper.find('button');
       expect(button.attributes('disabled')).toBeUndefined();
     });
@@ -369,15 +373,15 @@ describe('BaseButton', () => {
           loading: false,
           ariaLabel: 'Test Aria',
           fullWidth: true,
-          pulse: true
-        }
+          pulse: true,
+        },
       });
-      
+
       // Test computed properties
       expect(wrapper.vm.computedSeverity).toBe('primary');
       expect(wrapper.vm.computedOutlined).toBe(false);
       expect(wrapper.vm.computedText).toBe(false);
-      
+
       // Test button attributes and classes
       const button = wrapper.find('button');
       expect(button.attributes('aria-label')).toBe('Test Aria');
@@ -393,10 +397,10 @@ describe('BaseButton', () => {
         props: { label: 'Test' },
         attrs: {
           'data-testid': 'custom-button',
-          'type': 'submit'
-        }
+          type: 'submit',
+        },
       });
-      
+
       const button = wrapper.find('button');
       expect(button.attributes('data-testid')).toBe('custom-button');
       expect(button.attributes('type')).toBe('submit');
@@ -406,24 +410,24 @@ describe('BaseButton', () => {
   describe('Edge Cases', () => {
     it('handles undefined variant gracefully', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { variant: undefined }
+        props: { variant: undefined },
       });
-      
+
       // Should fall back to default 'secondary'
       expect(wrapper.vm.computedSeverity).toBe('secondary');
     });
 
     it('handles both icon slots and icon props', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { 
+        props: {
           label: 'Button',
-          iconLeading: 'PropIcon'
+          iconLeading: 'PropIcon',
         },
         slots: {
-          'icon-leading': '<svg data-testid="slot-icon">slot</svg>'
-        }
+          'icon-leading': '<svg data-testid="slot-icon">slot</svg>',
+        },
       });
-      
+
       // Slot should take precedence over prop
       expect(wrapper.find('[data-testid="slot-icon"]').exists()).toBe(true);
     });
@@ -431,18 +435,18 @@ describe('BaseButton', () => {
     it('handles empty label with slot content', () => {
       wrapper = mountComponent(BaseButton, {
         props: { label: '' },
-        slots: { default: 'Slot replaces empty label' }
+        slots: { default: 'Slot replaces empty label' },
       });
-      
+
       expect(wrapper.text()).toContain('Slot replaces empty label');
     });
 
     it('works without any props', () => {
       wrapper = mountComponent(BaseButton);
-      
+
       expect(wrapper.exists()).toBe(true);
       expect(() => wrapper.vm).not.toThrow();
-      
+
       // Should use default values
       expect(wrapper.vm.computedSeverity).toBe('secondary');
       expect(wrapper.vm.computedOutlined).toBe(true);
@@ -453,43 +457,43 @@ describe('BaseButton', () => {
   describe('Performance and Reactivity', () => {
     it('recomputes classes when props change', async () => {
       wrapper = mountComponent(BaseButton, {
-        props: { variant: 'secondary' }
+        props: { variant: 'secondary' },
       });
-      
+
       expect(wrapper.vm.computedSeverity).toBe('secondary');
-      
+
       await wrapper.setProps({ variant: 'primary' });
-      
+
       expect(wrapper.vm.computedSeverity).toBe('primary');
     });
 
     it('recomputes icon classes when size changes', async () => {
       wrapper = mountComponent(BaseButton, {
-        props: { 
+        props: {
           size: 'small',
           iconLeading: 'TestIcon',
-          label: 'Button'
-        }
+          label: 'Button',
+        },
       });
-      
+
       expect(wrapper.vm.iconLeadingClasses).toContain('w-4 h-4');
-      
+
       await wrapper.setProps({ size: 'large' });
-      
+
       expect(wrapper.vm.iconLeadingClasses).toContain('w-6 h-6');
     });
 
     it('recomputes button classes based on props', async () => {
       wrapper = mountComponent(BaseButton, {
-        props: { size: 'small' }
+        props: { size: 'small' },
       });
-      
+
       let button = wrapper.find('button');
       expect(button.classes()).toContain('px-3');
       expect(button.classes()).toContain('py-1.5');
-      
+
       await wrapper.setProps({ size: 'large' });
-      
+
       button = wrapper.find('button');
       expect(button.classes()).toContain('px-6');
       expect(button.classes()).toContain('py-3');
@@ -499,42 +503,42 @@ describe('BaseButton', () => {
   describe('Component Integration', () => {
     it('properly integrates with Vue Test Utils', () => {
       wrapper = mountComponent(BaseButton, {
-        props: { label: 'Integration Test' }
+        props: { label: 'Integration Test' },
       });
-      
+
       // Test component existence
       expect(wrapper.vm).toBeTruthy();
       expect(wrapper.element).toBeTruthy();
-      
+
       // Test props reactivity
       expect(wrapper.props()).toEqual(
         expect.objectContaining({
           label: 'Integration Test',
           variant: 'secondary', // default value
-          size: 'medium',       // default value
-          disabled: false,      // default value
-          loading: false,       // default value
-          fullWidth: false,     // default value
-          pulse: false,         // default value
+          size: 'medium', // default value
+          disabled: false, // default value
+          loading: false, // default value
+          fullWidth: false, // default value
+          pulse: false, // default value
         })
       );
     });
 
     it('maintains component lifecycle', async () => {
       wrapper = mountComponent(BaseButton, {
-        props: { label: 'Lifecycle Test' }
+        props: { label: 'Lifecycle Test' },
       });
-      
+
       // Component should be mounted
       expect(wrapper.vm.$el).toBeTruthy();
-      
+
       // Should handle prop updates
       await wrapper.setProps({ label: 'Updated Label' });
       expect(wrapper.text()).toContain('Updated Label');
-      
+
       // Should handle unmount
       wrapper.unmount();
       expect(wrapper.vm).toBeTruthy(); // vm still exists after unmount
     });
   });
-}); 
+});

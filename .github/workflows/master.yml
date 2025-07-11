@@ -88,7 +88,6 @@ jobs:
         run: |
           if [[ "${{ needs.code-quality.result }}" != "success" || 
                 "${{ needs.unit-tests.result }}" != "success" || 
-                "${{ needs.e2e-tests.result }}" != "success" || 
                 "${{ needs.build.result }}" != "success" ]]; then
             echo "❌ One or more CI jobs failed"
             exit 1

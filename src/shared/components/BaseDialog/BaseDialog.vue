@@ -6,8 +6,8 @@
     :closable="closable"
     :draggable="false"
     class="base-dialog-v2 rounded-xl shadow-2xl sm:mx-4 mx-2"
-    @update:visible="handleClose"
     :pt="passThrough"
+    @update:visible="handleClose"
   >
     <!-- Header slot -->
     <template #header>
@@ -31,15 +31,15 @@
         <div class="flex justify-end space-x-3">
           <BaseButton
             v-if="showCancel"
-            @click="handleClose"
             variant="secondary"
             :label="cancelText"
+            @click="handleClose"
           />
           <BaseButton
             v-if="showConfirm"
-            @click="handleConfirm"
             variant="primary"
             :label="confirmText"
+            @click="handleConfirm"
           />
         </div>
       </slot>
@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import BaseButton from '@/shared/components/BaseButton/BaseButton.vue';
 import Dialog from 'primevue/dialog';
 

@@ -1,14 +1,18 @@
 import type { APIRoute } from 'astro';
 import { createSupabaseServerInstance } from '@/db/supabase.client.ts';
-import { RegisterRequestSchema, type RegisterResponse, type ErrorResponse } from '@/schemas/auth.schemas.ts';
+import {
+  RegisterRequestSchema,
+  type RegisterResponse,
+  type ErrorResponse,
+} from '@/schemas/auth.schemas.ts';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     // Parse and validate request body with Zod
     const body = await request.json().catch(() => null);
-    
+
     const validationResult = RegisterRequestSchema.safeParse(body);
-    
+
     if (!validationResult.success) {
       const firstError = validationResult.error.issues[0];
       return new Response(
@@ -36,7 +40,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     if (authError) {
       console.error('Registration error:', authError.message);
-      
+
       // Return user-friendly error messages
       let errorMessage = 'Registration failed';
       if (authError.message.includes('User already registered')) {
@@ -55,23 +59,23 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     if (!authData.user) {
       return new Response(
-        JSON.stringify({ error: 'Registration failed' } satisfies ErrorResponse),
+        JSON.stringify({
+          error: 'Registration failed',
+        } satisfies ErrorResponse),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     // Create user profile in database with optional fields
     try {
-      const { error: profileError } = await supabase
-        .from('users')
-        .insert({
-          id: authData.user.id,
-          artist_name: '', // Will be filled when user completes profile
-          biography: '', // Will be filled when user completes profile
-          user_type: 'artist', // Default user type
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        });
+      const { error: profileError } = await supabase.from('users').insert({
+        id: authData.user.id,
+        artist_name: '', // Will be filled when user completes profile
+        biography: '', // Will be filled when user completes profile
+        user_type: 'artist', // Default user type
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
 
       if (profileError) {
         console.error('Profile creation error:', profileError);
@@ -93,19 +97,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       needsEmailVerification: !authData.user.email_confirmed_at,
     };
 
-    return new Response(
-      JSON.stringify(response),
-      { 
-        status: 200, 
-        headers: { 'Content-Type': 'application/json' } 
-      }
-    );
-
+    return new Response(JSON.stringify(response), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     console.error('Unexpected registration error:', error);
     return new Response(
-      JSON.stringify({ error: 'An unexpected error occurred. Please try again.' } satisfies ErrorResponse),
+      JSON.stringify({
+        error: 'An unexpected error occurred. Please try again.',
+      } satisfies ErrorResponse),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
-}; 
+};

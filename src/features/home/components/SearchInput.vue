@@ -1,6 +1,7 @@
 <template>
   <div class="relative">
     <InputText
+      :id="id"
       v-model="searchValue"
       :placeholder="placeholder"
       data-testid="dj-search-input"
@@ -8,7 +9,6 @@
       :invalid="hasError"
       :aria-describedby="`${id}-error`"
       :aria-label="label"
-      :id="id"
       size="large"
     />
 
@@ -22,10 +22,10 @@
     <!-- Clear button -->
     <button
       v-if="searchValue && !disabled"
-      @click="clearInput"
       data-testid="clear-search-button"
       class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
       type="button"
+      @click="clearInput"
     >
       <i class="pi pi-times text-lg" aria-hidden="true"></i>
     </button>
@@ -48,7 +48,7 @@ interface Props {
   label: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   placeholder: 'Search DJs by artist name...',
   disabled: false,
 });

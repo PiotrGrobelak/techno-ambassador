@@ -1,6 +1,6 @@
 <template>
   <AuthFormContainer title="Set New Password">
-    <form @submit="onSubmit" class="space-y-6">
+    <form class="space-y-6" @submit="onSubmit">
       <!-- Password field -->
       <div class="animate-fade-in">
         <label

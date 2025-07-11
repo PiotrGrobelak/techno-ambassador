@@ -15,7 +15,7 @@ export function useRegisterForm() {
 
     try {
       const result = await authStore.register(data.email, data.password);
-      
+
       if (result.success) {
         success.value = 'Account created successfully! Redirecting...';
         setTimeout(() => {
@@ -42,4 +42,4 @@ export function useRegisterForm() {
     success,
     clearMessages,
   };
-} 
+}

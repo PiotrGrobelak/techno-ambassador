@@ -1,6 +1,6 @@
 <template>
   <!-- Trigger slot (optional) -->
-  <slot name="trigger" :open="openModal" v-if="!autoOpen" />
+  <slot v-if="!autoOpen" name="trigger" :open="openModal" />
 
   <!-- Modal/Dialog implementation -->
   <Dialog
@@ -13,7 +13,7 @@
     :class="dialogClasses"
     :style="dialogStyle"
     :position="position"
-    :blockScroll="blockScroll"
+    :block-scroll="blockScroll"
     @show="handleShow"
     @hide="handleHide"
   >
@@ -47,8 +47,8 @@
               v-if="showCancel"
               :label="cancelText"
               variant="secondary"
-              @click="handleCancel"
               :disabled="loading"
+              @click="handleCancel"
             />
 
             <!-- Primary action (Apple HIG: most likely choice) -->
@@ -127,6 +127,7 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'sheet',
   friction: 'low',
   size: 'medium',
+  header: undefined,
   modal: true,
   closable: true,
   draggable: false,
@@ -201,7 +202,7 @@ const dialogClasses = computed(() => {
 });
 
 const dialogStyle = computed(() => {
-  const style: Record<string, any> = {};
+  const style: Record<string, unknown> = {};
 
   // Size variants following Apple HIG spacing
   switch (props.size) {

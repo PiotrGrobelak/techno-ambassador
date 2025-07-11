@@ -4,7 +4,7 @@ import { config } from '@vue/test-utils';
 // Global mocks for browser APIs
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -49,13 +49,3 @@ config.global.plugins = [
 
 // Mock fetch for API testing
 global.fetch = vi.fn();
-
-// Console suppression for cleaner test output
-const originalConsoleError = console.error;
-console.error = (...args: any[]) => {
-  // Suppress Vue warnings during tests
-  if (typeof args[0] === 'string' && args[0].includes('[Vue warn]')) {
-    return;
-  }
-  originalConsoleError(...args);
-}; 

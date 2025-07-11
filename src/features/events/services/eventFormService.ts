@@ -1,11 +1,8 @@
-import type { 
-  CreateEventFormData, 
-  UpdateEventFormData 
-} from '../types';
-import type { 
-  CreateEventCommand, 
-  UpdateEventCommand, 
-  EventResponseDto 
+import type { CreateEventFormData, UpdateEventFormData } from '../types';
+import type {
+  CreateEventCommand,
+  UpdateEventCommand,
+  EventResponseDto,
 } from '@/types';
 
 /**
@@ -25,10 +22,12 @@ export class EventFormService {
   /**
    * Create a new event
    */
-  static async createEvent(formData: CreateEventFormData): Promise<EventFormResult> {
+  static async createEvent(
+    formData: CreateEventFormData
+  ): Promise<EventFormResult> {
     try {
       const command = this.transformToCreateCommand(formData);
-      
+
       const response = await fetch('/api/events', {
         method: 'POST',
         headers: {
@@ -43,7 +42,7 @@ export class EventFormService {
       }
 
       const data: EventResponseDto = await response.json();
-      
+
       return {
         success: true,
         data,
@@ -51,7 +50,8 @@ export class EventFormService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error:
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -60,12 +60,12 @@ export class EventFormService {
    * Update an existing event
    */
   static async updateEvent(
-    eventId: string, 
+    eventId: string,
     formData: UpdateEventFormData
   ): Promise<EventFormResult> {
     try {
       const command = this.transformToUpdateCommand(formData);
-      
+
       const response = await fetch(`/api/events/${eventId}`, {
         method: 'PUT',
         headers: {
@@ -80,7 +80,7 @@ export class EventFormService {
       }
 
       const data: EventResponseDto = await response.json();
-      
+
       return {
         success: true,
         data,
@@ -88,7 +88,8 @@ export class EventFormService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error:
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -96,7 +97,9 @@ export class EventFormService {
   /**
    * Transform form data to create command
    */
-  private static transformToCreateCommand(formData: CreateEventFormData): CreateEventCommand {
+  private static transformToCreateCommand(
+    formData: CreateEventFormData
+  ): CreateEventCommand {
     return {
       event_name: formData.event_name,
       country: formData.country,
@@ -110,7 +113,9 @@ export class EventFormService {
   /**
    * Transform form data to update command
    */
-  private static transformToUpdateCommand(formData: UpdateEventFormData): UpdateEventCommand {
+  private static transformToUpdateCommand(
+    formData: UpdateEventFormData
+  ): UpdateEventCommand {
     return {
       event_name: formData.event_name,
       country: formData.country,
@@ -120,4 +125,4 @@ export class EventFormService {
       event_time: formData.event_time || undefined,
     };
   }
-} 
+}

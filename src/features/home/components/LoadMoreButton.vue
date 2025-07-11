@@ -2,13 +2,13 @@
   <div class="flex justify-center mt-8" data-testid="load-more-section">
     <Button
       v-if="showButton"
-      @click="handleLoadMore"
       :loading="isLoading"
       :disabled="isLoading || !hasMore"
       class="px-8 py-3 text-lg"
       severity="secondary"
       outlined
       data-testid="load-more-button"
+      @click="handleLoadMore"
     >
       <template v-if="!isLoading">
         {{ buttonText }}

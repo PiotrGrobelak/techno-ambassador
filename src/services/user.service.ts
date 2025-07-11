@@ -1,19 +1,17 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database, TablesInsert } from '@/db/database.types';
-import type { 
-  CreateUserCommand, 
+import type {
+  CreateUserCommand,
   UpdateUserCommand,
-  UserResponseDto, 
+  UserResponseDto,
   UsersListResponseDto,
   UserDetailResponseDto,
   UserListItemDto,
   UserDetailDto,
-  UserEventsDto,
   UserEventDto,
   UserMusicStyleInsert,
   UserMusicStyleDto,
   UsersQueryParams,
-  PaginationDto
 } from '@/types';
 
 /**
@@ -55,13 +53,13 @@ export class UserService {
       biography: command.biography,
       instagram_url: command.instagram_url || null,
       facebook_url: command.facebook_url || null,
-      user_type: 'artist' // Default user type for DJ profiles
+      user_type: 'artist', // Default user type for DJ profiles
     };
 
     // Start transaction for atomic operations
     const { data: createdUser, error: userError } = await this.supabase
       .from('users')
-      .insert(userInsertData as any) // Cast to any due to incorrect database type definition
+      .insert(userInsertData)
       .select('*')
       .single();
 
@@ -70,10 +68,11 @@ export class UserService {
     }
 
     // Create music style associations
-    const musicStyleInserts: UserMusicStyleInsert[] = command.music_style_ids.map(styleId => ({
-      user_id: createdUser.id,
-      music_style_id: styleId
-    }));
+    const musicStyleInserts: UserMusicStyleInsert[] =
+      command.music_style_ids.map((styleId) => ({
+        user_id: createdUser.id,
+        music_style_id: styleId,
+      }));
 
     const { error: musicStyleError } = await this.supabase
       .from('user_music_styles')
@@ -82,7 +81,9 @@ export class UserService {
     if (musicStyleError) {
       // Rollback user creation if music style association fails
       await this.supabase.from('users').delete().eq('id', createdUser.id);
-      throw new Error(`Failed to associate music styles: ${musicStyleError.message}`);
+      throw new Error(
+        `Failed to associate music styles: ${musicStyleError.message}`
+      );
     }
 
     // Fetch complete user data with music styles for response
@@ -101,9 +102,8 @@ export class UserService {
     const offset = (page - 1) * limit;
 
     // Build base query with joins for music styles and event counts
-    let query = this.supabase
-      .from('users')
-      .select(`
+    let query = this.supabase.from('users').select(
+      `
         id,
         artist_name,
         biography,
@@ -117,20 +117,26 @@ export class UserService {
             style_name
           )
         )
-      `, { count: 'exact' });
+      `,
+      { count: 'exact' }
+    );
 
     // Apply search filter if provided
     if (queryParams.search) {
       const searchTerm = queryParams.search.trim();
-      query = query.or(`artist_name.ilike.%${searchTerm}%,biography.ilike.%${searchTerm}%`);
+      query = query.or(
+        `artist_name.ilike.%${searchTerm}%,biography.ilike.%${searchTerm}%`
+      );
     }
 
     // Apply music style filter if provided
     if (queryParams.music_styles) {
-      const musicStyleIds = queryParams.music_styles.split(',').map(id => id.trim());
+      const musicStyleIds = queryParams.music_styles
+        .split(',')
+        .map((id) => id.trim());
       // Validate music style UUIDs
       await this.validateMusicStylesExist(musicStyleIds);
-      
+
       query = query.in('user_music_styles.music_style_id', musicStyleIds);
     }
 
@@ -140,10 +146,12 @@ export class UserService {
       const { data: userIdsWithLocation } = await this.supabase
         .from('events')
         .select('user_id')
-        .or(`country.ilike.%${locationTerm}%,city.ilike.%${locationTerm}%,venue_name.ilike.%${locationTerm}%`);
-      
+        .or(
+          `country.ilike.%${locationTerm}%,city.ilike.%${locationTerm}%,venue_name.ilike.%${locationTerm}%`
+        );
+
       if (userIdsWithLocation && userIdsWithLocation.length > 0) {
-        const userIds = userIdsWithLocation.map(event => event.user_id);
+        const userIds = userIdsWithLocation.map((event) => event.user_id);
         query = query.in('id', userIds);
       } else {
         // No users found with this location, return empty result
@@ -155,8 +163,8 @@ export class UserService {
             total: 0,
             total_pages: 0,
             has_next: false,
-            has_prev: false
-          }
+            has_prev: false,
+          },
         };
       }
     }
@@ -167,7 +175,7 @@ export class UserService {
         queryParams.available_from,
         queryParams.available_to
       );
-      
+
       if (availableUserIds.length > 0) {
         query = query.in('id', availableUserIds);
       } else {
@@ -180,13 +188,12 @@ export class UserService {
             total: 0,
             total_pages: 0,
             has_next: false,
-            has_prev: false
-          }
+            has_prev: false,
+          },
         };
       }
     }
 
-    // Apply pagination and ordering
     query = query
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
@@ -199,7 +206,7 @@ export class UserService {
 
     // Transform data and add upcoming events count
     const transformedUsers: UserListItemDto[] = await Promise.all(
-      (users || []).map(async (user: any) => {
+      (users || []).map(async (user) => {
         // Get upcoming events count
         const { count: upcomingEventsCount } = await this.supabase
           .from('events')
@@ -208,10 +215,11 @@ export class UserService {
           .gte('event_date', new Date().toISOString().split('T')[0]);
 
         // Transform music styles
-        const musicStyles: UserMusicStyleDto[] = user.user_music_styles?.map((ums: any) => ({
-          id: ums.music_styles.id,
-          style_name: ums.music_styles.style_name
-        })) || [];
+        const musicStyles: UserMusicStyleDto[] =
+          user.user_music_styles?.map((ums) => ({
+            id: ums.music_styles.id,
+            style_name: ums.music_styles.style_name,
+          })) || [];
 
         return {
           id: user.id,
@@ -222,7 +230,7 @@ export class UserService {
           music_styles: musicStyles,
           upcoming_events_count: upcomingEventsCount || 0,
           created_at: user.created_at,
-          updated_at: user.updated_at
+          updated_at: user.updated_at,
         };
       })
     );
@@ -239,8 +247,8 @@ export class UserService {
         total,
         total_pages: totalPages,
         has_next: page < totalPages,
-        has_prev: page > 1
-      }
+        has_prev: page > 1,
+      },
     };
   }
 
@@ -258,7 +266,8 @@ export class UserService {
     // Fetch user data with music styles
     const { data: user, error: userError } = await this.supabase
       .from('users')
-      .select(`
+      .select(
+        `
         id,
         artist_name,
         biography,
@@ -272,7 +281,8 @@ export class UserService {
             style_name
           )
         )
-      `)
+      `
+      )
       .eq('id', userId)
       .single();
 
@@ -286,7 +296,9 @@ export class UserService {
     // Fetch user events
     const { data: events, error: eventsError } = await this.supabase
       .from('events')
-      .select('id, event_name, country, city, venue_name, event_date, event_time')
+      .select(
+        'id, event_name, country, city, venue_name, event_date, event_time'
+      )
       .eq('user_id', userId)
       .order('event_date', { ascending: false });
 
@@ -299,7 +311,7 @@ export class UserService {
     const upcomingEvents: UserEventDto[] = [];
     const pastEvents: UserEventDto[] = [];
 
-    (events || []).forEach(event => {
+    (events || []).forEach((event) => {
       const eventDto: UserEventDto = {
         id: event.id,
         event_name: event.event_name,
@@ -307,7 +319,7 @@ export class UserService {
         city: event.city,
         venue_name: event.venue_name,
         event_date: event.event_date,
-        event_time: event.event_time
+        event_time: event.event_time,
       };
 
       if (event.event_date >= currentDate) {
@@ -318,10 +330,11 @@ export class UserService {
     });
 
     // Transform music styles
-    const musicStyles: UserMusicStyleDto[] = (user as any).user_music_styles?.map((ums: any) => ({
-      id: ums.music_styles.id,
-      style_name: ums.music_styles.style_name
-    })) || [];
+    const musicStyles: UserMusicStyleDto[] =
+      user.user_music_styles?.map((ums) => ({
+        id: ums.music_styles.id,
+        style_name: ums.music_styles.style_name,
+      })) || [];
 
     const userDetail: UserDetailDto = {
       id: user.id,
@@ -332,10 +345,10 @@ export class UserService {
       music_styles: musicStyles,
       events: {
         upcoming: upcomingEvents,
-        past: pastEvents
+        past: pastEvents,
       },
       created_at: user.created_at,
-      updated_at: user.updated_at
+      updated_at: user.updated_at,
     };
 
     return { data: userDetail };
@@ -365,7 +378,10 @@ export class UserService {
 
     // Validate artist name uniqueness if provided
     if (command.artist_name) {
-      await this.validateArtistNameUniqueness(command.artist_name, command.user_id);
+      await this.validateArtistNameUniqueness(
+        command.artist_name,
+        command.user_id
+      );
     }
 
     // Validate music styles if provided
@@ -374,14 +390,18 @@ export class UserService {
     }
 
     // Prepare update data
-    const updateData: any = {
-      updated_at: new Date().toISOString()
+    const updateData: Partial<TablesInsert<'users'>> = {
+      updated_at: new Date().toISOString(),
     };
 
-    if (command.artist_name !== undefined) updateData.artist_name = command.artist_name;
-    if (command.biography !== undefined) updateData.biography = command.biography;
-    if (command.instagram_url !== undefined) updateData.instagram_url = command.instagram_url || null;
-    if (command.facebook_url !== undefined) updateData.facebook_url = command.facebook_url || null;
+    if (command.artist_name !== undefined)
+      updateData.artist_name = command.artist_name;
+    if (command.biography !== undefined)
+      updateData.biography = command.biography;
+    if (command.instagram_url !== undefined)
+      updateData.instagram_url = command.instagram_url || null;
+    if (command.facebook_url !== undefined)
+      updateData.facebook_url = command.facebook_url || null;
 
     // Update user data
     const { error: updateError } = await this.supabase
@@ -402,21 +422,26 @@ export class UserService {
         .eq('user_id', command.user_id);
 
       if (deleteError) {
-        throw new Error(`Failed to update music style associations: ${deleteError.message}`);
+        throw new Error(
+          `Failed to update music style associations: ${deleteError.message}`
+        );
       }
 
       // Insert new associations
-      const musicStyleInserts: UserMusicStyleInsert[] = command.music_style_ids.map(styleId => ({
-        user_id: command.user_id,
-        music_style_id: styleId
-      }));
+      const musicStyleInserts: UserMusicStyleInsert[] =
+        command.music_style_ids.map((styleId) => ({
+          user_id: command.user_id,
+          music_style_id: styleId,
+        }));
 
       const { error: insertError } = await this.supabase
         .from('user_music_styles')
         .insert(musicStyleInserts);
 
       if (insertError) {
-        throw new Error(`Failed to create new music style associations: ${insertError.message}`);
+        throw new Error(
+          `Failed to create new music style associations: ${insertError.message}`
+        );
       }
     }
 
@@ -430,7 +455,10 @@ export class UserService {
    * @param excludeUserId - User ID to exclude from uniqueness check
    * @throws Error if artist name already exists for another user
    */
-  async validateArtistNameUniqueness(artistName: string, excludeUserId?: string): Promise<void> {
+  async validateArtistNameUniqueness(
+    artistName: string,
+    excludeUserId?: string
+  ): Promise<void> {
     let query = this.supabase
       .from('users')
       .select('id')
@@ -443,7 +471,9 @@ export class UserService {
     const { data: existingUser, error } = await query.maybeSingle();
 
     if (error) {
-      throw new Error(`Failed to validate artist name uniqueness: ${error.message}`);
+      throw new Error(
+        `Failed to validate artist name uniqueness: ${error.message}`
+      );
     }
 
     if (existingUser) {
@@ -457,19 +487,18 @@ export class UserService {
    * @param availableTo - End date for availability check
    * @returns Promise<string[]> - Array of available user IDs
    */
-  private async getAvailableUserIds(availableFrom?: string, availableTo?: string): Promise<string[]> {
+  private async getAvailableUserIds(
+    availableFrom?: string,
+    availableTo?: string
+  ): Promise<string[]> {
     if (!availableFrom && !availableTo) {
       // If no date range specified, return all user IDs
-      const { data: allUsers } = await this.supabase
-        .from('users')
-        .select('id');
-      return allUsers?.map(user => user.id) || [];
+      const { data: allUsers } = await this.supabase.from('users').select('id');
+      return allUsers?.map((user) => user.id) || [];
     }
 
     // Build query to find users with conflicting events
-    let conflictQuery = this.supabase
-      .from('events')
-      .select('user_id');
+    let conflictQuery = this.supabase.from('events').select('user_id');
 
     if (availableFrom && availableTo) {
       // Check for events that overlap with the requested period
@@ -483,15 +512,13 @@ export class UserService {
     }
 
     const { data: conflictingEvents } = await conflictQuery;
-    const busyUserIds = conflictingEvents?.map(event => event.user_id) || [];
+    const busyUserIds = conflictingEvents?.map((event) => event.user_id) || [];
 
     // Get all user IDs and filter out busy ones
-    const { data: allUsers } = await this.supabase
-      .from('users')
-      .select('id');
+    const { data: allUsers } = await this.supabase.from('users').select('id');
 
-    const allUserIds = allUsers?.map(user => user.id) || [];
-    return allUserIds.filter(userId => !busyUserIds.includes(userId));
+    const allUserIds = allUsers?.map((user) => user.id) || [];
+    return allUserIds.filter((userId) => !busyUserIds.includes(userId));
   }
 
   /**
@@ -500,7 +527,8 @@ export class UserService {
    * @returns boolean - True if valid UUID format
    */
   private isValidUUID(uuid: string): boolean {
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     return uuidRegex.test(uuid);
   }
 
@@ -509,7 +537,9 @@ export class UserService {
    * @param userId - User ID to fetch
    * @returns Promise<UserResponseDto> - User data with music styles
    */
-  private async getUserWithMusicStyles(userId: string): Promise<UserResponseDto> {
+  private async getUserWithMusicStyles(
+    userId: string
+  ): Promise<UserResponseDto> {
     // Fetch user data
     const { data: user, error: userError } = await this.supabase
       .from('users')
@@ -522,25 +552,31 @@ export class UserService {
     }
 
     // Fetch associated music styles
-    const { data: userMusicStyles, error: musicStyleError } = await this.supabase
-      .from('user_music_styles')
-      .select(`
+    const { data: userMusicStyles, error: musicStyleError } =
+      await this.supabase
+        .from('user_music_styles')
+        .select(
+          `
         music_styles (
           id,
           style_name
         )
-      `)
-      .eq('user_id', userId);
+      `
+        )
+        .eq('user_id', userId);
 
     if (musicStyleError) {
-      throw new Error(`Failed to fetch user music styles: ${musicStyleError.message}`);
+      throw new Error(
+        `Failed to fetch user music styles: ${musicStyleError.message}`
+      );
     }
 
     // Transform music styles data
-    const musicStyles: UserMusicStyleDto[] = userMusicStyles?.map((item: any) => ({
-      id: item.music_styles.id,
-      style_name: item.music_styles.style_name
-    })) || [];
+    const musicStyles: UserMusicStyleDto[] =
+      userMusicStyles?.map((item) => ({
+        id: item.music_styles.id,
+        style_name: item.music_styles.style_name,
+      })) || [];
 
     return {
       data: {
@@ -551,8 +587,8 @@ export class UserService {
         facebook_url: user.facebook_url,
         music_styles: musicStyles,
         created_at: user.created_at,
-        updated_at: user.updated_at
-      }
+        updated_at: user.updated_at,
+      },
     };
   }
 
@@ -572,9 +608,9 @@ export class UserService {
     }
 
     if (!existingStyles || existingStyles.length !== styleIds.length) {
-      const existingIds = existingStyles?.map(style => style.id) || [];
-      const missingIds = styleIds.filter(id => !existingIds.includes(id));
+      const existingIds = existingStyles?.map((style) => style.id) || [];
+      const missingIds = styleIds.filter((id) => !existingIds.includes(id));
       throw new Error(`Invalid music style IDs: ${missingIds.join(', ')}`);
     }
   }
-} 
+}

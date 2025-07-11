@@ -3,7 +3,7 @@
 // Vue SFC module declarations
 declare module '*.vue' {
   import type { DefineComponent } from 'vue';
-  const component: DefineComponent<{}, {}, any>;
+  const component: DefineComponent<typeof object, typeof object, unknown>;
   export default component;
 }
 
@@ -29,4 +29,4 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
-} 
+}

@@ -40,7 +40,7 @@
       <template #value="{ value, placeholder }">
         <div v-if="value && value.length > 0" class="flex flex-wrap gap-1">
           <span
-            v-for="(styleId, index) in value.slice(0, maxVisibleTags)"
+            v-for="styleId in value.slice(0, maxVisibleTags)"
             :key="styleId"
             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
           >
@@ -114,6 +114,8 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  errorMessage: '',
+  helperText: '',
   maxVisibleTags: 3,
   inputId: 'music-styles-selector',
 });
@@ -154,14 +156,10 @@ const getStyleName = (styleId: string): string => {
   return style?.style_name || 'Unknown';
 };
 
-const handleChange = (event: any) => {
-  // The selectedStyles computed property will handle the emit
-  // This is for any additional logic if needed
-};
+const handleChange = () => {};
 
-const handleFilter = (event: any) => {
+const handleFilter = (event: { value: string }) => {
   filterValue.value = event.value;
-  // Could implement server-side filtering here if needed
 };
 
 const loadMusicStyles = async (): Promise<void> => {

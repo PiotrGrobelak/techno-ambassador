@@ -591,7 +591,7 @@
           <div>
             <h3 class="text-lg font-medium text-gray-900 mb-4">Login Form</h3>
             <div class="max-w-md">
-              <form @submit.prevent="handleLogin" class="space-y-4">
+              <form class="space-y-4" @submit.prevent="handleLogin">
                 <BaseInput
                   v-model="loginForm.email"
                   label="Email"
@@ -743,8 +743,8 @@
       @close="dialogs.form = false"
       @confirm="handleFormDialogSubmit"
     >
-      <template #default="{ close }">
-        <form @submit.prevent="handleFormDialogSubmit" class="space-y-4">
+      <template #default>
+        <form class="space-y-4" @submit.prevent="handleFormDialogSubmit">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
               Display Name
@@ -887,10 +887,10 @@
             <span class="text-lg font-semibold">Custom Header Layout</span>
           </div>
           <BaseButton
-            @click="dialogs.customHeader = false"
             variant="ghost"
             label="✕"
             size="small"
+            @click="dialogs.customHeader = false"
           />
         </div>
       </template>
@@ -916,13 +916,13 @@
       <template #footer="{ close }">
         <div class="flex justify-between w-full">
           <BaseButton
-            @click="handleDialogAction('Custom action executed')"
             variant="secondary"
             label="Custom Action"
+            @click="handleDialogAction('Custom action executed')"
           />
           <div class="space-x-2">
-            <BaseButton @click="close" variant="ghost" label="Cancel" />
-            <BaseButton @click="close" variant="primary" label="Done" />
+            <BaseButton variant="ghost" label="Cancel" @click="close" />
+            <BaseButton variant="primary" label="Done" @click="close" />
           </div>
         </div>
       </template>
@@ -1059,7 +1059,7 @@ function selectCard(id: number): void {
   );
 }
 
-function viewCard(item: any): void {
+function viewCard(item: { title: string }): void {
   showToast(`Viewing: ${item.title}`);
 }
 
