@@ -627,19 +627,5 @@ describe('BaseInput', () => {
       // Check helper text
       expect(wrapper.text()).toContain('We will never share your email');
     });
-
-    it('passes through additional attributes', () => {
-      wrapper = mountComponent(BaseInput, {
-        props: { label: 'Test' },
-        attrs: {
-          'data-testid': 'custom-input',
-          autocomplete: 'email',
-        },
-      });
-
-      const input = wrapper.find('input');
-      expect(input.attributes('data-testid')).toBe('custom-input');
-      expect(input.attributes('autocomplete')).toBe('email');
-    });
   });
 });

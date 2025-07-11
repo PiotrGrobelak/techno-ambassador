@@ -3,6 +3,7 @@ description:
 globs: *.vue,*.ts
 alwaysApply: false
 ---
+
 ## FRONTEND
 
 ### Guidelines for VUE
@@ -19,4 +20,3 @@ alwaysApply: false
 - Leverage the $reset() method to restore initial state when needed
 - Implement $subscribe for reactive store subscriptions
 - Use TypeScript with proper return type annotations for maximum type safety
-
