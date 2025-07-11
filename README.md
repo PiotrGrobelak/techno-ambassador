@@ -163,6 +163,12 @@ npm run test:e2e:ui       # Run E2E tests with Playwright UI
 npm run test:e2e:headed   # Run E2E tests with visible browser
 npm run test:e2e:debug    # Debug E2E tests step by step
 
+# Playwright Project-Specific Tests
+npx playwright test --project=chromium-authenticated    # Run authenticated tests only
+npx playwright test --project=chromium-unauthenticated  # Run auth/registration tests only
+npx playwright test --project=setup                     # Run setup tests only
+npx playwright test --ui --project=chromium-authenticated  # Run authenticated tests in UI mode
+
 # All Tests
 npm run test:all          # Run all tests with coverage + E2E
 ```
@@ -179,7 +185,13 @@ e2e/                   # End-to-end tests
 ├── pages/             # Page Object Model files
 ├── global-setup.ts    # E2E global setup
 ├── global-teardown.ts # E2E global cleanup
+├── auth.setup.ts      # Authentication setup for tests
 └── *.spec.ts          # E2E test files
+
+# Playwright Projects:
+# - setup: Handles authentication and creates auth state
+# - chromium-authenticated: Tests requiring login (excludes auth flows)
+# - chromium-unauthenticated: Auth and registration flow tests
 
 src/**/*.{test,spec}.{ts,vue}  # Unit test files
 ```

@@ -1,4 +1,4 @@
-name: Test & Build Master
+name: Lint, Unit Tests & Build Master
 
 on:
   workflow_dispatch:
@@ -34,7 +34,6 @@ jobs:
       - name: Run Prettier check
         run: npm run format:check
 
-  # Unit and integration tests
   unit-tests:
     name: Unit & Integration Tests
     runs-on: ubuntu-latest
@@ -76,7 +75,6 @@ jobs:
       - name: Build for production
         run: npm run build
 
-  # Summary job that depends on all others
   ci-success:
     name: CI Pipeline Success
     runs-on: ubuntu-latest
