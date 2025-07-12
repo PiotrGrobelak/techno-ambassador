@@ -23,7 +23,6 @@ A global calendar platform dedicated to DJs that enables artists to showcase the
     - [Testing Frameworks](#testing-frameworks)
     - [Test Commands](#test-commands)
     - [Test Structure](#test-structure)
-    - [Writing Tests](#writing-tests)
   - [Project Scope](#project-scope)
     - [Core Features](#core-features)
     - [Features NOT Included in MVP](#features-not-included-in-mvp)
@@ -188,49 +187,12 @@ e2e/                   # End-to-end tests
 ├── auth.setup.ts      # Authentication setup for tests
 └── *.spec.ts          # E2E test files
 
-# Playwright Projects:
-# - setup: Handles authentication and creates auth state
-# - chromium-authenticated: Tests requiring login (excludes auth flows)
-# - chromium-unauthenticated: Auth and registration flow tests
-
 src/**/*.{test,spec}.{ts,vue}  # Unit test files
-```
-
-### Writing Tests
-
-**Unit Tests Example:**
-
-```typescript
-import { describe, it, expect } from 'vitest';
-import { mountComponent } from '@/test/utils';
-import MyComponent from './MyComponent.vue';
-
-describe('MyComponent', () => {
-  it('renders correctly', () => {
-    const wrapper = mountComponent(MyComponent, {
-      props: { title: 'Test' },
-    });
-
-    expect(wrapper.text()).toContain('Test');
-  });
-});
-```
-
-**E2E Tests Example:**
-
-```typescript
-import { test, expect } from '@playwright/test';
-
-test('user can navigate to DJ profile', async ({ page }) => {
-  await page.goto('/');
-  await page.click('[data-testid="dj-link"]');
-  await expect(page).toHaveURL(/\/dj\/.+/);
-});
 ```
 
 **Test Coverage Requirements:**
 
-- **80%** minimum coverage for branches, functions, lines, and statements
+- **60%** minimum coverage for branches, functions, lines, and statements
 - Visual regression testing with Playwright screenshots
 - Component interaction testing with Vue Test Utils
 - API integration testing with MSW mocks

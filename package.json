@@ -23,6 +23,7 @@
     "test:all": "npm run test:coverage && npm run test:e2e"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^12.6.0",
     "@astrojs/node": "^9.3.0",
     "@astrojs/vue": "^5.1.0",
     "@primeuix/themes": "^1.1.1",

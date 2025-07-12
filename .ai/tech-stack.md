@@ -21,7 +21,7 @@ AI - Communication with models through Openrouter.ai service:
 CI/CD and Hosting:
 
 - Github Actions for creating CI/CD pipelines
-- DigitalOcean for hosting the application via docker image
+- Cloudflare Pages for hosting the Astro application
 
 Testing - A comprehensive suite of tools for various testing types:
 

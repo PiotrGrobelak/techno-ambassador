@@ -16,6 +16,6 @@ export const featureFlagsConfig: FeatureFlagsConfig = {
     events: true,
   },
   production: {
-    events: false,
+    events: true,
   },
 };
