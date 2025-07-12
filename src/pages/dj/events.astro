@@ -4,6 +4,15 @@
 
 import Layout from '@/layouts/Layout.astro';
 import EventsManagementView from '@/features/events/components/EventsManagementView.vue';
+import { isFeatureEnabled } from '@/shared/feature-flags';
+
+// Check if events feature is enabled
+const isEventsEnabled = isFeatureEnabled('events');
+
+if (!isEventsEnabled) {
+  // Events feature is disabled, redirect to home page
+  return Astro.redirect('/');
+}
 
 // Page metadata
 const title = 'Events Management - Techno Ambassador';

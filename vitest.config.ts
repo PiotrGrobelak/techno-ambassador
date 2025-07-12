@@ -34,6 +34,7 @@ export default defineConfig({
         'dist/**',
         '**/node_modules/**',
         '**/test/**',
+        '**/e2e/**',
         '**/*.config.*',
         '**/*.d.ts',
       ],

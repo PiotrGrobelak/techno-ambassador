@@ -103,11 +103,9 @@ import EditEventForm from './EditEventForm.vue';
 import { useAuthStore } from '@/shared/stores/useAuthStore';
 import EventsList from './EventsList.vue';
 
-// Stores
 const authStore = useAuthStore();
 const eventsStore = useEventsManagementStore();
 
-// Computed properties
 const currentEditingEvent = computed(() => {
   if (!eventsStore.editingEventId) return null;
   return (
@@ -117,11 +115,8 @@ const currentEditingEvent = computed(() => {
   );
 });
 
-// Lifecycle hooks
 onMounted(async () => {
-  // Initialize authentication before loading events
   await authStore.initializeAuth();
-  // Load events when component mounts
   console.log('eventsStore.isAuthenticated', eventsStore.isAuthenticated);
 
   if (eventsStore.isAuthenticated) {
@@ -130,7 +125,6 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  // Reset store state when leaving the page
   eventsStore.resetState();
 });
 </script>

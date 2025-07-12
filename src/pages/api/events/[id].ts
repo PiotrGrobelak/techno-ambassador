@@ -14,6 +14,7 @@ import type {
   EventResponseDto,
   EventListItemDto,
 } from '@/types';
+import { isFeatureEnabled } from '@/shared/feature-flags';
 
 export const prerender = false;
 
@@ -31,6 +32,10 @@ export async function GET(context: APIContext): Promise<Response> {
   const { request, params, locals } = context;
 
   try {
+    // Step 0: Check if events feature is enabled
+    if (!isFeatureEnabled('events')) {
+      throw ApiErrors.forbidden('Event details feature is currently disabled.');
+    }
     // Step 1: Validate path parameters
     const paramValidation = eventIdParamSchema.safeParse(params);
 
@@ -96,6 +101,10 @@ export async function PUT(context: APIContext): Promise<Response> {
   let requestBody: any;
 
   try {
+    // Step 0: Check if events feature is enabled
+    if (!isFeatureEnabled('events')) {
+      throw ApiErrors.forbidden('Event update feature is currently disabled.');
+    }
     // Step 1: Authentication verification using middleware-provided user
     user = locals.user;
 
@@ -194,6 +203,12 @@ export async function DELETE(context: APIContext): Promise<Response> {
   let user: any;
 
   try {
+    // Step 0: Check if events feature is enabled
+    if (!isFeatureEnabled('events')) {
+      throw ApiErrors.forbidden(
+        'Event deletion feature is currently disabled.'
+      );
+    }
     // Step 1: Authentication verification using middleware-provided user
     user = locals.user;
 

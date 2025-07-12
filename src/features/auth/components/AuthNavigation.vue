@@ -61,6 +61,7 @@
           @click="navigateToPath('/dj/dashboard')"
         />
         <BaseButton
+          v-if="isEventsEnabled"
           label="Events Management"
           variant="ghost"
           size="medium"
@@ -134,6 +135,7 @@
           <BaseTypography variant="body">Dashboard</BaseTypography>
         </button>
         <button
+          v-if="isEventsEnabled"
           class="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
           data-testid="mobile-events-button"
           @click="handleMobileNavigation('/dj/events')"
@@ -197,6 +199,7 @@ import { computed, ref, onMounted } from 'vue';
 import { useAuthStore } from '@/shared/stores/useAuthStore';
 import BaseButton from '@/shared/components/BaseButton/BaseButton.vue';
 import BaseTypography from '@/shared/components/BaseTypography.vue';
+import { isFeatureEnabled } from '@/shared/feature-flags';
 
 // Pinia store integration
 const authStore = useAuthStore();
@@ -231,6 +234,11 @@ const displayName = computed(() => {
   // For now, use email as display name
   // This will be enhanced when user profiles are integrated
   return user.email || 'DJ';
+});
+
+// Feature flag computed properties
+const isEventsEnabled = computed(() => {
+  return isFeatureEnabled('events');
 });
 
 // Navigation helper

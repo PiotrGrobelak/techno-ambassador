@@ -1,8 +1,9 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
+
 # AI Rules for Techno Ambassador
 
 Techno Ambassador is a platform bringing together all event cycles and events related to techno music. The main purpose of the product is to enable users to check event ratings and provide ratings and comments on completed events. The system integrates event location data retrieved from Facebook using AI technology, and administrators have the ability to approve or supplement this data. The platform also enables monitoring of user activities through integration with analytical tools.
@@ -42,3 +43,4 @@ When modifying the directory structure, always update this section.
 - Use guard clauses to handle preconditions and invalid states early.
 - Implement proper error logging and user-friendly error messages.
 - Consider using custom error types or error factories for consistent error handling.
+- Do not add short comments to the code. Only add comments when it is necessary.

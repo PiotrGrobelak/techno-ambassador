@@ -3,6 +3,7 @@ description:
 globs: *.vue
 alwaysApply: false
 ---
+
 ## FRONTEND
 
 ### Guidelines for VUE
@@ -22,6 +23,7 @@ alwaysApply: false
 - Implement shallow refs for large objects that don't need deep reactivity
 - Use `useTemplateRef` instead of the default `ref` to get a component reference.
 - Always use `computed` properties instead of method calls in <template></template> for data transformations and filtering
+- Add comments only in template sections to divide the code into logical sections if necessary.
 
 #### PRIMEVUE_STYLING_RULES
 
@@ -40,5 +42,3 @@ alwaysApply: false
 - Use TypeScript for type safety and better integration with PrimeVue's typings.
 - If using Tailwind CSS, incorporate PrimeVue's Tailwind presets to streamline styling with utility classes.
 - Ensure consistent styling approach across all components.
-
-

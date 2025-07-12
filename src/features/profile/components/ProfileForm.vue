@@ -379,8 +379,6 @@ onMounted(async () => {
       await profileFormStore.loadProfile(userId);
     }
   } else {
-    // Redirect to login if not authenticated
-    // This should normally be handled by middleware, but as a safety net
     console.warn('User not authenticated, redirecting to login');
     window.location.href =
       '/auth/login?redirectTo=' +

@@ -17,6 +17,7 @@ import type {
   EventsListResponseDto,
   EventsQueryParams,
 } from '@/types';
+import { isFeatureEnabled } from '@/shared/feature-flags';
 
 export const prerender = false;
 
@@ -37,6 +38,12 @@ export async function POST(context: APIContext): Promise<Response> {
   let requestBody: any;
 
   try {
+    // Step 0: Check if events feature is enabled
+    if (!isFeatureEnabled('events')) {
+      throw ApiErrors.forbidden(
+        'Events management feature is currently disabled.'
+      );
+    }
     // Step 1: Authentication verification using middleware-provided user
     user = locals.user;
 
@@ -119,6 +126,12 @@ export async function GET(context: APIContext): Promise<Response> {
   const { request, locals } = context;
 
   try {
+    // Step 0: Check if events feature is enabled
+    if (!isFeatureEnabled('events')) {
+      throw ApiErrors.forbidden(
+        'Events listing feature is currently disabled.'
+      );
+    }
     // Step 1: Parse and validate query parameters
     const url = new URL(request.url);
     const queryParams = Object.fromEntries(url.searchParams.entries());
