@@ -127,7 +127,7 @@ The platform addresses the lack of a centralized tool for DJs to showcase their 
 ## Available Scripts
 
 - `npm run dev` - Start the development server
-- `npm run dev:e2e` - Start the development server in e2e mode
+- `npm run dev:remote` - Start the development server in remote mode(Supabase database is running on remote server)
 - `npm run build` - Build the project for production
 - `npm run preview` - Preview the production build locally
 - `npm run astro` - Run Astro CLI commands
@@ -164,10 +164,10 @@ npm run test:e2e:headed   # Run E2E tests with visible browser
 npm run test:e2e:debug    # Debug E2E tests step by step
 
 # Playwright Project-Specific Tests
-npx playwright test --project=chromium-authenticated    # Run authenticated tests only
-npx playwright test --project=chromium-unauthenticated  # Run auth/registration tests only
-npx playwright test --project=setup                     # Run setup tests only
-npx playwright test --ui --project=chromium-authenticated  # Run authenticated tests in UI mode
+npm run test:e2e -- --project=chromium-authenticated    # Run authenticated tests only
+npm run test:e2e -- --project=chromium-unauthenticated  # Run auth/registration tests only
+npm run test:e2e -- --project=setup                     # Run setup tests only
+npm run test:e2e:ui -- --project=chromium-authenticated # Run authenticated tests in UI mode
 
 # All Tests
 npm run test:all          # Run all tests with coverage + E2E

@@ -3,7 +3,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 
 // Load test environment variables
-dotenv.config({ path: path.resolve(process.cwd(), '.env.e2e') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env.remote-development') });
 
 /**
  * @see https://playwright.dev/docs/test-configuration.
