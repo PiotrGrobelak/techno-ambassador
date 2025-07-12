@@ -43,4 +43,4 @@ When modifying the directory structure, always update this section.
 - Use guard clauses to handle preconditions and invalid states early.
 - Implement proper error logging and user-friendly error messages.
 - Consider using custom error types or error factories for consistent error handling.
-- Do not add short comments to the code. Only add comments when it is necessary.
+- Do not add short comments to the code! Only add comments when it is necessary!
