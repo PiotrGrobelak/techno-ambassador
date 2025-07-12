@@ -273,12 +273,6 @@ test('user can navigate to DJ profile', async ({ page }) => {
 
 The project is currently in development. Initial focus is on implementing core features related to DJ profile management, calendar system, and search functionality.
 
-### Success Metrics
-
-- **90%** of DJ users have filled calendars in the current month (at least one event)
-- **95%** of profiles have complete biography and music styles
-- **80%** of profiles have added social media contacts
-
 ## License
 
 [MIT License](LICENSE)
