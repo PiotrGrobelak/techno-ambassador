@@ -1,0 +1,19 @@
+name: 'Run E2E Tests'
+description: 'Run E2E tests with Playwright'
+
+inputs:
+  project:
+    description: 'Playwright project to run'
+    required: false
+    default: 'chromium-authenticated'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps chromium
+      shell: bash
+
+    - name: Run E2E tests
+      run: npm run test:e2e -- --project=${{ inputs.project }}
+      shell: bash
