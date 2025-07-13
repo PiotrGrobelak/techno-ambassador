@@ -18,6 +18,7 @@ function getCurrentEnvironment(): Environment | null {
 export function isFeatureEnabled(flagName: FeatureFlagName): boolean {
   try {
     const environment = getCurrentEnvironment();
+    console.log('environment', environment);
     if (!environment) {
       return false;
     }

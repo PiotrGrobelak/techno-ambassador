@@ -5,7 +5,6 @@ import { fileURLToPath } from 'node:url';
 import vue from '@astrojs/vue';
 import node from '@astrojs/node';
 import cloudflare from '@astrojs/cloudflare';
-
 import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
@@ -18,7 +17,9 @@ export default defineConfig({
       SUPABASE_KEY: envField.string({ context: 'server', access: 'secret' }),
     }
   },
-  adapter: cloudflare(),
+  adapter: import.meta.env.CF_PAGES ? cloudflare() : node({
+    mode: 'standalone',
+  }),
   integrations: [vue({ appEntrypoint: '/src/pages/_app' })],
   vite: {
     plugins: [tailwindcss()],

@@ -22,6 +22,7 @@ CI/CD and Hosting:
 
 - Github Actions for creating CI/CD pipelines
 - Cloudflare Pages for hosting the Astro application
+- Digital Ocean for hosting the Astro application using Docker(testing)
 
 Testing - A comprehensive suite of tools for various testing types:
 
