@@ -13,8 +13,8 @@ A global calendar platform dedicated to DJs that enables artists to showcase the
   - [Tech Stack](#tech-stack)
     - [Frontend](#frontend)
     - [Backend](#backend)
-    - [AI Integration](#ai-integration)
     - [CI/CD and Hosting](#cicd-and-hosting)
+  - [Live Demo](#live-demo)
   - [Getting Started Locally](#getting-started-locally)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
@@ -85,14 +85,16 @@ The platform addresses the lack of a centralized tool for DJs to showcase their 
   - Built-in user authentication
   - SDK support for multiple languages
 
-### AI Integration
-
-- **Openrouter.ai** - For communication with various AI models to retrieve event data from Facebook
-
 ### CI/CD and Hosting
 
 - **GitHub Actions** - For CI/CD pipelines
-- **DigitalOcean** - For hosting via Docker image
+- **Cloudflare Pages** - For hosting the project
+
+## Live Demo
+
+🌐 **Live Application**: [https://techno-ambassador.pages.dev/](https://techno-ambassador.pages.dev/)
+
+Experience Techno Ambassador in action! The live demo showcases all core features including DJ discovery, event browsing, and user authentication. You can create an account, explore DJs, and test the full functionality of the platform.
 
 ## Getting Started Locally
 

@@ -15,16 +15,98 @@ import type {
 } from '@/types';
 
 /**
- * Service class for user-related business logic and database operations
- * Handles user creation, retrieval, listing, updates, validation, and data transformation
+ * Service class for comprehensive user-related business logic and database operations.
+ *
+ * This service handles all user profile management including creation, retrieval, listing,
+ * updates, validation, and data transformation. It integrates with Supabase database
+ * to manage users, their music style associations, and related event data.
+ *
+ * @class UserService
+ * @since 1.0.0
+ *
+ * @example
+ * ```typescript
+ * const userService = new UserService(supabaseClient);
+ *
+ * // Create a new user profile
+ * const newUser = await userService.createUser({
+ *   user_id: 'auth-user-id',
+ *   artist_name: 'DJ Example',
+ *   biography: 'Professional DJ...',
+ *   music_style_ids: ['style-1', 'style-2']
+ * });
+ *
+ * // Get paginated list of users
+ * const users = await userService.getUsers({
+ *   page: 1,
+ *   limit: 20,
+ *   search: 'techno'
+ * });
+ * ```
+ *
+ * @see {@link Database} For database type definitions
+ * @see {@link UserResponseDto} For user response structure
  */
 export class UserService {
+  /**
+   * Creates a new UserService instance.
+   *
+   * @param {SupabaseClient<Database>} supabase - Configured Supabase client for database operations
+   *
+   * @example
+   * ```typescript
+   * import { createClient } from '@supabase/supabase-js';
+   *
+   * const supabase = createClient(url, key);
+   * const userService = new UserService(supabase);
+   * ```
+   */
   constructor(private supabase: SupabaseClient<Database>) {}
 
   /**
-   * Creates a new user with music style associations
-   * @param command - User creation data including user ID
-   * @returns Promise<UserResponseDto> - Created user with music styles
+   * Creates a new user profile with music style associations.
+   *
+   * This method performs atomic user creation with full validation:
+   * - Validates artist name uniqueness
+   * - Verifies music style IDs exist
+   * - Checks that user doesn't already have a profile
+   * - Creates user record and associates music styles
+   * - Implements rollback on failure
+   *
+   * @param {CreateUserCommand} command - Complete user creation data including authenticated user ID
+   * @param {string} command.user_id - Authenticated user's UUID from auth system
+   * @param {string} command.artist_name - Unique artist/DJ name for the profile
+   * @param {string} command.biography - User's biography/description
+   * @param {string[]} command.music_style_ids - Array of valid music style UUIDs
+   * @param {string} [command.instagram_url] - Optional Instagram profile URL
+   * @param {string} [command.facebook_url] - Optional Facebook profile URL
+   *
+   * @returns {Promise<UserResponseDto>} Created user profile with associated music styles
+   *
+   * @throws {Error} When artist name already exists
+   * @throws {Error} When user profile already exists for authenticated user
+   * @throws {Error} When music style IDs are invalid or don't exist
+   * @throws {Error} When database operation fails
+   *
+   * @example
+   * ```typescript
+   * try {
+   *   const newUser = await userService.createUser({
+   *     user_id: 'auth-uuid-123',
+   *     artist_name: 'DJ TechnoMaster',
+   *     biography: 'Professional techno DJ with 10 years experience',
+   *     music_style_ids: ['uuid-techno', 'uuid-house'],
+   *     instagram_url: 'https://instagram.com/djtechnomaster'
+   *   });
+   *
+   *   console.log('User created:', newUser.data.artist_name);
+   * } catch (error) {
+   *   console.error('Failed to create user:', error.message);
+   * }
+   * ```
+   *
+   * @see {@link validateArtistNameUniqueness} For artist name validation
+   * @see {@link validateMusicStylesExist} For music style validation
    */
   async createUser(command: CreateUserCommand): Promise<UserResponseDto> {
     // Early validation checks
@@ -91,9 +173,52 @@ export class UserService {
   }
 
   /**
-   * Retrieves a paginated list of users with advanced filtering capabilities
-   * @param queryParams - Query parameters for filtering and pagination
-   * @returns Promise<UsersListResponseDto> - Paginated list of users with metadata
+   * Retrieves a paginated list of users with advanced filtering capabilities.
+   *
+   * This method provides comprehensive user listing with support for:
+   * - Text search across artist names and biographies
+   * - Music style filtering with multiple style support
+   * - Location-based filtering through event venues
+   * - Availability filtering based on event calendar
+   * - Pagination with configurable limits
+   * - Automatic upcoming events counting
+   *
+   * @param {UsersQueryParams} queryParams - Query parameters for filtering, search, and pagination
+   * @param {number} [queryParams.page=1] - Page number (minimum: 1)
+   * @param {number} [queryParams.limit=20] - Items per page (minimum: 1, maximum: 100)
+   * @param {string} [queryParams.search] - Search term for artist name or biography
+   * @param {string} [queryParams.music_styles] - Comma-separated list of music style UUIDs
+   * @param {string} [queryParams.location] - Location search term (country, city, or venue)
+   * @param {string} [queryParams.available_from] - Start date for availability check (YYYY-MM-DD)
+   * @param {string} [queryParams.available_to] - End date for availability check (YYYY-MM-DD)
+   *
+   * @returns {Promise<UsersListResponseDto>} Paginated list of users with complete metadata
+   *
+   * @throws {Error} When invalid music style UUIDs are provided
+   * @throws {Error} When database query fails
+   *
+   * @example
+   * ```typescript
+   * // Basic pagination
+   * const users = await userService.getUsers({ page: 1, limit: 10 });
+   *
+   * // Search with filters
+   * const filteredUsers = await userService.getUsers({
+   *   page: 1,
+   *   limit: 20,
+   *   search: 'techno',
+   *   music_styles: 'uuid-1,uuid-2',
+   *   location: 'Berlin',
+   *   available_from: '2024-03-01',
+   *   available_to: '2024-03-31'
+   * });
+   *
+   * console.log(`Found ${filteredUsers.pagination.total} users`);
+   * console.log(`Page ${filteredUsers.pagination.page} of ${filteredUsers.pagination.total_pages}`);
+   * ```
+   *
+   * @see {@link UsersQueryParams} For complete query parameter options
+   * @see {@link UserListItemDto} For returned user item structure
    */
   async getUsers(queryParams: UsersQueryParams): Promise<UsersListResponseDto> {
     // Set default pagination values
@@ -253,9 +378,42 @@ export class UserService {
   }
 
   /**
-   * Retrieves detailed user profile with events and music styles
-   * @param userId - User ID to fetch
-   * @returns Promise<UserDetailResponseDto> - Detailed user profile with events
+   * Retrieves detailed user profile with complete event history and music styles.
+   *
+   * This method provides comprehensive user details including:
+   * - Basic profile information
+   * - Associated music styles
+   * - Complete event history (categorized as upcoming/past)
+   * - Profile creation and update timestamps
+   *
+   * @param {string} userId - Valid UUID of the user to retrieve
+   *
+   * @returns {Promise<UserDetailResponseDto>} Complete user profile with events categorized by date
+   *
+   * @throws {Error} When user ID format is invalid (not a valid UUID)
+   * @throws {Error} When user is not found in the database
+   * @throws {Error} When database query fails
+   *
+   * @example
+   * ```typescript
+   * try {
+   *   const userDetail = await userService.getUserById('550e8400-e29b-41d4-a716-446655440000');
+   *
+   *   console.log(`Artist: ${userDetail.data.artist_name}`);
+   *   console.log(`Upcoming events: ${userDetail.data.events.upcoming.length}`);
+   *   console.log(`Past events: ${userDetail.data.events.past.length}`);
+   *   console.log(`Music styles: ${userDetail.data.music_styles.map(s => s.style_name).join(', ')}`);
+   * } catch (error) {
+   *   if (error.message === 'User not found') {
+   *     console.error('User does not exist');
+   *   } else {
+   *     console.error('Database error:', error.message);
+   *   }
+   * }
+   * ```
+   *
+   * @see {@link UserDetailDto} For complete response structure
+   * @see {@link UserEventDto} For event data structure
    */
   async getUserById(userId: string): Promise<UserDetailResponseDto> {
     // Validate UUID format
@@ -355,9 +513,59 @@ export class UserService {
   }
 
   /**
-   * Updates user profile with ownership verification
-   * @param command - Update command with user ID and new data
-   * @returns Promise<UserResponseDto> - Updated user data
+   * Updates user profile with comprehensive validation and ownership verification.
+   *
+   * This method provides safe profile updates with:
+   * - User existence verification
+   * - Artist name uniqueness validation (excluding current user)
+   * - Music style validation for new associations
+   * - Atomic music style association updates
+   * - Automatic timestamp updates
+   *
+   * **Important Notes:**
+   * - Only provided fields are updated (partial updates supported)
+   * - Music style associations are completely replaced if provided
+   * - Empty strings for URLs are converted to null
+   * - Updated timestamp is automatically set
+   *
+   * @param {UpdateUserCommand} command - Update command with user ID and new data
+   * @param {string} command.user_id - UUID of the user to update (must exist)
+   * @param {string} [command.artist_name] - New artist name (must be unique if provided)
+   * @param {string} [command.biography] - Updated biography text
+   * @param {string} [command.instagram_url] - Instagram URL or empty string to clear
+   * @param {string} [command.facebook_url] - Facebook URL or empty string to clear
+   * @param {string[]} [command.music_style_ids] - New set of music style UUIDs (replaces all existing)
+   *
+   * @returns {Promise<UserResponseDto>} Updated user profile with current music styles
+   *
+   * @throws {Error} When user ID format is invalid
+   * @throws {Error} When user is not found
+   * @throws {Error} When artist name already exists for another user
+   * @throws {Error} When music style IDs are invalid
+   * @throws {Error} When database operation fails
+   *
+   * @example
+   * ```typescript
+   * // Partial update - only artist name and biography
+   * const updatedUser = await userService.updateUser({
+   *   user_id: 'user-uuid-123',
+   *   artist_name: 'DJ NewName',
+   *   biography: 'Updated biography with new information'
+   * });
+   *
+   * // Complete update with new music styles
+   * const fullyUpdatedUser = await userService.updateUser({
+   *   user_id: 'user-uuid-123',
+   *   artist_name: 'DJ Complete',
+   *   biography: 'New bio',
+   *   instagram_url: 'https://instagram.com/new',
+   *   facebook_url: '', // This will clear the URL
+   *   music_style_ids: ['new-style-1', 'new-style-2'] // Replaces all existing
+   * });
+   * ```
+   *
+   * @see {@link validateArtistNameUniqueness} For uniqueness validation
+   * @see {@link validateMusicStylesExist} For style validation
    */
   async updateUser(command: UpdateUserCommand): Promise<UserResponseDto> {
     // Validate UUID format
@@ -450,10 +658,29 @@ export class UserService {
   }
 
   /**
-   * Validates artist name uniqueness excluding a specific user
-   * @param artistName - Artist name to validate
-   * @param excludeUserId - User ID to exclude from uniqueness check
-   * @throws Error if artist name already exists for another user
+   * Validates artist name uniqueness across the platform.
+   *
+   * Ensures that artist names remain unique to prevent confusion and maintain
+   * platform integrity. Supports exclusion of a specific user ID for update operations.
+   *
+   * @param {string} artistName - Artist name to validate for uniqueness
+   * @param {string} [excludeUserId] - User ID to exclude from uniqueness check (for updates)
+   *
+   * @returns {Promise<void>} Resolves if name is unique, rejects if not
+   *
+   * @throws {Error} When artist name already exists for another user
+   * @throws {Error} When database validation query fails
+   *
+   * @example
+   * ```typescript
+   * // For new user creation
+   * await userService.validateArtistNameUniqueness('DJ NewArtist');
+   *
+   * // For user updates (excludes current user)
+   * await userService.validateArtistNameUniqueness('DJ UpdatedName', 'current-user-uuid');
+   * ```
+   *
+   * @private This method is used internally by create and update operations
    */
   async validateArtistNameUniqueness(
     artistName: string,
@@ -482,10 +709,36 @@ export class UserService {
   }
 
   /**
-   * Gets user IDs that are available during the specified date range
-   * @param availableFrom - Start date for availability check
-   * @param availableTo - End date for availability check
-   * @returns Promise<string[]> - Array of available user IDs
+   * Determines user IDs that are available during a specified date range.
+   *
+   * This method checks event calendars to find users who don't have conflicting
+   * events during the requested period. Useful for booking and availability queries.
+   *
+   * **Availability Logic:**
+   * - If no date range provided, returns all users
+   * - Checks for event date overlaps with requested period
+   * - Returns users without conflicting events
+   *
+   * @param {string} [availableFrom] - Start date for availability check (YYYY-MM-DD format)
+   * @param {string} [availableTo] - End date for availability check (YYYY-MM-DD format)
+   *
+   * @returns {Promise<string[]>} Array of user IDs who are available during the specified period
+   *
+   * @throws {Error} When date format is invalid or database query fails
+   *
+   * @example
+   * ```typescript
+   * // Check availability for specific date range
+   * const availableUsers = await userService.getAvailableUserIds('2024-03-01', '2024-03-31');
+   *
+   * // Check availability from specific date onwards
+   * const futureAvailable = await userService.getAvailableUserIds('2024-06-01');
+   *
+   * // Get all users (no date filtering)
+   * const allUsers = await userService.getAvailableUserIds();
+   * ```
+   *
+   * @private This method is used internally by the user listing functionality
    */
   private async getAvailableUserIds(
     availableFrom?: string,
@@ -522,9 +775,28 @@ export class UserService {
   }
 
   /**
-   * Validates UUID format
-   * @param uuid - String to validate as UUID
-   * @returns boolean - True if valid UUID format
+   * Validates UUID format according to RFC 4122 specification.
+   *
+   * Performs strict UUID validation to ensure data integrity and prevent
+   * database errors from malformed identifiers.
+   *
+   * @param {string} uuid - String to validate as UUID format
+   *
+   * @returns {boolean} True if the string is a valid UUID, false otherwise
+   *
+   * @example
+   * ```typescript
+   * // Valid UUIDs
+   * userService.isValidUUID('550e8400-e29b-41d4-a716-446655440000'); // true
+   * userService.isValidUUID('6ba7b810-9dad-11d1-80b4-00c04fd430c8'); // true
+   *
+   * // Invalid formats
+   * userService.isValidUUID('not-a-uuid'); // false
+   * userService.isValidUUID('550e8400-e29b-41d4-a716'); // false (too short)
+   * userService.isValidUUID(''); // false
+   * ```
+   *
+   * @private This method is used internally for input validation
    */
   private isValidUUID(uuid: string): boolean {
     const uuidRegex =
@@ -533,9 +805,28 @@ export class UserService {
   }
 
   /**
-   * Fetches user data with associated music styles for response formatting
-   * @param userId - User ID to fetch
-   * @returns Promise<UserResponseDto> - User data with music styles
+   * Fetches complete user data with associated music styles for response formatting.
+   *
+   * This utility method standardizes user data retrieval with music style associations,
+   * ensuring consistent response formatting across different operations.
+   *
+   * @param {string} userId - Valid UUID of the user to fetch
+   *
+   * @returns {Promise<UserResponseDto>} Complete user data with associated music styles
+   *
+   * @throws {Error} When user is not found
+   * @throws {Error} When music styles cannot be fetched
+   * @throws {Error} When database operation fails
+   *
+   * @example
+   * ```typescript
+   * // Used internally after user creation/update
+   * const userResponse = await this.getUserWithMusicStyles('user-uuid-123');
+   * console.log(userResponse.data.music_styles); // Array of associated music styles
+   * ```
+   *
+   * @private This method is used internally by create and update operations
+   * @see {@link UserResponseDto} For response structure
    */
   private async getUserWithMusicStyles(
     userId: string
@@ -593,9 +884,33 @@ export class UserService {
   }
 
   /**
-   * Validates that all provided music style IDs exist in the database
-   * @param styleIds - Array of music style UUIDs to validate
-   * @throws Error if any music style ID doesn't exist
+   * Validates that all provided music style IDs exist in the database.
+   *
+   * Ensures data integrity by verifying that all music style references
+   * are valid before creating associations. Provides detailed error information
+   * about missing style IDs.
+   *
+   * @param {string[]} styleIds - Array of music style UUIDs to validate
+   *
+   * @returns {Promise<void>} Resolves if all styles exist, rejects if any are missing
+   *
+   * @throws {Error} When any music style ID doesn't exist in the database
+   * @throws {Error} When database validation query fails
+   *
+   * @example
+   * ```typescript
+   * // Validate before user creation
+   * await userService.validateMusicStylesExist(['style-1', 'style-2', 'style-3']);
+   *
+   * // Will throw error with missing IDs
+   * try {
+   *   await userService.validateMusicStylesExist(['valid-id', 'invalid-id']);
+   * } catch (error) {
+   *   console.error(error.message); // "Invalid music style IDs: invalid-id"
+   * }
+   * ```
+   *
+   * @see {@link UserMusicStyleDto} For music style structure
    */
   async validateMusicStylesExist(styleIds: string[]): Promise<void> {
     const { data: existingStyles, error } = await this.supabase
